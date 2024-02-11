@@ -2,7 +2,7 @@ kind: Service
 apiVersion: v1
 metadata:
   {{- include "kubetail.metadataNamespace" $ | nindent 2 }}
-  name: {{ .Values.service.name }}
+  name: {{ if .Values.service.name }}{{ .Values.service.name }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
   labels:
     {{- include "kubetail.labels" $ | nindent 4 }}
 spec:

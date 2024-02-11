@@ -2,7 +2,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   {{- include "kubetail.metadataNamespace" $ | nindent 2 }}
-  name: {{ .Values.deployment.name }}
+  name: {{ if .Values.deployment.name }}{{ .Values.deployment.name }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
   labels:
     {{- include "kubetail.labels" $ | nindent 4 }}
 spec:

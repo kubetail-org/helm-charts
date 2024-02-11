@@ -25,11 +25,11 @@ image:
 
 # cluster-role options
 clusterRole:
-  name: kubetail-cr
+  name:
 
 # cluster-role-binding options
 clusterRoleBinding:
-  name: kubetail-crb
+  name:
   rules:
   - apiGroups:
     - ""
@@ -53,11 +53,11 @@ clusterRoleBinding:
 
 # configMap options
 configMap:
-  name: kubetail-cfg
+  name:
 
 # deployment options
 deployment:
-  name: kubetail
+  name:
   replicas: 1
   revisionHistoryLimit: 10
   updateStrategy: {}
@@ -80,13 +80,13 @@ deployment:
 
 # service options
 service:
-  name: kubetail
+  name:
   type: ClusterIP
   port: 4000
 
 # service-account options
 serviceAccount:
-  name: kubetail-sa
+  name:
 
 # kubetail config
 config:
