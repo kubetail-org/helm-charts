@@ -10,3 +10,6 @@
 # NOT apply to ownership claim operations, which are processed immediately.
 #
 repositoryID: e368fa9d-7422-4367-8f10-97ad726a8cb9
+owners:
+  - name: Andres Morey
+    email: andres@kubetail.com
