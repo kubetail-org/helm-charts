@@ -2,7 +2,7 @@
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ if .Values.clusterRole.name }}{{ .Values.clusterRole.name }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
+  name: {{ include "kubetail.clusterRoleName" . }}
   labels:
     {{- include "kubetail.labels" $ | nindent 4 }}
 {{- with .Values.clusterRoleBinding.rules }}

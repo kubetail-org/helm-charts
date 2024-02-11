@@ -68,6 +68,21 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
+ClusterRole name
+*/}}
+{{- define "kubetail.clusterRoleName" -}}
+{{ if .Values.clusterRole.name }}{{ .Values.clusterRole.name }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
+{{- end }}
+
+
+{{/*
+ConfigMap name
+*/}}
+{{- define "kubetail.configMapName" -}}
+{{ if .Values.configMap.name }}{{ .Values.configMap.name }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
+{{- end }}
+
+{{/*
 ServiceAccount name
 */}}
 {{- define "kubetail.serviceAccountName" -}}

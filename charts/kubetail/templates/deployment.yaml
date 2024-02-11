@@ -50,4 +50,4 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: {{ .Values.configMap.name }}
+          name: {{ include "kubetail.configMapName" . }}

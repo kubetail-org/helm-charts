@@ -8,9 +8,9 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ .Values.clusterRole.name }}
+  name: {{ include "kubetail.clusterRoleName" . }}
 subjects:
 - kind: ServiceAccount
-  name: {{ .Values.serviceAccount.name }}
+  name: {{ include "kubetail.serviceAccountName" . }}
   namespace: {{ include "kubetail.namespace" . }}
 {{- end -}}
