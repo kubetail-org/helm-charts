@@ -66,3 +66,10 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
+
+{{/*
+ServiceAccount name
+*/}}
+{{- define "kubetail.serviceAccountName" -}}
+{{ if .Values.serviceAccount.name }}{{ .Values.serviceAccount.name }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
+{{- end }}

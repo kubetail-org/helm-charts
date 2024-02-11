@@ -19,7 +19,7 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/config-map.yaml") . | sha256sum }}
     spec:
       {{- if eq .Values.authMode "cluster" }}
-      serviceAccountName: {{ .Values.serviceAccount.name }}
+      serviceAccountName: {{ include "kubetail.serviceAccountName" . }}
       {{- end }}
       containers:
       - name: kubetail
