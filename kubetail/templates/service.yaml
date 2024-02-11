@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  {{- include "kubetail.metadataNamespace" $ | nindent 2 }}
+  name: {{ .Values.service.name }}
+  labels:
+    {{- include "kubetail.labels" $ | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    {{- include "kubetail.selectorLabels" $ | nindent 4 }}
+  ports:
+  - port: {{ .Values.service.port }}
+    targetPort: kubetail

@@ -1,0 +1,118 @@
+# Default values for kubetail.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# override name of the chart
+nameOverride:
+
+# override full name of the chart+release
+fullnameOverride:
+
+# override the namespace that resources are installed into
+namespaceOverride:
+
+# kubetail auth-mode
+authMode: cluster
+
+# labels to apply to all resources deployed by the chart
+labels: {}
+
+# image options
+image:
+  registry: kubetail/kubetail
+  tag:
+  pullPolicy:
+
+# cluster-role options
+clusterRole:
+  name: kubetail-cr
+
+# cluster-role-binding options
+clusterRoleBinding:
+  name: kubetail-crb
+  rules:
+  - apiGroups:
+    - ""
+    - apps
+    - batch
+    resources:
+    - cronjobs
+    - daemonsets
+    - deployments
+    - jobs
+    - namespaces
+    - nodes
+    - pods
+    - pods/log
+    - replicasets
+    - statefulsets
+    verbs:
+    - get
+    - list
+    - watch
+
+# configMap options
+configMap:
+  name: kubetail-cfg
+
+# deployment options
+deployment:
+  name: kubetail
+  replicas: 1
+  revisionHistoryLimit: 10
+  updateStrategy: {}
+  containerPort: 4000
+  args:
+  - --config=/etc/kubetail/config.yaml
+  livenessProbe:
+    httpGet:
+      scheme: HTTP
+      path: /healthz
+      port: 4000
+    initialDelaySeconds: 30
+    timeoutSeconds: 30
+    periodSeconds: 10
+    failureThreshold: 3
+  resources:
+    requests:
+      cpu: 100m
+      memory: 200Mi
+
+# service options
+service:
+  name: kubetail
+  type: ClusterIP
+  port: 4000
+
+# service-account options
+serviceAccount:
+  name: kubetail-sa
+
+# kubetail config
+config:
+  csrf:
+    enabled:
+    fieldName:
+    secret: REPLACEME
+    cookie:
+      name:
+      path:
+      domain:
+      maxAge:
+      secure:
+      httpOnly:
+      sameSite:
+  logging:
+    enabled:
+    level: warn
+    format:
+    accessLogEnabled: false
+  session:
+    secret: REPLACEME
+    cookie:
+      path:
+      domain:
+      maxAge:
+      secure:
+      httpOnly:
+      sameSite:

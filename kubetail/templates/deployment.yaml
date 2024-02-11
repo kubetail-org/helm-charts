@@ -1,0 +1,53 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  {{- include "kubetail.metadataNamespace" $ | nindent 2 }}
+  name: {{ .Values.deployment.name }}
+  labels:
+    {{- include "kubetail.labels" $ | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "kubetail.selectorLabels" $ | nindent 6 }}
+  replicas: {{ .Values.deployment.replicas }}
+  revisionHistoryLimit: {{ .Values.deployment.revisionHistoryLimit }}
+  template:
+    metadata:
+      labels:
+        {{- include "kubetail.labels" $ | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config-map.yaml") . | sha256sum }}
+    spec:
+      {{- if eq .Values.authMode "cluster" }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      {{- end }}
+      containers:
+      - name: kubetail
+        image: {{ .Values.image.registry }}:{{ default .Chart.AppVersion .Values.image.tag }}
+        {{- if .Values.image.pullPolicy }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- end }}
+        ports:
+        - name: kubetail
+          protocol: TCP
+          containerPort: {{ .Values.deployment.containerPort }}
+        args:
+        {{- range .Values.deployment.args }}
+        - {{ . }}
+        {{- end }}
+        {{- with .Values.deployment.livenessProbe }}
+        livenessProbe:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .Values.deployment.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        volumeMounts:
+        - name: config
+          mountPath: /etc/kubetail
+          readOnly: true
+      volumes:
+      - name: config
+        configMap:
+          name: {{ .Values.configMap.name }}
