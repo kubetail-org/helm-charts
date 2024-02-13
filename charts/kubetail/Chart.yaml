@@ -1,15 +1,15 @@
 apiVersion: v2
 name: kubetail
-description: A Helm chart for Kubetail (private, real-time log viewer for Kubernetes clusters)
+description: Private, real-time log viewer for Kubernetes clusters
 keywords:
 - kubetail
 - logging
 type: application
-version: 0.1.4
+version: 0.1.5
 appVersion: "0.1.1"
 home: https://github.com/kubetail-org/kubetail
 maintainers:
 - email: andres@kubetail.com
   name: Andres Morey
   url: https://github.com/kubetail-org
-icon: https://github.com/kubetail-org/kubetail/raw/main/assets/github-logo.svg
+icon: https://github.com/kubetail-org/kubetail/raw/main/assets/kubetail-rounded-square-logo.svg
