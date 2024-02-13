@@ -76,7 +76,7 @@ deployment:
   resources:
     requests:
       cpu: 100m
-      memory: 200Mi
+      memory: 100Mi
 
 # service options
 service:

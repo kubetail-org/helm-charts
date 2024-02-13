@@ -1,11 +1,14 @@
 apiVersion: v2
 name: kubetail
-description: Private, real-time log viewer for Kubernetes clusters
+description: Kubetail is a private, real-time log viewer for Kubernetes clusters
 keywords:
 - kubetail
+- kubernetes
 - logging
+- private
+- realtime
 type: application
-version: 0.1.5
+version: 0.1.6
 appVersion: "0.1.1"
 home: https://github.com/kubetail-org/kubetail
 maintainers:
