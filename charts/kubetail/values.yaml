@@ -88,7 +88,7 @@ service:
 serviceAccount:
   name:
 
-# kubetail config
+# kubetail config (see https://github.com/kubetail-org/kubetail for defaults)
 config:
   csrf:
     enabled:
