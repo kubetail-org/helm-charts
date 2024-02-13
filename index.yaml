@@ -3,6 +3,28 @@ entries:
   kubetail:
   - apiVersion: v2
     appVersion: 0.1.1
+    created: "2024-02-13T08:39:42.418240327Z"
+    description: Kubetail is a private, real-time log viewer for Kubernetes clusters
+    digest: ad2bb4d74a511e6b34a12b2fb9688be88fedfc94718386c3e6b5d3b1f7514907
+    home: https://github.com/kubetail-org/kubetail
+    icon: https://github.com/kubetail-org/kubetail/raw/main/assets/kubetail-circle-icon.svg
+    keywords:
+    - kubetail
+    - kubernetes
+    - logging
+    - private
+    - realtime
+    maintainers:
+    - email: andres@kubetail.com
+      name: Andres Morey
+      url: https://github.com/kubetail-org
+    name: kubetail
+    type: application
+    urls:
+    - https://github.com/kubetail-org/helm/releases/download/kubetail-0.1.7/kubetail-0.1.7.tgz
+    version: 0.1.7
+  - apiVersion: v2
+    appVersion: 0.1.1
     created: "2024-02-13T08:34:07.357564629Z"
     description: Kubetail is a private, real-time log viewer for Kubernetes clusters
     digest: f8e309e5d05b85b9397734de57f3125214dfb11bf4ecbc231090691304318246
@@ -162,4 +184,4 @@ entries:
     urls:
     - https://github.com/kubetail-org/helm/releases/download/kubetail-0.1.0-rc1/kubetail-0.1.0-rc1.tgz
     version: 0.1.0-rc1
-generated: "2024-02-13T08:34:07.357583274Z"
+generated: "2024-02-13T08:39:42.418332529Z"
