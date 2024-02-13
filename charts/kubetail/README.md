@@ -1,6 +1,6 @@
 # kubetail
 
-Kubetail is a private, real-time log viewer for Kubernetes clusters.
+Kubetail is a web-based, real-time log viewer for Kubernetes clusters
 
 [![slack](https://img.shields.io/badge/Slack-Join%20Our%20Community-364954?logo=slack&labelColor=4D1C51)](https://join.slack.com/t/kubetail/shared_invite/zt-2cq01cbm8-e1kbLT3EmcLPpHSeoFYm1w)
 
