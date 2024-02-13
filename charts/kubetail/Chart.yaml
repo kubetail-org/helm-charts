@@ -8,11 +8,11 @@ keywords:
 - private
 - realtime
 type: application
-version: 0.1.6
+version: 0.1.7
 appVersion: "0.1.1"
 home: https://github.com/kubetail-org/kubetail
 maintainers:
 - email: andres@kubetail.com
   name: Andres Morey
   url: https://github.com/kubetail-org
-icon: https://github.com/kubetail-org/kubetail/raw/main/assets/kubetail-rounded-square-logo.svg
+icon: https://github.com/kubetail-org/kubetail/raw/main/assets/kubetail-circle-icon.svg
