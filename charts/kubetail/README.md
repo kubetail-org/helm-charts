@@ -80,7 +80,7 @@ These are the configurable parameters for the kubetail chart and their default v
 | ingress.enabled                              | bool     | Enable ingress resource                              | false               |
 | ingress.name                                 | string   | Override ingress name                                |                     |
 | ingress.annotations                          | map      | Annotations to apply to ingress resource             | {}                  |
-| ingress.hosts                                | array    | Hosts array for ingress resource                     | []                  |
-| ingress.tls                                  | array    | TlS array for ingress resource                       | []                  |
+| ingress.hosts                                | array    | Hosts array for ingress resource                     |                     |
+| ingress.tls                                  | array    | TlS array for ingress resource                       |                     |
 | ingress.secretName                           | string   | Override ingress secretName                          |                     |
 | config                                       | map      | Kubetail app config                                  | *See values.yaml*   |
