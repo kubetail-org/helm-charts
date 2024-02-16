@@ -79,7 +79,7 @@ These are the configurable parameters for the kubetail chart and their default v
 | serviceAccount.name                          | string   | Override ServiceAccount name from release            |                     |
 | ingress.enabled                              | bool     | Enable ingress resource                              | false               |
 | ingress.name                                 | string   | Override ingress name                                |                     |
-| ingress.annotations                          | map      | Annocations to apply to ingress resource             | {}                  |
+| ingress.annotations                          | map      | Annotations to apply to ingress resource             | {}                  |
 | ingress.hosts                                | array    | Hosts array for ingress resource                     | []                  |
 | ingress.tls                                  | array    | TlS array for ingress resource                       | []                  |
 | ingress.secretName                           | string   | Override ingress secretName                          |                     |
