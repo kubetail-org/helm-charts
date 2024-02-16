@@ -77,4 +77,10 @@ These are the configurable parameters for the kubetail chart and their default v
 | service.type                                 | string   | Service type                                         | ClusterIP           |
 | service.port                                 | int      | Service port                                         | 4000                |
 | serviceAccount.name                          | string   | Override ServiceAccount name from release            |                     |
+| ingress.enabled                              | bool     | Enable ingress resource                              | false               |
+| ingress.name                                 | string   | Override ingress name                                |                     |
+| ingress.annotations                          | map      | Annotations to apply to ingress resource             | {}                  |
+| ingress.hosts                                | array    | Hosts array for ingress resource                     |                     |
+| ingress.tls                                  | array    | TLS array for ingress resource                       |                     |
+| ingress.secretName                           | string   | Override ingress secretName                          |                     |
 | config                                       | map      | Kubetail app config                                  | *See values.yaml*   |

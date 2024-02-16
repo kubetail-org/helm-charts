@@ -88,6 +88,11 @@ service:
 serviceAccount:
   name:
 
+# ingress options
+ingress:
+  enabled: false
+  annotations: {}
+
 # kubetail config (see https://github.com/kubetail-org/kubetail for defaults)
 config:
   csrf:
