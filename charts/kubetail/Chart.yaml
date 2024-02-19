@@ -1,6 +1,6 @@
 apiVersion: v2
 name: kubetail
-description: Kubetail is a web-based, real-time log viewer for Kubernetes clusters
+description: Web-based, real-time log viewer for Kubernetes clusters
 keywords:
 - kubetail
 - kubernetes
@@ -8,8 +8,8 @@ keywords:
 - private
 - realtime
 type: application
-version: 0.2.0
-appVersion: "0.1.3"
+version: 0.2.1
+appVersion: "0.1.4"
 home: https://github.com/kubetail-org/kubetail
 maintainers:
 - email: andres@kubetail.com
