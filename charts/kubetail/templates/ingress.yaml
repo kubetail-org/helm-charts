@@ -3,14 +3,14 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ if .Values.ingress.name }}{{ .Values.ingress.name }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
+  name: {{ if $ing.name }}{{ $ing.name }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
   annotations:
-{{- with .Values.ingress.annotations }}
+{{- with $ing.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
   rules:
-  {{- range .Values.ingress.hosts }}
+  {{- range $ing.hosts }}
   - host: {{ .host }}
     http:
       paths:
@@ -19,19 +19,19 @@ spec:
         pathType: {{ .pathType }}
         backend:
           service:
-            name: {{ if .Values.service.name }}{{ .Values.service.name }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
+            name: {{ if $.Values.service.name }}{{ $.Values.service.name }}{{ else }}{{ include "kubetail.fullname" $ }}{{ end }}
             port:
-              number: {{ .Values.service.port }}
+              number: {{ $.Values.service.port }}
       {{- end }}
   {{- end }}
-  {{- with .Values.ingress.tls }}
+  {{- with $ing.tls }}
   tls:
   {{- range . }}
   - hosts:
     {{- range .hosts }}
     - {{ . }}
     {{- end }}
-    secretName: {{ if .Values.ingress.secretName }}{{ .Values.ingress.secretName }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
+    secretName: {{ if $ing.secretName }}{{ $ing.secretName }}{{ else }}{{ include "kubetail.fullname" $ }}{{ end }}
   {{- end }}
   {{- end }}
 {{- end }}
