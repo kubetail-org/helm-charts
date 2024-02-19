@@ -19,9 +19,9 @@ spec:
         pathType: {{ .pathType }}
         backend:
           service:
-            name: {{ if .Values.service.name }}{{ .Values.service.name }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
+            name: {{ if $.Values.service.name }}{{ $.Values.service.name }}{{ else }}{{ include "kubetail.fullname" $ }}{{ end }}
             port:
-              number: {{ .Values.service.port }}
+              number: {{ $.Values.service.port }}
       {{- end }}
   {{- end }}
   {{- with $ing.tls }}
@@ -31,7 +31,7 @@ spec:
     {{- range .hosts }}
     - {{ . }}
     {{- end }}
-    secretName: {{ if $ing.secretName }}{{ $ing.secretName }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
+    secretName: {{ if $ing.secretName }}{{ $ing.secretName }}{{ else }}{{ include "kubetail.fullname" $ }}{{ end }}
   {{- end }}
   {{- end }}
 {{- end }}
