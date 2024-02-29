@@ -94,4 +94,9 @@ ingress:
   annotations: {}
 
 # kubetail config (see https://github.com/kubetail-org/kubetail for defaults)
-config: {}
+config:
+  session:
+    secret: REPLACEME
+  csrf:
+    secret: REPLACEME
+
