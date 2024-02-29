@@ -4,7 +4,7 @@ name: release
 on:
   push:
     branches:
-      - release-workflow-bugfix
+      - main
 
 jobs:
   release:
