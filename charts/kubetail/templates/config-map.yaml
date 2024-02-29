@@ -9,39 +9,6 @@ data:
   config.yaml: |
     addr: :{{ .Values.deployment.containerPort }}
     auth-mode: {{ .Values.authMode }}
-    {{- with .Values.config.csrf }}
-    csrf:
-      {{- if .enabled }}
-      enabled: {{ .enabled }}
-      {{- end }}
-      {{- if .fieldName }}
-      field-name: {{ .fieldName }}
-      {{- end }}
-      {{- if .secret }}
-      secret: {{ .secret }}
-      {{- end }}
-      cookie:
-        {{- range $key, $value := .cookie }}
-        {{- if $value }}
-        {{ $key }}: {{ $value }}
-        {{- end }}
-        {{- end }}
-    {{- end }}
-    logging:
-      {{- range $key, $value := .Values.config.logging }}
-      {{- if $value }}
-      {{ $key }}: {{ $value }}
-      {{- end }}
-      {{- end }}
-    {{- with .Values.config.session }}
-    session:
-      {{- if .secret }}
-      secret: {{ .secret }}
-      {{- end }}
-      cookie:
-        {{- range $key, $value := .cookie }}
-        {{- if $value }}
-        {{ $key }}: {{ $value }}
-        {{- end }}
-        {{- end }}
-    {{- end }}
+{{- with .Values.config }}
+{{ toYaml . | indent 4 }}
+{{- end }}
