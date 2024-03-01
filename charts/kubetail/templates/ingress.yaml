@@ -11,7 +11,7 @@ metadata:
 spec:
   rules:
   {{- range $ing.hosts }}
-  - host: {{ .host }}
+  - host: {{ tpl .host $ }}
     http:
       paths:
       {{- range .paths }}
@@ -29,9 +29,9 @@ spec:
   {{- range . }}
   - hosts:
     {{- range .hosts }}
-    - {{ . }}
+    - {{ tpl . $ }}
     {{- end }}
-    secretName: {{ if $ing.secretName }}{{ $ing.secretName }}{{ else }}{{ include "kubetail.fullname" $ }}{{ end }}
+    secretName: {{ if $ing.secretName }}{{ tpl $ing.secretName $ }}{{ else }}{{ include "kubetail.fullname" $ }}{{ end }}
   {{- end }}
   {{- end }}
 {{- end }}

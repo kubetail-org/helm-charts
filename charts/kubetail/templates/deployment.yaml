@@ -16,14 +16,22 @@ spec:
       labels:
         {{- include "kubetail.labels" $ | nindent 8 }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/config-map.yaml") . | sha256sum }}
+        checksum/config: {{ include "kubetail.config" . | sha256sum }}
+        {{- with .Values.deployment.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
+      automountServiceAccountToken: {{ .Values.deployment.automountServiceAccountToken }}
       {{- if eq .Values.authMode "cluster" }}
       serviceAccountName: {{ include "kubetail.serviceAccountName" . }}
       {{- end }}
+      securityContext:
+        {{- toYaml .Values.deployment.podSecurityContext | nindent 8 }}
       containers:
       - name: kubetail
         image: {{ .Values.image.registry }}:{{ default .Chart.AppVersion .Values.image.tag }}
+        securityContext:
+          {{- toYaml .Values.deployment.securityContext | nindent 10 }}
         {{- if .Values.image.pullPolicy }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         {{- end }}
@@ -35,9 +43,17 @@ spec:
         {{- range .Values.deployment.args }}
         - {{ . }}
         {{- end }}
+        {{- if .Values.deployment.livenessProbe.enabled }}
         {{- with .Values.deployment.livenessProbe }}
         livenessProbe:
-          {{- toYaml . | nindent 10 }}
+          {{- toYaml (omit . "enabled") | nindent 10 }}
+        {{- end }}
+        {{- end }}
+        {{- if .Values.deployment.readinessProbe.enabled }}
+        {{- with .Values.deployment.readinessProbe }}
+        readinessProbe:
+          {{- toYaml (omit . "enabled") | nindent 10 }}
+        {{- end }}
         {{- end }}
         {{- with .Values.deployment.resources }}
         resources:
@@ -47,6 +63,21 @@ spec:
         - name: config
           mountPath: /etc/kubetail
           readOnly: true
+      {{- with .Values.deployment.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.deployment.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.deployment.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.deployment.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
       volumes:
       - name: config
         configMap:

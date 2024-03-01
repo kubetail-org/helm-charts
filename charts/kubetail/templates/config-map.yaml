@@ -7,8 +7,5 @@ metadata:
     {{- include "kubetail.labels" $ | nindent 4 }}
 data:
   config.yaml: |
-    addr: :{{ .Values.deployment.containerPort }}
-    auth-mode: {{ .Values.authMode }}
-{{- with .Values.config }}
-{{ toYaml . | indent 4 }}
-{{- end }}
+    {{- include "kubetail.config" $ | nindent 4 }}
+
