@@ -5,10 +5,16 @@ metadata:
   name: {{ if .Values.service.name }}{{ .Values.service.name }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
   labels:
     {{- include "kubetail.labels" $ | nindent 4 }}
+  {{- if .Values.service.annotations }}
+  annotations:
+    {{- toYaml .Values.service.annotations | nindent 4 }}
+  {{- end }}
 spec:
   type: {{ .Values.service.type }}
   selector:
     {{- include "kubetail.selectorLabels" $ | nindent 4 }}
   ports:
   - port: {{ .Values.service.port }}
+    name: kubetail
     targetPort: kubetail
+    appProtocol: http

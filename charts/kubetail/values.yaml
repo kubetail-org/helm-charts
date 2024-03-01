@@ -65,6 +65,17 @@ deployment:
   args:
   - --config=/etc/kubetail/config.yaml
   livenessProbe:
+    enabled: true
+    httpGet:
+      scheme: HTTP
+      path: /healthz
+      port: 4000
+    initialDelaySeconds: 30
+    timeoutSeconds: 30
+    periodSeconds: 10
+    failureThreshold: 3
+  readinessProbe:
+    enabled: true
     httpGet:
       scheme: HTTP
       path: /healthz
@@ -77,16 +88,41 @@ deployment:
     requests:
       cpu: 100m
       memory: 100Mi
+  automountServiceAccountToken: true
+  podAnnotations: {}
+  podSecurityContext:
+    runAsUser: 10001
+    runAsGroup: 10001
+    fsGroup: 10001
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+  affinity: {}
+  nodeSelector:
+    kubernetes.io/os: linux
+  tolerations: {}
+  priorityClassName: ""
 
 # service options
 service:
+  annotations: {}
   name:
   type: ClusterIP
   port: 4000
 
 # service-account options
 serviceAccount:
-  name:
+  create: true
+  annotations: {}
+  name: ""
+  automountServiceAccountToken: false
 
 # ingress options
 ingress:

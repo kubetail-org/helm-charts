@@ -88,3 +88,14 @@ ServiceAccount name
 {{- define "kubetail.serviceAccountName" -}}
 {{ if .Values.serviceAccount.name }}{{ .Values.serviceAccount.name }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
 {{- end }}
+
+{{/*
+config
+*/}}
+{{- define "kubetail.config" -}}
+addr: :{{ .Values.deployment.containerPort }}
+auth-mode: {{ .Values.authMode }}
+{{- with .Values.config }}
+{{- tpl (toYaml .) $ | nindent 0 }}
+{{- end }}
+{{- end }}
