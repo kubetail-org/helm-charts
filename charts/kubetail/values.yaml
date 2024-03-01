@@ -64,6 +64,7 @@ deployment:
   containerPort: 4000
   args:
   - --config=/etc/kubetail/config.yaml
+  env: {}
   livenessProbe:
     enabled: true
     httpGet:
@@ -80,7 +81,6 @@ deployment:
       scheme: HTTP
       path: /healthz
       port: 4000
-    initialDelaySeconds: 30
     timeoutSeconds: 30
     periodSeconds: 10
     failureThreshold: 3
@@ -129,10 +129,16 @@ ingress:
   enabled: false
   annotations: {}
 
+secrets:
+  existingSecret: ""
+  data:
+    CONFIG_CSRF_SECRET: "REPLACEME"
+    CONFIG_SESSION_SECRET: "REPLACEME"
+
 # kubetail config (see https://github.com/kubetail-org/kubetail for defaults)
 config:
   session:
-    secret: REPLACEME
+    secret: '${CONFIG_SESSION_SECRET}'
   csrf:
-    secret: REPLACEME
+    secret: '${CONFIG_CSRF_SECRET}'
 

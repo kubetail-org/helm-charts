@@ -16,6 +16,9 @@ spec:
       labels:
         {{- include "kubetail.labels" $ | nindent 8 }}
       annotations:
+        {{- if and (not .Values.secrets.existingSecret) .Values.secrets.data }}
+        checksum/secrets: {{ tpl (toYaml .Values.secrets.data) $ | sha256sum }}
+        {{- end }}
         checksum/config: {{ include "kubetail.config" . | sha256sum }}
         {{- with .Values.deployment.podAnnotations }}
         {{- toYaml . | nindent 8 }}
@@ -39,6 +42,27 @@ spec:
         - name: kubetail
           protocol: TCP
           containerPort: {{ .Values.deployment.containerPort }}
+        {{- if or (.Values.deployment.env) (and (not .Values.secrets.existingSecret) .Values.secrets.data) }}
+        env:
+          {{- range $name, $value := .Values.deployment.env }}
+        - name: {{ $name | quote }}
+          value: {{ $value | quote }}
+          {{- end }}
+          {{- if and (not .Values.secrets.existingSecret) .Values.secrets.data }}
+            {{- range $name, $value := .Values.secrets.data }}
+        - name: {{ $name | quote }}
+          valueFrom:
+            secretKeyRef:
+              name: "{{ include "kubetail.fullname" $ }}"
+              key: {{ $name | quote }}
+            {{- end }}
+          {{- end }}
+        {{- end }}
+        {{- if .Values.secrets.existingSecret }}
+        envFrom:
+        - secretRef:
+            name: {{ .Values.secrets.existingSecret }}
+        {{- end }}
         args:
         {{- range .Values.deployment.args }}
         - {{ . }}
