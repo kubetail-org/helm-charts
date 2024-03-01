@@ -8,7 +8,7 @@ keywords:
 - private
 - realtime
 type: application
-version: 0.3.0
+version: 0.3.1
 appVersion: "0.1.9"
 home: https://github.com/kubetail-org/kubetail
 maintainers:
