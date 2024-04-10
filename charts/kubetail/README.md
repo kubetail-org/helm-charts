@@ -47,62 +47,62 @@ These are the configurable parameters for the kubetail chart and their default v
 | Name                                                   | Datatype | Description                                  | Default                   |
 | ------------------------------------------------------ | -------- | -------------------------------------------- | ------------------------- |
 | GENERAL:                                               |          |                                              |                           |
-| global.annotations                                     | map      | Annotations to apply to all resources        | {}                        |
-| global.labels                                          | array    | Labels to apply to all resources             | []                        |
-| override.name                                          | string   | Override name of the chart                   | nil                       |
-| override.fullname                                      | string   | Override full name of chart+release          | nil                       |
-| override.namespace                                     | string   | Override the release namespace               | nil                       |
+| `global.annotations`                                     | map      | Annotations to apply to all resources        | {}                        |
+| `global.labels`                                          | array    | Labels to apply to all resources             | []                        |
+| `override.name`                                          | string   | Override name of the chart                   | nil                       |
+| `override.fullname`                                      | string   | Override full name of chart+release          | nil                       |
+| `override.namespace`                                     | string   | Override the release namespace               | nil                       |
 |                                                        |          |                                              |                           |
 | KUBETAIL DASHBOARD:                                    |          |                                              |                           |
-| dashboard.authMode                                     | string   | Auth mode (token, cluster, local)            | "cluster"                 |
-| dashboard.config                                       | map      | Kubetail dashboard config                    | *See values.yaml*         |
-| dashboard.clusterRole.metadata.extraAnnotations        | map      | Extra annotations to apply to resource       | {}                        |
-| dashboard.clusterRole.metadata.extraLabels             | array    | Extra labels to apply to resource            | []                        |
-| dashboard.clusterRole.metadata.name                    | string   | Override resource name from release          | nil                       |
-| dashboard.clusterRole.rules                            | map      | ClusterRole rules                            | *See values.yaml*         |
-| dashboard.clusterRoleBinding.metadata.extraAnnotations | map      | Extra annotations to apply to resource       | {}                        |
-| dashboard.clusterRoleBinding.metadata.extraLabels      | array    | Extra labels to apply to resource            | []                        |
-| dashboard.clusterRoleBinding.metadata.name             | string   | Override resource name from release          | nil                       |
-| dashboard.configMap.metadata.extraAnnotations          | map      | Extra annotations to apply to resource       | {}                        |
-| dashboard.configMap.metadata.extraLabels               | array    | Extra labels to apply to resource            | []                        |
-| dashboard.configMap.metadata.name                      | string   | Override resource name from release          | nil                       |
-| dashboard.deployment.metadata.extraAnnotations         | map      | Extra annotations to apply to resource       | {}                        |
-| dashboard.deployment.metadata.extraLabels              | array    | Extra labels to apply to resource            | []                        |
-| dashboard.deployment.metadata.name                     | string   | Override resource name from release          | nil                       |
-| dashboard.deployment.spec.replicas                     | int      | Deployment replicas                          | 1                         |
-| dashboard.deployment.spec.revisionHistoryLimit         | int      | Deployment revisionHistoryLimit              | 5                         |
-| dashboard.ingress.enabled                              | bool     | Add Ingress resource                         | false                     |
-| dashboard.ingress.metadata.extraAnnotations            | map      | Extra annotations to apply to resource       | {}                        |
-| dashboard.ingress.metadata.extraLabels                 | array    | Extra labels to apply to resource            | []                        |
-| dashboard.ingress.metadata.name                        | string   | Override resource name from release          | nil                       |
-| dashboard.ingress.spec.hosts                           | array    | Ingress hosts                                | []                        |
-| dashboard.ingress.spec.tls                             | array    | Ingress tls                                  | []                        |
-| dashboard.pods.metadata.extraAnnotations               | map      | Extra annotations to apply to resource       | {}                        |
-| dashboard.pods.metadata.extraLabels                    | array    | Extra labels to apply to resource            | []                        |
-| dashboard.pods.spec.affinity                           | map      | Dashboard pods' affinity                     | {}                        |
-| dashboard.pods.spec.automountServiceAccountToken       | bool     | Dashboard pods' automountServiceAccountToken | true                      |
-| dashboard.pods.spec.container.name                     | string   | Dashboard container name                     | "kubetail"                |
-| dashboard.pods.spec.container.image.registry           | string   | Registry to use for container image          | "kubetail/kubetail"       |
-| dashboard.pods.spec.container.image.tag                | string   | Override chart app version                   | nil                       |
-| dashboard.pods.spec.container.imagePullPolicy          | string   | Override default container imagePullPolicy   | nil                       |
-| dashboard.pods.spec.container.securityContext          | map      | Dashboard container security context         | {}                        |
-| dashboard.pods.spec.container.containerPort            | int      | Dashboard container containerPort            | 4000                      |
-| dashboard.pods.spec.container.args                     | array    | Dashboard container args                     | *See values.yaml*         |
-| dashboard.pods.spec.container.livenessProbe            | map      | Dashboard container liveness probe           | *See values.yaml*         |
-| dashboard.pods.spec.container.readinessProbe           | map      | Dashboard container readiness probe          | *See values.yaml*         |
-| dashboard.pods.spec.container.resources                | map      | Dashboard container resources                | {}                        |
-| dashboard.pods.spec.nodeSelector                       | map      | Dashboard pods' nodeSelector                 | {}                        |
-| dashboard.pods.spec.priorityClassName                  | string   | Dashboard pods' priorityClassName            |                           |
-| dashboard.pods.spec.tolerations                        | map      | Dashboard pods' tolerations                  |                           |
-| dashboard.service.metadata.extraAnnotations            | map      | Extra annotations to apply to resource       | {}                        |
-| dashboard.service.metadata.extraLabels                 | array    | Extra labels to apply to resource            | []                        |
-| dashboard.service.metadata.name                        | string   | Override resource name from release          | nil                       |
-| dashboard.service.spec.port                            | int      | Service port                                 |                           |
-| dashboard.service.spec.type                            | string   | Service type                                 |                           |
-| dashboard.serviceAccount.automountServiceAccountToken  | bool     | Value for `automountServiceAccountToken`     |                           |
-| dashboard.serviceAccount.metadata.extraAnnotations     | map      | Extra annotations to apply to resource       | {}                        |
-| dashboard.serviceAccount.metadata.extraLabels          | array    | Extra labels to apply to resource            | []                        |
-| dashboard.serviceAccount.metadata.name                 | string   | Override resource name from release          | nil                       |
+| `dashboard.authMode`                                     | string   | Auth mode (token, cluster, local)            | "cluster"                 |
+| `dashboard.config`                                       | map      | Kubetail dashboard config                    | *See values.yaml*         |
+| `dashboard.clusterRole.metadata.extraAnnotations`        | map      | Extra annotations to apply to resource       | {}                        |
+| `dashboard.clusterRole.metadata.extraLabels`             | array    | Extra labels to apply to resource            | []                        |
+| `dashboard.clusterRole.metadata.name`                    | string   | Override resource name from release          | nil                       |
+| `dashboard.clusterRole.rules`                            | map      | ClusterRole rules                            | *See values.yaml*         |
+| `dashboard.clusterRoleBinding.metadata.extraAnnotations` | map      | Extra annotations to apply to resource       | {}                        |
+| `dashboard.clusterRoleBinding.metadata.extraLabels`      | array    | Extra labels to apply to resource            | []                        |
+| `dashboard.clusterRoleBinding.metadata.name`             | string   | Override resource name from release          | nil                       |
+| `dashboard.configMap.metadata.extraAnnotations`          | map      | Extra annotations to apply to resource       | {}                        |
+| `dashboard.configMap.metadata.extraLabels`               | array    | Extra labels to apply to resource            | []                        |
+| `dashboard.configMap.metadata.name`                      | string   | Override resource name from release          | nil                       |
+| `dashboard.deployment.metadata.extraAnnotations`         | map      | Extra annotations to apply to resource       | {}                        |
+| `dashboard.deployment.metadata.extraLabels`              | array    | Extra labels to apply to resource            | []                        |
+| `dashboard.deployment.metadata.name`                     | string   | Override resource name from release          | nil                       |
+| `dashboard.deployment.spec.replicas`                     | int      | Deployment replicas                          | 1                         |
+| `dashboard.deployment.spec.revisionHistoryLimit`         | int      | Deployment revisionHistoryLimit              | 5                         |
+| `dashboard.ingress.enabled`                              | bool     | Add Ingress resource                         | false                     |
+| `dashboard.ingress.metadata.extraAnnotations`            | map      | Extra annotations to apply to resource       | {}                        |
+| `dashboard.ingress.metadata.extraLabels`                 | array    | Extra labels to apply to resource            | []                        |
+| `dashboard.ingress.metadata.name`                        | string   | Override resource name from release          | nil                       |
+| `dashboard.ingress.spec.hosts`                           | array    | Ingress hosts                                | []                        |
+| `dashboard.ingress.spec.tls`                             | array    | Ingress tls                                  | []                        |
+| `dashboard.pods.metadata.extraAnnotations`               | map      | Extra annotations to apply to resource       | {}                        |
+| `dashboard.pods.metadata.extraLabels`                    | array    | Extra labels to apply to resource            | []                        |
+| `dashboard.pods.spec.affinity`                           | map      | Dashboard pods' affinity                     | {}                        |
+| `dashboard.pods.spec.automountServiceAccountToken`       | bool     | Dashboard pods' automountServiceAccountToken | true                      |
+| `dashboard.pods.spec.container.name`                     | string   | Dashboard container name                     | "kubetail"                |
+| `dashboard.pods.spec.container.image.registry`           | string   | Registry to use for container image          | "kubetail/kubetail"       |
+| `dashboard.pods.spec.container.image.tag`                | string   | Override chart app version                   | nil                       |
+| `dashboard.pods.spec.container.imagePullPolicy`          | string   | Override default container imagePullPolicy   | nil                       |
+| `dashboard.pods.spec.container.securityContext`          | map      | Dashboard container security context         | {}                        |
+| `dashboard.pods.spec.container.containerPort`            | int      | Dashboard container containerPort            | 4000                      |
+| `dashboard.pods.spec.container.args`                     | array    | Dashboard container args                     | *See values.yaml*         |
+| `dashboard.pods.spec.container.livenessProbe`            | map      | Dashboard container liveness probe           | *See values.yaml*         |
+| `dashboard.pods.spec.container.readinessProbe`           | map      | Dashboard container readiness probe          | *See values.yaml*         |
+| `dashboard.pods.spec.container.resources`                | map      | Dashboard container resources                | {}                        |
+| `dashboard.pods.spec.nodeSelector`                       | map      | Dashboard pods' nodeSelector                 | {}                        |
+| `dashboard.pods.spec.priorityClassName`                  | string   | Dashboard pods' priorityClassName            |                           |
+| `dashboard.pods.spec.tolerations`                        | map      | Dashboard pods' tolerations                  |                           |
+| `dashboard.service.metadata.extraAnnotations`            | map      | Extra annotations to apply to resource       | {}                        |
+| `dashboard.service.metadata.extraLabels`                 | array    | Extra labels to apply to resource            | []                        |
+| `dashboard.service.metadata.name`                        | string   | Override resource name from release          | nil                       |
+| `dashboard.service.spec.port`                            | int      | Service port                                 |                           |
+| `dashboard.service.spec.type`                            | string   | Service type                                 |                           |
+| `dashboard.serviceAccount.automountServiceAccountToken`  | bool     | Value for `automountServiceAccountToken`     |                           |
+| `dashboard.serviceAccount.metadata.extraAnnotations`     | map      | Extra annotations to apply to resource       | {}                        |
+| `dashboard.serviceAccount.metadata.extraLabels`          | array    | Extra labels to apply to resource            | []                        |
+| `dashboard.serviceAccount.metadata.name`                 | string   | Override resource name from release          | nil                       |
 |                                                        |          |                                              |                           |
 | KUBETAIL AGENT:                                        |          |                                              |                           |
 | agent.config                                           | map      | Kubetail Agent config                        | *See values.yaml*         |
