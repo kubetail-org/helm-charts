@@ -47,16 +47,15 @@ These are the configurable parameters for the kubetail chart and their default v
 | Name                                                     | Datatype | Description                                  | Default                   |
 | -------------------------------------------------------- | -------- | -------------------------------------------- | ------------------------- |
 | GENERAL:                                                 |          |                                              |                           |
-| `globalAnnotations`                                      | map      | Annotations to apply to all resources        | {}                        |
-| `globalLabels`                                           | array    | Labels to apply to all resources             | []                        |
-| `overrideName`                                           | string   | Override name of the chart                   | nil                       |
-| `overrideFullname`                                       | string   | Override full name of chart+release          | nil                       |
-| `overrideNamespace`                                      | string   | Override the release namespace               | nil                       |
+| `global.annotations`                                     | map      | Annotations to apply to all resources        | {}                        |
+| `global.labels`                                          | array    | Labels to apply to all resources             | []                        |
+| `override.name`                                          | string   | Override name of the chart                   | nil                       |
+| `override.fullname`                                      | string   | Override full name of chart+release          | nil                       |
+| `override.namespace`                                     | string   | Override the release namespace               | nil                       |
 |                                                          |          |                                              |                           |
 | DASHBOARD:                                               |          |                                              |                           |
 | `dashboard.authMode`                                     | string   | Auth mode (token, cluster, local)            | "cluster"                 |
 | `dashboard.config`                                       | map      | Kubetail dashboard config                    | *See values.yaml*         |
-| `dashboard.createSecretsIfNotExists`                     | bool     |                                              | true                      |
 | `dashboard.clusterRole.metadata.extraAnnotations`        | map      | Extra annotations to apply to resource       | {}                        |
 | `dashboard.clusterRole.metadata.extraLabels`             | array    | Extra labels to apply to resource            | []                        |
 | `dashboard.clusterRole.metadata.name`                    | string   | Override resource name from release          | nil                       |
