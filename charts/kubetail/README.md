@@ -44,16 +44,16 @@ helm uninstall kubetail --namespace kubetail
 
 These are the configurable parameters for the kubetail chart and their default values:
 
-| Name                                                   | Datatype | Description                                  | Default                   |
-| ------------------------------------------------------ | -------- | -------------------------------------------- | ------------------------- |
-| GENERAL:                                               |          |                                              |                           |
+| Name                                                     | Datatype | Description                                  | Default                   |
+| -------------------------------------------------------- | -------- | -------------------------------------------- | ------------------------- |
+| GENERAL:                                                 |          |                                              |                           |
 | `global.annotations`                                     | map      | Annotations to apply to all resources        | {}                        |
 | `global.labels`                                          | array    | Labels to apply to all resources             | []                        |
 | `override.name`                                          | string   | Override name of the chart                   | nil                       |
 | `override.fullname`                                      | string   | Override full name of chart+release          | nil                       |
 | `override.namespace`                                     | string   | Override the release namespace               | nil                       |
-|                                                        |          |                                              |                           |
-| KUBETAIL DASHBOARD:                                    |          |                                              |                           |
+|                                                          |          |                                              |                           |
+| DASHBOARD:                                               |          |                                              |                           |
 | `dashboard.authMode`                                     | string   | Auth mode (token, cluster, local)            | "cluster"                 |
 | `dashboard.config`                                       | map      | Kubetail dashboard config                    | *See values.yaml*         |
 | `dashboard.clusterRole.metadata.extraAnnotations`        | map      | Extra annotations to apply to resource       | {}                        |
@@ -103,40 +103,40 @@ These are the configurable parameters for the kubetail chart and their default v
 | `dashboard.serviceAccount.metadata.extraAnnotations`     | map      | Extra annotations to apply to resource       | {}                        |
 | `dashboard.serviceAccount.metadata.extraLabels`          | array    | Extra labels to apply to resource            | []                        |
 | `dashboard.serviceAccount.metadata.name`                 | string   | Override resource name from release          | nil                       |
-|                                                        |          |                                              |                           |
-| KUBETAIL AGENT:                                        |          |                                              |                           |
-| agent.config                                           | map      | Kubetail Agent config                        | *See values.yaml*         |
-| agent.clusterRole.metadata.extraAnnotations            | map      | Extra annotations to apply to resource       | {}                        |
-| agent.clusterRole.metadata.extraLabels                 | array    | Extra labels to apply to resource            | []                        |
-| agent.clusterRole.metadata.name                        | string   | Override resource name from release          | nil                       |
-| agent.clusterRole.rules                                | map      | Override ClusterRole rules                   |                           |
-| agent.clusterRoleBinding.metadata.extraAnnotations     | map      | Extra annotations to apply to resource       | {}                        |
-| agent.clusterRoleBinding.metadata.extraLabels          | array    | Extra labels to apply to resource            | []                        |
-| agent.clusterRoleBinding.metadata.name                 | string   | Override resource name from release          | nil                       |
-| agent.configMap.metadata.extraAnnotations              | map      | Extra annotations to apply to resource       | {}                        |
-| agent.configMap.metadata.extraLabels                   | array    | Extra labels to apply to resource            | []                        |
-| agent.configMap.metadata.name                          | string   | Override resource name from release          | nil                       |
-| agent.daemonset.metadata.extraAnnotations              | map      | Extra annotations to apply to resource       | {}                        |
-| agent.daemonset.metadata.extraLabels                   | array    | Extra labels to apply to resource            | []                        |
-| agent.daemonset.metadata.name                          | string   | Override resource name from release          | nil                       |
-| agent.pods.metadata.extraAnnotations                   | map      | Extra annotations to apply to resource       | {}                        |
-| agent.pods.metadata.extraLabels                        | array    | Extra labels to apply to resource            | []                        |
-| agent.pods.spec.affinity                               | map      | Agent pods' affinity                         |                           |
-| agent.pods.spec.automountServiceAccountToken           | bool     | Agent pods' automountServiceAccountToken     |                           |
-| agent.pods.spec.container.name                         | string   | Dashboard container name                     | "kubetail-agent"          |
-| agent.pods.spec.container.image.registry               | string   | Registry to use for container image          | "kubetail/kubetail-agent" |
-| agent.pods.spec.container.image.tag                    | string   | Override chart app version                   | nil                       |
-| agent.pods.spec.container.imagePullPolicy              | string   | Override default container imagePullPolicy   | nil                       |
-| agent.pods.spec.container.securityContext              | map      | Agent container security context             | {}                        |
-| agent.pods.spec.container.containerPort                | int      | Agent container containerPort                | 4000                      |
-| agent.pods.spec.container.args                         | array    | Agent container args                         | *See values.yaml*         |
-| agent.pods.spec.container.livenessProbe                | map      | Agent container liveness probe               | *See values.yaml*         |
-| agent.pods.spec.container.readinessProbe               | map      | Agent container readiness probe              | *See values.yaml*         |
-| agent.pods.spec.container.resources                    | map      | Agent container resources                    |                           |
-| agent.pods.spec.nodeSelector                           | map      | Agent pods' nodeSelector                     |                           |
-| agent.pods.spec.priorityClassName                      | string   | Agent pods' priorityClassName                |                           |
-| agent.pods.spec.tolerations                            | map      | Agent pods' tolerations                      |                           |
-| agent.serviceAccount.automountServiceAccountToken      | bool     | Value for `automountServiceAccountToken`     |                           |
-| agent.serviceAccount.metadata.extraAnnotations         | map      | Extra annotations to apply to resource       | {}                        |
-| agent.serviceAccount.metadata.extraLabels              | array    | Extra labels to apply to resource            | []                        |
-| agent.serviceAccount.metadata.name                     | string   | Override resource name from release          | nil                       |
+|                                                          |          |                                              |                           |
+| AGENT:                                        |          |                                              |                           |
+| `agent.config`                                           | map      | Kubetail Agent config                        | *See values.yaml*         |
+| `agent.clusterRole.metadata.extraAnnotations`            | map      | Extra annotations to apply to resource       | {}                        |
+| `agent.clusterRole.metadata.extraLabels`                 | array    | Extra labels to apply to resource            | []                        |
+| `agent.clusterRole.metadata.name`                        | string   | Override resource name from release          | nil                       |
+| `agent.clusterRole.rules`                                | map      | Override ClusterRole rules                   |                           |
+| `agent.clusterRoleBinding.metadata.extraAnnotations`     | map      | Extra annotations to apply to resource       | {}                        |
+| `agent.clusterRoleBinding.metadata.extraLabels`          | array    | Extra labels to apply to resource            | []                        |
+| `agent.clusterRoleBinding.metadata.name`                 | string   | Override resource name from release          | nil                       |
+| `agent.configMap.metadata.extraAnnotations`              | map      | Extra annotations to apply to resource       | {}                        |
+| `agent.configMap.metadata.extraLabels`                   | array    | Extra labels to apply to resource            | []                        |
+| `agent.configMap.metadata.name`                          | string   | Override resource name from release          | nil                       |
+| `agent.daemonset.metadata.extraAnnotations`              | map      | Extra annotations to apply to resource       | {}                        |
+| `agent.daemonset.metadata.extraLabels`                   | array    | Extra labels to apply to resource            | []                        |
+| `agent.daemonset.metadata.name`                          | string   | Override resource name from release          | nil                       |
+| `agent.pods.metadata.extraAnnotations`                   | map      | Extra annotations to apply to resource       | {}                        |
+| `agent.pods.metadata.extraLabels`                        | array    | Extra labels to apply to resource            | []                        |
+| `agent.pods.spec.affinity`                               | map      | Agent pods' affinity                         |                           |
+| `agent.pods.spec.automountServiceAccountToken`           | bool     | Agent pods' automountServiceAccountToken     |                           |
+| `agent.pods.spec.container.name`                         | string   | Dashboard container name                     | "kubetail-agent"          |
+| `agent.pods.spec.container.image.registry`               | string   | Registry to use for container image          | "kubetail/kubetail-agent" |
+| `agent.pods.spec.container.image.tag`                    | string   | Override chart app version                   | nil                       |
+| `agent.pods.spec.container.imagePullPolicy`              | string   | Override default container imagePullPolicy   | nil                       |
+| `agent.pods.spec.container.securityContext`              | map      | Agent container security context             | {}                        |
+| `agent.pods.spec.container.containerPort`                | int      | Agent container containerPort                | 4000                      |
+| `agent.pods.spec.container.args`                         | array    | Agent container args                         | *See values.yaml*         |
+| `agent.pods.spec.container.livenessProbe`                | map      | Agent container liveness probe               | *See values.yaml*         |
+| `agent.pods.spec.container.readinessProbe`               | map      | Agent container readiness probe              | *See values.yaml*         |
+| `agent.pods.spec.container.resources`                    | map      | Agent container resources                    |                           |
+| `agent.pods.spec.nodeSelector`                           | map      | Agent pods' nodeSelector                     |                           |
+| `agent.pods.spec.priorityClassName`                      | string   | Agent pods' priorityClassName                |                           |
+| `agent.pods.spec.tolerations`                            | map      | Agent pods' tolerations                      |                           |
+| `agent.serviceAccount.automountServiceAccountToken`      | bool     | Value for `automountServiceAccountToken`     |                           |
+| `agent.serviceAccount.metadata.extraAnnotations`         | map      | Extra annotations to apply to resource       | {}                        |
+| `agent.serviceAccount.metadata.extraLabels`              | array    | Extra labels to apply to resource            | []                        |
+| `agent.serviceAccount.metadata.name`                     | string   | Override resource name from release          | nil                       |
