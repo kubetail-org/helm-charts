@@ -44,16 +44,20 @@ helm uninstall kubetail --namespace kubetail
 
 These are the configurable parameters for the kubetail chart and their default values:
 
+### General
+
 | Name                                                     | Datatype | Description                                  | Default                   |
 | -------------------------------------------------------- | -------- | -------------------------------------------- | ------------------------- |
-| GENERAL:                                                 |          |                                              |                           |
 | `global.annotations`                                     | map      | Annotations to apply to all resources        | {}                        |
 | `global.labels`                                          | array    | Labels to apply to all resources             | []                        |
 | `override.name`                                          | string   | Override name of the chart                   | nil                       |
 | `override.fullname`                                      | string   | Override full name of chart+release          | nil                       |
 | `override.namespace`                                     | string   | Override the release namespace               | nil                       |
-|                                                          |          |                                              |                           |
-| DASHBOARD:                                               |          |                                              |                           |
+
+### Dashboard
+
+| Name                                                     | Datatype | Description                                  | Default                   |
+| -------------------------------------------------------- | -------- | -------------------------------------------- | ------------------------- |
 | `dashboard.authMode`                                     | string   | Auth mode (token, cluster, local)            | "cluster"                 |
 | `dashboard.config`                                       | map      | Kubetail dashboard config                    | *See values.yaml*         |
 | `dashboard.clusterRole.metadata.extraAnnotations`        | map      | Extra annotations to apply to resource       | {}                        |
@@ -104,7 +108,11 @@ These are the configurable parameters for the kubetail chart and their default v
 | `dashboard.serviceAccount.metadata.extraLabels`          | array    | Extra labels to apply to resource            | []                        |
 | `dashboard.serviceAccount.metadata.name`                 | string   | Override resource name from release          | nil                       |
 |                                                          |          |                                              |                           |
-| AGENT:                                                   |          |                                              |                           |
+
+### Agent
+
+| Name                                                     | Datatype | Description                                  | Default                   |
+| -------------------------------------------------------- | -------- | -------------------------------------------- | ------------------------- |
 | `agent.config`                                           | map      | Kubetail Agent config                        | *See values.yaml*         |
 | `agent.clusterRole.metadata.extraAnnotations`            | map      | Extra annotations to apply to resource       | {}                        |
 | `agent.clusterRole.metadata.extraLabels`                 | array    | Extra labels to apply to resource            | []                        |
