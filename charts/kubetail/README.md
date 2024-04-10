@@ -52,7 +52,6 @@ These are the configurable parameters for the kubetail chart and their default v
 | `override.name`                                          | string   | Override name of the chart                   | nil                       |
 | `override.fullname`                                      | string   | Override full name of chart+release          | nil                       |
 | `override.namespace`                                     | string   | Override the release namespace               | nil                       |
-|                                                          |          |                                              |                           |
 | DASHBOARD:                                               |          |                                              |                           |
 | `dashboard.authMode`                                     | string   | Auth mode (token, cluster, local)            | "cluster"                 |
 | `dashboard.config`                                       | map      | Kubetail dashboard config                    | *See values.yaml*         |
@@ -103,8 +102,7 @@ These are the configurable parameters for the kubetail chart and their default v
 | `dashboard.serviceAccount.metadata.extraAnnotations`     | map      | Extra annotations to apply to resource       | {}                        |
 | `dashboard.serviceAccount.metadata.extraLabels`          | array    | Extra labels to apply to resource            | []                        |
 | `dashboard.serviceAccount.metadata.name`                 | string   | Override resource name from release          | nil                       |
-|                                                          |          |                                              |                           |
-| AGENT:                                        |          |                                              |                           |
+| AGENT:                                                   |          |                                              |                           |
 | `agent.config`                                           | map      | Kubetail Agent config                        | *See values.yaml*         |
 | `agent.clusterRole.metadata.extraAnnotations`            | map      | Extra annotations to apply to resource       | {}                        |
 | `agent.clusterRole.metadata.extraLabels`                 | array    | Extra labels to apply to resource            | []                        |
