@@ -56,6 +56,7 @@ These are the configurable parameters for the kubetail chart and their default v
 | DASHBOARD:                                               |          |                                              |                           |
 | `dashboard.authMode`                                     | string   | Auth mode (token, cluster, local)            | "cluster"                 |
 | `dashboard.config`                                       | map      | Kubetail dashboard config                    | *See values.yaml*         |
+| `dashboard.createSecretsIfNotExists`                     | bool     |                                              | true                      |
 | `dashboard.clusterRole.metadata.extraAnnotations`        | map      | Extra annotations to apply to resource       | {}                        |
 | `dashboard.clusterRole.metadata.extraLabels`             | array    | Extra labels to apply to resource            | []                        |
 | `dashboard.clusterRole.metadata.name`                    | string   | Override resource name from release          | nil                       |
@@ -88,12 +89,20 @@ These are the configurable parameters for the kubetail chart and their default v
 | `dashboard.pods.spec.container.securityContext`          | map      | Dashboard container security context         | {}                        |
 | `dashboard.pods.spec.container.containerPort`            | int      | Dashboard container containerPort            | 4000                      |
 | `dashboard.pods.spec.container.args`                     | array    | Dashboard container args                     | *See values.yaml*         |
+| `dashboard.pods.spec.container.extraEnv`                 | map      | Extra container env values                   | {}                        |
+| `dashboard.pods.spec.container.extraEnvFrom`             | array    | Extra container envFrom values               | []                        |
 | `dashboard.pods.spec.container.livenessProbe`            | map      | Dashboard container liveness probe           | *See values.yaml*         |
 | `dashboard.pods.spec.container.readinessProbe`           | map      | Dashboard container readiness probe          | *See values.yaml*         |
 | `dashboard.pods.spec.container.resources`                | map      | Dashboard container resources                | {}                        |
 | `dashboard.pods.spec.nodeSelector`                       | map      | Dashboard pods' nodeSelector                 | {}                        |
 | `dashboard.pods.spec.priorityClassName`                  | string   | Dashboard pods' priorityClassName            |                           |
 | `dashboard.pods.spec.tolerations`                        | map      | Dashboard pods' tolerations                  |                           |
+| `dashboard.secrets.opaque.enabled`                       | bool     | Add secret resource                          | true                      |
+| `dashboard.secrets.opaque.metadata.extraAnnotations`     | map      | Extra annotations to apply to resource       | {}                        |
+| `dashboard.secrets.opaque.metadata.extraLabels`          | array    | Extra labels to apply to resource            | []                        |
+| `dashboard.secrets.opaque.metadata.name`                 | string   | Override resource name from release          | nil                       |
+| `dashboard.secrets.opaque.data.KUBETAIL_CSRF_SECRET`     | string   | Override auto-generated value                | nil                       |
+| `dashboard.secrets.opaque.data.KUBETAIL_SESSION_SECRET`  | string   | Override auto-generated value                | nil                       |
 | `dashboard.service.metadata.extraAnnotations`            | map      | Extra annotations to apply to resource       | {}                        |
 | `dashboard.service.metadata.extraLabels`                 | array    | Extra labels to apply to resource            | []                        |
 | `dashboard.service.metadata.name`                        | string   | Override resource name from release          | nil                       |
@@ -130,12 +139,19 @@ These are the configurable parameters for the kubetail chart and their default v
 | `agent.pods.spec.container.securityContext`              | map      | Agent container security context             | {}                        |
 | `agent.pods.spec.container.containerPort`                | int      | Agent container containerPort                | 4000                      |
 | `agent.pods.spec.container.args`                         | array    | Agent container args                         | *See values.yaml*         |
+| `agent.pods.spec.container.extraEnv`                     | map      | Extra container env values                   | {}                        |
+| `agent.pods.spec.container.extraEnvFrom`                 | array    | Extra container envFrom values               | []                        |
 | `agent.pods.spec.container.livenessProbe`                | map      | Agent container liveness probe               | *See values.yaml*         |
 | `agent.pods.spec.container.readinessProbe`               | map      | Agent container readiness probe              | *See values.yaml*         |
 | `agent.pods.spec.container.resources`                    | map      | Agent container resources                    |                           |
 | `agent.pods.spec.nodeSelector`                           | map      | Agent pods' nodeSelector                     |                           |
 | `agent.pods.spec.priorityClassName`                      | string   | Agent pods' priorityClassName                |                           |
 | `agent.pods.spec.tolerations`                            | map      | Agent pods' tolerations                      |                           |
+| `agent.secrets.opaque.enabled`                           | bool     | Add secret resource                          | true                      |
+| `agent.secrets.opaque.metadata.extraAnnotations`         | map      | Extra annotations to apply to resource       | {}                        |
+| `agent.secrets.opaque.metadata.extraLabels`              | array    | Extra labels to apply to resource            | []                        |
+| `agent.secrets.opaque.metadata.name`                     | string   | Override resource name from release          | nil                       |
+| `agent.secrets.opaque.data.KUBETAIL_TBD`                 | string   | Override auto-generated value                | nil                       |
 | `agent.serviceAccount.automountServiceAccountToken`      | bool     | Value for `automountServiceAccountToken`     |                           |
 | `agent.serviceAccount.metadata.extraAnnotations`         | map      | Extra annotations to apply to resource       | {}                        |
 | `agent.serviceAccount.metadata.extraLabels`              | array    | Extra labels to apply to resource            | []                        |
