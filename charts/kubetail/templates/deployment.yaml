@@ -49,6 +49,53 @@ spec:
         securityContext:
           {{- toYaml $podTmpl.containerSecurityContext | nindent 10 }}
         imagePullPolicy: {{ .Values.kubetail.image.pullPolicy }}
+        env:
+          {{- with $podTmpl.env }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+        envFrom:
+        - configMapRef:
+            name: {{ include "kubetail.configMapName" . }}
+        {{- with $podTmpl.envFrom }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         ports:
         - name: kubetail
           protocol: TCP
+          port: {{ $podTmpl.port }}
+        args:
+        - --config=/etc/kubetail/config.yaml
+        {{- range $podTmpl.args }}
+        - {{ . }}
+        {{- end }}
+        livenessProbe:
+          {{- with $podTmpl.livenessProbe }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+        readinessProbe:
+          {{- with $podTmpl.readinessProbe }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+        resources:
+          {{- with $podTmpl.resources }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+        volumeMounts:
+        - name: config
+          mountPath: /etc/kubetail
+          readOnly: true
+      nodeSelector:
+        {{- with $dep.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+        {{- end}}
+      affinity:
+        {{- with $dep.affinity }}
+        {{- toYaml . | nindent 8 }}
+        {{- end}}
+      tolerations:
+      {{- with $dep.tolerations }}
+      {{- toYaml . | nindent 6 }}
+      {{- end}}
+      {{- if $dep.priorityClassName }}
+      priorityClassName: {{ $dep.priorityClassName }}
+      {{- end }}

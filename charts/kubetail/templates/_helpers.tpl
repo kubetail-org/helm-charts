@@ -106,10 +106,10 @@ ServiceAccount name
 {{- end }}
 
 {{/*
-config
+Kubetail config
 */}}
 {{- define "kubetail.config" -}}
-addr: :{{ .Values.kubetail.deployment.containerPort }}
+addr: :{{ .Values.kubetail.podTemplate.port }}
 auth-mode: {{ .Values.kubetail.authMode }}
 {{- with .Values.kubetail.config }}
 {{- tpl . . | nindent 0 }}

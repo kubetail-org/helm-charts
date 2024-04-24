@@ -82,9 +82,16 @@ kubetail:
     # -- Additional env
     env: {}
     # -- Additional envFrom
-    envFrom: {}
+    envFrom:
+    - configMapRef:
+        name: app-config
+    - secretRef:
+        name: app-secret
     # -- Additional args
-    args: []
+    args:
+    - key=val
+    # -- Port number
+    port: 4000
     # -- Liveness probe
     livenessProbe:
       httpGet:
@@ -174,6 +181,14 @@ kubetail:
     # -- Strategy
     strategy:
       type: RollingUpdate
+    # -- PriorityClassName
+    priorityClassName: null
+    # -- Node selector
+    nodeSelector: {}
+    # -- Affinity
+    affinity: {}
+    # -- Tolerations
+    tolerations: []
 
   service:
     # -- Overrides the Service resource name whose default is the chart's computed fullname
