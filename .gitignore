@@ -1,0 +1,23 @@
+# Helm specific
+**/*.tgz
+**/charts/*.tgz
+**/tmpcharts/*.tgz
+**/charts/*.lock
+**/*.lock
+
+# Ignore Helm dependency directories
+**/charts/**/charts
+
+# Values files that are usually used for CI/CD customization
+**/values-local.yaml
+**/values-dev.yaml
+**/values-test.yaml
+**/values-prod.yaml
+
+# Ignore save files from helm diff plugin
+**/diff_output
+
+# General files to ignore
+*.log
+*.tmp
+.DS_Store
