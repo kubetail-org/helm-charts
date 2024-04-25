@@ -54,15 +54,17 @@ spec:
           {{- toYaml . | nindent 10 }}
           {{- end }}
         envFrom:
-        - configMapRef:
-            name: {{ include "kubetail.configMapName" . }}
+        {{- if .Values.kubetail.secret.enabled }}
+        - secretRef:
+            name: {{ include "kubetail.secretName" . }}
+        {{- end }}
         {{- with $podTmpl.envFrom }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
         ports:
         - name: kubetail
           protocol: TCP
-          port: {{ $podTmpl.port }}
+          containerPort: {{ $podTmpl.port }}
         args:
         - --config=/etc/kubetail/config.yaml
         {{- range $podTmpl.args }}
@@ -99,3 +101,7 @@ spec:
       {{- if $dep.priorityClassName }}
       priorityClassName: {{ $dep.priorityClassName }}
       {{- end }}
+      volumes:
+      - name: config
+        configMap:
+          name: {{ include "kubetail.configMapName" . }}
