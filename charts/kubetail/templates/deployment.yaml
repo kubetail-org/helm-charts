@@ -3,7 +3,7 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: {{ default (include "kubetail.fullname" .) $dep.name }}
+  name: {{ $dep.name | default (include "kubetail.fullname" .) }}
   namespace: {{ include "kubetail.namespace" . }}
   labels:
     {{- include "kubetail.labels" . | nindent 4 }}

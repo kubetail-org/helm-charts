@@ -132,15 +132,7 @@ kubetail:
 
   clusterRole:
     # -- Overrides the ClusterRole resource name whose default is the chart's computed fullname
-    name: null
-    # -- Additional annotations
-    annotations: {}
-    # -- Additional labels
-    labels: {}
-  
-  clusterRolebinding:
-    # -- Overrides the ClusterRoleBinding resource name whose default is the chart's computed fullname
-    name: null
+    name: xxx
     # -- Additional annotations
     annotations: {}
     # -- Additional labels
@@ -150,6 +142,14 @@ kubetail:
     - apiGroups: ["", apps, batch]
       resources: [cronjobs, daemonsets, jobs, namespaces, nodes, pods, pods/log, replicasets, statefulsets]
       verbs: [get, list, watch]
+  
+  clusterRoleBinding:
+    # -- Overrides the ClusterRoleBinding resource name whose default is the chart's computed fullname
+    name: xxx
+    # -- Additional annotations
+    annotations: {}
+    # -- Additional labels
+    labels: {}
 
   configMap:
     # -- Overrides the ConfigMap resource name whose default is the chart's computed fullname
