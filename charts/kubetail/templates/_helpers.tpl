@@ -55,18 +55,6 @@ helm.sh/chart: {{ include "kubetail.chart" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- with .Values.kubetail.labels }}
-{{ toYaml . }}
-{{- end }}
-{{- end }}
-
-{{/*
-Kubetail shared annotations
-*/}}
-{{- define "kubetail.annotations" -}}
-{{- with .Values.kubetail.annotations }}
-{{- toYaml . }}
-{{- end }}
 {{- end }}
 
 {{/*

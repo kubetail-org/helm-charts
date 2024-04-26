@@ -10,7 +10,6 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
   annotations:
-    {{- include "kubetail.annotations" . | nindent 4 }}
     {{- with $cfgMap.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
