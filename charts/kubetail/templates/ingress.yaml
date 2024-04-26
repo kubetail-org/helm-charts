@@ -1,0 +1,27 @@
+{{- $ing := index .Values "kubetail" "ingress" -}}
+{{- if $ing.enabled }}
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: {{ $ing.name | default (include "kubetail.fullname" .) }}
+  namespace: {{ include "kubetail.namespace" . }}
+  labels:
+    {{- include "kubetail.labels" . | nindent 4 }}
+    {{- with $ing.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- include "kubetail.annotations" . | nindent 4 }}
+    {{- with $ing.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  rules:
+  {{- with $ing.rules }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+  tls:
+  {{- with $ing.tls }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+{{- end }}

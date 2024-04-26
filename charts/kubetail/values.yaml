@@ -221,7 +221,20 @@ kubetail:
     annotations: {}
     # -- Additional labels
     labels: {}
-    # -- Hosts
-    hosts: []
+    # -- Rules
+    rules:
+    - host: myapp.example.com
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: my-service
+              port:
+                number: 80
     # -- TLS
-    tls: []
+    tls:
+    - hosts:
+      - myapp.example.com
+      secretName: myapp-tls
