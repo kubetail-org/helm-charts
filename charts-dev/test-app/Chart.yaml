@@ -1,0 +1,8 @@
+apiVersion: v2
+name: test-app
+description: An example Helm chart to test kubetail dependency
+version: 0.1.0
+dependencies:
+  - name: kubetail
+    repository: "file://../../charts/kubetail"
+    version: ">0.0.0"

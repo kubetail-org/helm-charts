@@ -38,13 +38,6 @@ Print the namespace
 {{- end }}
 
 {{/*
-Print the namespace for the metadata section
-*/}}
-{{- define "kubetail.metadataNamespace" -}}
-namespace: {{ include "kubetail.namespace" . }}
-{{- end }}
-
-{{/*
 Kubetail selector labels
 */}}
 {{- define "kubetail.selectorLabels" -}}
@@ -53,12 +46,9 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
-Kubetail labels
+Kubetail shared labels
 */}}
 {{- define "kubetail.labels" -}}
-{{- with .Values.labels -}}
-{{ toYaml . }}
-{{ end -}}
 helm.sh/chart: {{ include "kubetail.chart" . }}
 {{ include "kubetail.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
@@ -68,34 +58,55 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
+Kubetail image
+*/}}
+{{- define "kubetail.image" -}}
+{{- $img := .Values.kubetail.image -}}
+{{- $registry := $img.registry | default "" -}}
+{{- $repository := $img.repository | default "" -}}
+{{- $ref := ternary (printf ":%s" ($img.tag | default .Chart.AppVersion | toString)) (printf "@%s" $img.digest) (empty $img.digest) -}}
+{{- if and $registry $repository -}}
+  {{- printf "%s/%s%s" $registry $repository $ref -}}
+{{- else -}}
+  {{- printf "%s%s%s" $registry $repository $ref -}}
+{{- end -}}
+{{- end }}
+
+{{/*
 ClusterRole name
 */}}
 {{- define "kubetail.clusterRoleName" -}}
-{{ if .Values.clusterRole.name }}{{ .Values.clusterRole.name }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
+{{ if .Values.kubetail.clusterRole.name }}{{ .Values.kubetail.clusterRole.name }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
 {{- end }}
-
 
 {{/*
 ConfigMap name
 */}}
 {{- define "kubetail.configMapName" -}}
-{{ if .Values.configMap.name }}{{ .Values.configMap.name }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
+{{ default (include "kubetail.fullname" .) .Values.kubetail.configMap.name }}
 {{- end }}
 
 {{/*
 ServiceAccount name
 */}}
 {{- define "kubetail.serviceAccountName" -}}
-{{ if .Values.serviceAccount.name }}{{ .Values.serviceAccount.name }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
+{{ if .Values.kubetail.serviceAccount.name }}{{ .Values.kubetail.serviceAccount.name }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
 {{- end }}
 
 {{/*
-config
+Secret name
+*/}}
+{{- define "kubetail.secretName" -}}
+{{ if .Values.kubetail.secret.name }}{{ .Values.kubetail.secret.name }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
+{{- end }}
+
+{{/*
+Kubetail config
 */}}
 {{- define "kubetail.config" -}}
-addr: :{{ .Values.deployment.containerPort }}
-auth-mode: {{ .Values.authMode }}
-{{- with .Values.config }}
-{{- tpl (toYaml .) $ | nindent 0 }}
+addr: :{{ .Values.kubetail.podTemplate.port }}
+auth-mode: {{ .Values.kubetail.authMode }}
+{{- with .Values.kubetail.config }}
+{{- tpl . . | nindent 0 }}
 {{- end }}
 {{- end }}

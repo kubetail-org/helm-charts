@@ -1,10 +1,18 @@
-{{- if eq .Values.authMode "cluster" }}
+{{- if eq .Values.kubetail.authMode "cluster" }}
+{{- $crb := index .Values "kubetail" "clusterRoleBinding" -}}
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ if .Values.clusterRoleBinding.name }}{{ .Values.clusterRoleBinding.name }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
+  name: {{ $crb.name | default (include "kubetail.fullname" .) }}
   labels:
-    {{- include "kubetail.labels" $ | nindent 4 }}
+    {{- include "kubetail.labels" . | nindent 4 }}
+    {{- with $crb.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- with $crb.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -13,4 +21,4 @@ subjects:
 - kind: ServiceAccount
   name: {{ include "kubetail.serviceAccountName" . }}
   namespace: {{ include "kubetail.namespace" . }}
-{{- end -}}
+{{- end }}
