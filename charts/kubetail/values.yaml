@@ -70,7 +70,9 @@ kubetail:
     # -- Additional env
     env: {}
     # -- Additional envFrom
-    envFrom: {}
+    envFrom:
+    - secretRef:
+        name: kubetail-cert
     # -- Additional args
     args: []
     # -- Port number
@@ -112,6 +114,16 @@ kubetail:
         drop:
           - ALL
       readOnlyRootFilesystem: true
+    # -- volumes
+    volumes: []
+    # -- volume mounts
+    volumeMounts: []
+    # -- PriorityClassName
+    priorityClassName: null
+    # -- Node selector
+    nodeSelector: {}
+    # -- Tolerations
+    tolerations: []
 
   clusterRole:
     # -- Overrides the ClusterRole resource name whose default is the chart's computed fullname
@@ -156,14 +168,6 @@ kubetail:
     # -- Strategy
     strategy:
       type: RollingUpdate
-    # -- PriorityClassName
-    priorityClassName: null
-    # -- Node selector
-    nodeSelector: {}
-    # -- Affinity
-    affinity: {}
-    # -- Tolerations
-    tolerations: []
 
   service:
     # -- Overrides the Service resource name whose default is the chart's computed fullname
