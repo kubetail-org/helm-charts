@@ -84,22 +84,28 @@ spec:
         - name: config
           mountPath: /etc/kubetail
           readOnly: true
-      nodeSelector:
-        {{- with $dep.nodeSelector }}
+        {{- with $podTmpl.volumeMounts }}
         {{- toYaml . | nindent 8 }}
-        {{- end}}
-      affinity:
-        {{- with $dep.affinity }}
-        {{- toYaml . | nindent 8 }}
-        {{- end}}
-      tolerations:
-      {{- with $dep.tolerations }}
-      {{- toYaml . | nindent 6 }}
-      {{- end}}
-      {{- if $dep.priorityClassName }}
-      priorityClassName: {{ $dep.priorityClassName }}
-      {{- end }}
+        {{- end }}
       volumes:
       - name: config
         configMap:
           name: {{ include "kubetail.configMapName" . }}
+      {{- with $podTmpl.volumes }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- if $podTmpl.priorityClassName }}
+      priorityClassName: {{ $podTmpl.priorityClassName }}
+      {{- end }}
+      nodeSelector:
+        {{- with $podTmpl.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+        {{- end}}
+      affinity:
+        {{- with $podTmpl.affinity }}
+        {{- toYaml . | nindent 8 }}
+        {{- end}}
+      tolerations:
+      {{- with $podTmpl.tolerations }}
+      {{- toYaml . | nindent 6 }}
+      {{- end}}
