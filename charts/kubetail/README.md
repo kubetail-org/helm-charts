@@ -9,7 +9,7 @@ Kubetail is a web-based, real-time log viewer for Kubernetes clusters
 Before you can install you will need to add the `kubetail` repo to Helm:
 
 ```console
-helm repo add kubetail https://kubetail-org.github.io/helm/
+helm repo add kubetail https://kubetail-org.github.io/helm-charts/
 ```
 
 After you've installed the repo you can create a new release from the `kubetail/kubetail` chart:
