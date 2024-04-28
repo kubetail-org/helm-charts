@@ -8,13 +8,13 @@ Kubetail is a web-based, real-time log viewer for Kubernetes clusters
 
 Before you can install you will need to add the `kubetail` repo to Helm:
 
-```sh
+```console
 helm repo add kubetail https://kubetail-org.github.io/helm/
 ```
 
 After you've installed the repo you can create a new release from the `kubetail/kubetail` chart:
 
-```sh
+```console
 helm install kubetail kubetail/kubetail --namespace kubetail --create-namespace
 ```
 
@@ -22,13 +22,13 @@ helm install kubetail kubetail/kubetail --namespace kubetail --create-namespace
 
 First make sure helm has the latest version of the `kubetail` repo:
 
-```sh
+```console
 helm repo update kubetail
 ```
 
 Next use the `helm upgrade` command:
 
-```sh
+```console
 helm upgrade kubetail kubetail/kubetail --namespace kubetail
 ```
 
@@ -36,7 +36,7 @@ helm upgrade kubetail kubetail/kubetail --namespace kubetail
 
 To uninstall, use the `helm uninstall` command:
 
-```sh
+```console
 helm uninstall kubetail --namespace kubetail
 ```
 
@@ -44,43 +44,71 @@ helm uninstall kubetail --namespace kubetail
 
 These are the configurable parameters for the kubetail chart and their default values:
 
-| Name                                         | Datatype | Description                                          | Default             |
-| -------------------------------------------- | -------- | ---------------------------------------------------- | ------------------- |
-| nameOverride                                 | string   | Override name of the chart                           |                     |
-| fullnameOverride                             | string   | Override full name of chart+release                  |                     |
-| namespaceOverride                            | string   | Override the release namespace                       |                     |
-| authMode                                     | string   | Auth mode (token, cluster, local)                    | "cluster"           |
-| labels                                       | map      | Labels to apply to all resources                     | {}                  |
-| image.registry                               | string   | Registry to use for container image                  | "kubetail/kubetail" |
-| image.tag                                    | string   | Override chart app version                           |                     |
-| image.pullPolicy                             | string   | Override default container imagePullPolicy           |                     |
-| clusterRole.name                             | string   | Override ClusterRole name from release               |                     |
-| clusterRoleBinding.name                      | string   | Override ClusterRoleBinding name from release        |                     |
-| clusterRoleBinding.rules                     | array    | Override ClusterRoleBinding rules                    | *See values.yaml*   |
-| configMap.name                               | string   | Override ConfigMap name from release                 |                     |
-| deployment.name                              | string   | Override Deployment name from release                |                     |
-| deployment.replicas                          | int      | Deployment replicas                                  | 1                   |
-| deployment.revisionHistoryLimit              | int      | Deployment revisionHistoryLimit                      | 10                  |
-| deployment.updateStrategy                    | map      | Deployment updateStrategy                            |                     |
-| deployment.containerPort                     | int      | Deployment kubetail container's containerPort        | 4000                |
-| deployment.args                              | array    | Deployment kubetail container args                   | *See values.yaml*   |
-| deployment.livenessProbe.httpGet.scheme      | string   | Deployment liveness probe http scheme                | HTTP                |
-| deployment.livenessProbe.httpGet.path        | string   | Deployment liveness probe http path                  | "/healthz"          |
-| deployment.livenessProbe.httpGet.port        | int      | Deployment liveness probe http port                  | 4000                |
-| deployment.livenessProbe.initialDelaySeconds | int      | Deployment liveness probe initialDelaySeconds        | 30                  |
-| deployment.livenessProbe.timeoutSeconds      | int      | Deployment liveness probe timeoutSeconds             | 30                  |
-| deployment.livenessProbe.periodSeconds       | int      | Deployment liveness probe periodSeconds              | 10                  |
-| deployment.livenessProbe.failureThreshold    | int      | Deployment liveness probe failureThreshold           | 3                   |
-| deployment.resources.requests.cpu            | string   | Deployment cpu resource request                      | 100m                |
-| deployment.resources.requests.memory         | string   | Deployment memory resource request                   | 100Mi               |
-| service.name                                 | string   | Override Service name from release                   |                     |
-| service.type                                 | string   | Service type                                         | ClusterIP           |
-| service.port                                 | int      | Service port                                         | 4000                |
-| serviceAccount.name                          | string   | Override ServiceAccount name from release            |                     |
-| ingress.enabled                              | bool     | Enable ingress resource                              | false               |
-| ingress.name                                 | string   | Override ingress name                                |                     |
-| ingress.annotations                          | map      | Annotations to apply to ingress resource             | {}                  |
-| ingress.hosts                                | array    | Hosts array for ingress resource                     |                     |
-| ingress.tls                                  | array    | TLS array for ingress resource                       |                     |
-| ingress.secretName                           | string   | Override ingress secretName                          |                     |
-| config                                       | map      | Kubetail app config                                  | *See values.yaml*   |
+| Name                                                   | Datatype | Description                            | Default           |
+| ------------------------------------------------------ | -------- | -------------------------------------- | ----------------- |
+| GENERAL:                                               |          |                                        |                   |
+| `fullnameOverride`                                     | string   | Override the chart's computed fullname | null              |
+| `nameOverride`                                         | string   | Override chart's name                  | null              |
+| `namespaceOverride`                                    | string   | Override release's namespace           | null              |
+|                                                        |          |                                        |                   |
+| KUBETAIL:                                              |          |                                        |                   |
+| `kubetail.authMode`                                    | string   | Auth mode (token, cluster, local)      | "cluster"         |
+| `kubetail.config`                                      | string   | Kubetail dashboard config contents     | *See values.yaml* |
+| `kubetail.image.registry`                              | string   | Image registry                         | docker.io         |
+| `kubetail.image.repository`                            | string   | Image repository                       | kubetail/kubetail |
+| `kubetail.image.tag`                                   | string   | Override chart's appVersion            | null              |
+| `kubetail.image.digest`                                | string   | Override image tag                     | null              |
+| `kubetail.image.pullPolicy`                            | string   | Kubernetes image pull policy           | "IfNotPresent"    |
+| `kubetail.clusterRole.name`                            | string   | Override chart's computed fullname     | null              |
+| `kubetail.clusterRole.annotations`                     | map      | Additional annotations                 | {}                |
+| `kubetail.clusterRole.labels`                          | map      | Additional labels                      | {}                |
+| `kubetail.clusterRoleBinding.name`                     | string   | Override chart's computed fullname     | null              |
+| `kubetail.clusterRoleBinding.annotations`              | map      | Additional annotations                 | {}                |
+| `kubetail.clusterRoleBinding.labels`                   | map      | Additional labels                      | {}                |
+| `kubetail.configMap.name`                              | string   | Override chart's computed fullname     | null              |
+| `kubetail.configMap.annotations`                       | map      | Additional annotations                 | {}                |
+| `kubetail.configMap.labels`                            | map      | Additional labels                      | {}                |
+| `kubetail.deployment.name`                             | string   | Override chart's computed fullname     | null              |
+| `kubetail.deployment.annotations`                      | map      | Additional annotations                 | {}                |
+| `kubetail.deployment.labels`                           | map      | Additional labels                      | {}                |
+| `kubetail.deployment.replicas`                         | int      | Number of replicas                     | 1                 |
+| `kubetail.deployment.revisionHistoryLimit`             | int      | Revision history limit                 | 5                 |
+| `kubetail.deployment.strategy`                         | map      | Deployment strategy                    | *See values.yaml* |
+| `kubetail.ingress.enabled`                             | bool     | If true, add Ingress resource          | false             |
+| `kubetail.ingress.name`                                | string   | Override chart's computed fullname     | null              |
+| `kubetail.ingress.annotations`                         | map      | Additional annotations                 | {}                |
+| `kubetail.ingress.labels`                              | map      | Additional labels                      | {}                |
+| `kubetail.ingress.rules`                               | array    | Ingress rules array                    | []                |
+| `kubetail.ingress.tls`                                 | array    | Ingress tls array                      | []                |
+| `kubetail.podTemplate.annotations`                     | map      | Additional annotations                 | {}                |
+| `kubetail.podTemplate.labels`                          | map      | Additional labels                      | {}                |
+| `kubetail.podTemplate.affinity`                        | map      | Pod affinity                           | {}                |
+| `kubetail.podTemplate.automountServiceAccountToken`    | bool     | Pod attribute value                    | true              |
+| `kubetail.podTemplate.env`                             | map      | Kubetail container additional env      | {}                |
+| `kubetail.podTemplate.envFrom`                         | map      | Kubetail container additional envFrom  | {}                |
+| `kubetail.podTemplate.args`                            | array    | Kubetail container additional args     | []                |
+| `kubetail.podTemplate.port`                            | int      | Kubetail container port                | 4000              |
+| `kubetail.podTemplate.livenessProbe`                   | map      | Kubetail container livenessProbe       | *See values.yaml* |
+| `kubetail.podTemplate.readinessProbe`                  | map      | Kubetail container readinessProbe      | *See values.yaml* |
+| `kubetail.podTemplate.resources`                       | map      | Kubetail container resources           | {}                |
+| `kubetail.podTemplate.securityContext`                 | map      | Pod securityContext                    | *See values.yaml* |
+| `kubetail.podTemplate.containerSecurityContext`        | map      | Kubetail container securityContext     | *See values.yaml* |
+| `kubetail.podTemplate.volumes`                         | array    | Pod volumes                            | []                |
+| `kubetail.podTemplate.volumeMounts`                    | array    | Kubetail container volumeMounts        | []                |
+| `kubetail.podTemplate.priorityClassName`               | string   | Pod priorityClassName                  | null              |
+| `kubetail.podTemplate.nodeSelector`                    | map      | Pod node selector                      | {}                |
+| `kubetail.podTemplate.tolerations`                     | array    | Pod tolerations                        | []                |
+| `kubetail.secret.enabled`                              | bool     | If true, add Secret resource           | true              |
+| `kubetail.secret.name`                                 | string   | Override chart's computed fullname     | null              |
+| `kubetail.secret.annotations`                          | map      | Additional annotations                 | {}                |
+| `kubetail.secret.labels`                               | map      | Additional labels                      | {}                |
+| `kubetail.secret.KUBETAIL_CSRF_SECRET`                 | string   | B64-encoded value (autogen if null)    | null              |
+| `kubetail.secret.KUBETAIL_SESSION_SECRET`              | string   | B64-encoded value (autogen if null)    | null              |
+| `kubetail.service.name`                                | string   | Override chart's computed fullname     | null              |
+| `kubetail.service.annotations`                         | map      | Additional annotations                 | {}                |
+| `kubetail.service.labels`                              | map      | Additional labels                      | {}                |
+| `kubetail.service.port`                                | int      | Service port number                    | 80                |
+| `kubetail.serviceAccount.name`                         | string   | Override chart's computed fullname     | null              |
+| `kubetail.serviceAccount.annotations`                  | map      | Additional annotations                 | {}                |
+| `kubetail.serviceAccount.labels`                       | map      | Additional labels                      | {}                |
+| `kubetail.serviceAccount.automountServiceAccountToken` | bool     | Resource's attribute value             | true              |

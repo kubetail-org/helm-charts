@@ -1,138 +1,203 @@
-# Default values for kubetail.
+# Default values for kubetail chart.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# override name of the chart
-nameOverride:
+# -- Override the chart's computed fullname
+fullnameOverride: null
 
-# override full name of the chart+release
-fullnameOverride:
+# -- Overrides the chart's name
+nameOverride: null
 
-# override the namespace that resources are installed into
-namespaceOverride:
+# -- Override the release's namespace
+namespaceOverride: null
 
-# kubetail auth-mode
-authMode: cluster
+# ###########################################################################################
+#
+# Base config for kubetail app including kubernetes configurations
+#
+# ###########################################################################################
 
-# labels to apply to all resources deployed by the chart
-labels: {}
+kubetail:
+  # -- Auth mode lets you specify kubetail's authentication mode
+  # There are 3 options:
+  # - cluster: Use's cluster RBAC
+  # - token: Use's user-provided token
+  # - local: Uses local kubectl config
+  authMode: cluster
 
-# image options
-image:
-  registry: kubetail/kubetail
-  tag:
-  pullPolicy:
+  # -- config file contents (see https://github.com/kubetail-org/kubetail for defaults)
+  config: |
+    session:
+      secret: ${KUBETAIL_CSRF_SECRET}
+    csrf:
+      secret: ${KUBETAIL_SESSION_SECRET}
 
-# cluster-role options
-clusterRole:
-  name:
+  image:
+    # -- Image registry
+    registry: docker.io
+    # -- Image repository
+    repository: kubetail/kubetail
+    # -- Overrides the image tag whose default is the chart's appVersion
+    tag: null
+    # -- Overrides the image tag with an image digest
+    digest: null
+    # -- Docker image pull policy
+    pullPolicy: IfNotPresent
 
-# cluster-role-binding options
-clusterRoleBinding:
-  name:
-  rules:
-  - apiGroups:
-    - ""
-    - apps
-    - batch
-    resources:
-    - cronjobs
-    - daemonsets
-    - deployments
-    - jobs
-    - namespaces
-    - nodes
-    - pods
-    - pods/log
-    - replicasets
-    - statefulsets
-    verbs:
-    - get
-    - list
-    - watch
+  # ########################################################################################
+  #
+  # Resource configurations
+  #
+  # ########################################################################################
 
-# configMap options
-configMap:
-  name:
+  clusterRole:
+    # -- Overrides the ClusterRole resource name whose default is the chart's computed fullname
+    name: null
+    # -- Additional annotations
+    annotations: {}
+    # -- Additional labels
+    labels: {}
+  
+  clusterRoleBinding:
+    # -- Overrides the ClusterRoleBinding resource name whose default is the chart's computed fullname
+    name: null
+    # -- Additional annotations
+    annotations: {}
+    # -- Additional labels
+    labels: {}
 
-# deployment options
-deployment:
-  name:
-  replicas: 1
-  revisionHistoryLimit: 10
-  updateStrategy: {}
-  containerPort: 4000
-  args:
-  - --config=/etc/kubetail/config.yaml
-  livenessProbe:
+  configMap:
+    # -- Overrides the ConfigMap resource name whose default is the chart's computed fullname
+    name: null
+    # -- Additional annotations
+    annotations: {}
+    # -- Additional labels
+    labels: {}
+
+  deployment:
+    # -- Overrides the Deployment resource name whose default is the chart's computed fullname
+    name: null
+    # -- Additional annotations
+    annotations: {}
+    # -- Additional labels
+    labels: {}
+    # -- Replicas
+    replicas: 1
+    # -- Revision history limit
+    revisionHistoryLimit: 5
+    # -- Strategy
+    strategy:
+      type: RollingUpdate
+
+  ingress:
+    # If true, adds Ingress resource
+    enabled: false
+    # -- Overrides the ClusterRole resource name whose default is the chart's computed fullname
+    name: null
+    # -- Additional annotations
+    annotations: {}
+    # -- Additional labels
+    labels: {}
+    # -- Rules
+    rules: []
+    # -- TLS
+    tls: []
+
+  podTemplate:
+    # -- Additional annotations
+    annotations: {}
+    # -- Additional labels
+    labels: {}
+    # -- Affinity for pods
+    affinity: {}
+    # -- AutomountServiceAccounttoken for pods
+    automountServiceAccountToken: true
+    # -- Additional env
+    env: {}
+    # -- Additional envFrom
+    envFrom: {}
+    # -- Additional args
+    args: []
+    # -- Port number
+    port: 4000
+    # -- Liveness probe
+    livenessProbe:
+      httpGet:
+        scheme: HTTP
+        path: /healthz
+        port: kubetail
+      initialDelaySeconds: 30
+      timeoutSeconds: 30
+      periodSeconds: 10
+      failureThreshold: 3
+    # -- Readiness probe
+    readinessProbe:
+      httpGet:
+        scheme: HTTP
+        path: /healthz
+        port: kubetail
+      initialDelaySeconds: 30
+      timeoutSeconds: 30
+      periodSeconds: 10
+      failureThreshold: 3
+    # -- Resources
+    resources: {}
+    # -- Security context
+    securityContext:
+      runAsUser: 10001
+      runAsGroup: 10001
+      fsGroup: 10001
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
+    # -- Kubetail container's security context
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
+      readOnlyRootFilesystem: true
+    # -- volumes
+    volumes: []
+    # -- volume mounts
+    volumeMounts: []
+    # -- PriorityClassName
+    priorityClassName: null
+    # -- Node selector
+    nodeSelector: {}
+    # -- Tolerations
+    tolerations: []
+
+  secret:
+    # If true, add Secret resource with configured values
     enabled: true
-    httpGet:
-      scheme: HTTP
-      path: /healthz
-      port: 4000
-    initialDelaySeconds: 30
-    timeoutSeconds: 30
-    periodSeconds: 10
-    failureThreshold: 3
-  readinessProbe:
-    enabled: true
-    httpGet:
-      scheme: HTTP
-      path: /healthz
-      port: 4000
-    initialDelaySeconds: 30
-    timeoutSeconds: 30
-    periodSeconds: 10
-    failureThreshold: 3
-  resources:
-    requests:
-      cpu: 100m
-      memory: 100Mi
-  automountServiceAccountToken: true
-  podAnnotations: {}
-  podSecurityContext:
-    runAsUser: 10001
-    runAsGroup: 10001
-    fsGroup: 10001
-    runAsNonRoot: true
-    seccompProfile:
-      type: RuntimeDefault
+    # -- Overrides the Secret resource name whose default is the chart's computed fullname
+    name: null
+    # -- Additional annotations
+    annotations: {}
+    # -- Additional labels
+    labels: {}
+    # -- base64-encoded secret value for csrf (will be autogenerated if null)
+    KUBETAIL_CSRF_SECRET: null
+    # -- base64-encoded secret value for session (will be autogenerated if null)
+    KUBETAIL_SESSION_SECRET: null
 
-  securityContext:
-    allowPrivilegeEscalation: false
-    capabilities:
-      drop:
-        - ALL
-    readOnlyRootFilesystem: true
-  affinity: {}
-  nodeSelector:
-    kubernetes.io/os: linux
-  tolerations: {}
-  priorityClassName: ""
+  service:
+    # -- Overrides the Service resource name whose default is the chart's computed fullname
+    name: null
+    # -- Additional annotations
+    annotations: {}
+    # -- Additional labels
+    labels: {}
+    # -- Port
+    port: 80
 
-# service options
-service:
-  annotations: {}
-  name:
-  type: ClusterIP
-  port: 4000
-
-# service-account options
-serviceAccount:
-  create: true
-  annotations: {}
-  name: ""
-  automountServiceAccountToken: false
-
-# ingress options
-ingress:
-  enabled: false
-  annotations: {}
-
-# kubetail config (see https://github.com/kubetail-org/kubetail for defaults)
-config:
-  session:
-    secret: REPLACEME
-  csrf:
-    secret: REPLACEME
-
+  serviceAccount:
+    # -- Overrides the Service resource name whose default is the chart's computed fullname
+    name: null
+    # -- Additional annotations
+    annotations: {}
+    # -- Additional labels
+    labels: {}
+    # -- AutomountServiceAccountToken
+    automountServiceAccountToken: true

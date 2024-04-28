@@ -1,37 +1,26 @@
-{{- $ing := index .Values "ingress" -}}
+{{- $ing := index .Values "kubetail" "ingress" -}}
 {{- if $ing.enabled }}
-apiVersion: networking.k8s.io/v1
 kind: Ingress
+apiVersion: networking.k8s.io/v1
 metadata:
-  name: {{ if $ing.name }}{{ $ing.name }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
+  name: {{ $ing.name | default (include "kubetail.fullname" .) }}
+  namespace: {{ include "kubetail.namespace" . }}
+  labels:
+    {{- include "kubetail.labels" . | nindent 4 }}
+    {{- with $ing.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   annotations:
-{{- with $ing.annotations }}
-{{ toYaml . | indent 4 }}
-{{- end }}
+    {{- with $ing.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   rules:
-  {{- range $ing.hosts }}
-  - host: {{ tpl .host $ }}
-    http:
-      paths:
-      {{- range .paths }}
-      - path: {{ .path }}
-        pathType: {{ .pathType }}
-        backend:
-          service:
-            name: {{ if $.Values.service.name }}{{ $.Values.service.name }}{{ else }}{{ include "kubetail.fullname" $ }}{{ end }}
-            port:
-              number: {{ $.Values.service.port }}
-      {{- end }}
+  {{- with $ing.rules }}
+  {{- toYaml . | nindent 2 }}
   {{- end }}
-  {{- with $ing.tls }}
   tls:
-  {{- range . }}
-  - hosts:
-    {{- range .hosts }}
-    - {{ tpl . $ }}
-    {{- end }}
-    secretName: {{ if $ing.secretName }}{{ tpl $ing.secretName $ }}{{ else }}{{ include "kubetail.fullname" $ }}{{ end }}
-  {{- end }}
+  {{- with $ing.tls }}
+  {{- toYaml . | nindent 2 }}
   {{- end }}
 {{- end }}
