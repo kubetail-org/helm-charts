@@ -83,7 +83,7 @@ These are the configurable parameters for the kubetail chart and their default v
 | `kubetail.podTemplate.annotations`                     | map      | Additional annotations                 | {}                |
 | `kubetail.podTemplate.labels`                          | map      | Additional labels                      | {}                |
 | `kubetail.podTemplate.affinity`                        | map      | Pod affinity                           | {}                |
-| `kubetail.podTemplate.automountServiceAccountToken`    | bool     | Pod automountServiceAccountToken       | true              |
+| `kubetail.podTemplate.automountServiceAccountToken`    | bool     | Pod attribute value                    | true              |
 | `kubetail.podTemplate.env`                             | map      | Kubetail container additional env      | {}                |
 | `kubetail.podTemplate.envFrom`                         | map      | Kubetail container additional envFrom  | {}                |
 | `kubetail.podTemplate.args`                            | array    | Kubetail container additional args     | []                |
