@@ -19,7 +19,7 @@ helm install kubetail kubetail/kubetail --namespace kubetail --create-namespace
 ```
 
 By default, the chart will autogenerate the required secrets (`KUBETAIL_CSRF_SECRET`, `KUBETAIL_SESSION_SECRET`) and
-store them in a kubernetes Secret resource to be used on subsequent upgrades.
+store them in a kubernetes Secret to be used on subsequent upgrades.
 
 ## Upgrade
 
