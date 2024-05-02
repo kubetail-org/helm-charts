@@ -107,6 +107,6 @@ Kubetail config
 addr: :{{ .Values.kubetail.podTemplate.port }}
 auth-mode: {{ .Values.kubetail.authMode }}
 {{- with .Values.kubetail.config }}
-{{- tpl . . | nindent 0 }}
+{{- tpl . $ | nindent 0 }}
 {{- end }}
 {{- end }}
