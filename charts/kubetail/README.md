@@ -18,6 +18,9 @@ After you've installed the repo you can create a new release from the `kubetail/
 helm install kubetail kubetail/kubetail --namespace kubetail --create-namespace
 ```
 
+By default, the chart will autogenerate the required secrets (`KUBETAIL_CSRF_SECRET`, `KUBETAIL_SESSION_SECRET`) and
+store them in a kubernetes Secret to be used on subsequent upgrades.
+
 ## Upgrade
 
 First make sure helm has the latest version of the `kubetail` repo:
