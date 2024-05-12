@@ -16,9 +16,22 @@ metadata:
     {{- end }}
 spec:
   rules:
-  {{- with $ing.rules }}
-  {{- toYaml . | nindent 2 }}
-  {{- end }}
+  {{- range $ing.rules }}
+  - host: {{ tpl .host $ }}
+    http:
+      {{- with .http }}
+      paths:
+      {{- range .paths }}
+      - path: {{ .path }}
+        pathType: {{ .pathType }}
+        backend:
+          service:
+            name: {{ include "kubetail.serviceName" $ }}
+            port:
+              name: kubetail
+      {{- end }}
+      {{- end }}
+  {{- end}}
   tls:
   {{- with $ing.tls }}
   {{- toYaml . | nindent 2 }}

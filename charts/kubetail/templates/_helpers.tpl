@@ -101,6 +101,13 @@ Secret name
 {{- end }}
 
 {{/*
+Service name
+*/}}
+{{- define "kubetail.serviceName" -}}
+{{ if .Values.kubetail.service.name }}{{ .Values.kubetail.service.name }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
+{{- end }}
+
+{{/*
 Kubetail config
 */}}
 {{- define "kubetail.config" -}}
