@@ -2,7 +2,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: {{ $svc.name | default (include "kubetail.fullname" .) }}
+  name: {{ include "kubetail.serviceName" . }}
   namespace: {{ include "kubetail.namespace" . }}
   labels:
     {{- include "kubetail.labels" . | nindent 4 }}
@@ -20,5 +20,6 @@ spec:
   ports:
   - name: kubetail
     protocol: TCP
-    appProtocol: http
     port: {{ $svc.port }}
+    targetPort: kubetail
+    appProtocol: http
