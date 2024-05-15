@@ -1,0 +1,24 @@
+{{- if eq .Values.kubetail.authMode "cluster" }}
+{{- $r := index .Values "kubetail" "role" -}}
+{{- range .Values.kubetail.allowedNamespaces }}
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: {{ . }}
+  name: {{ $r.name | default (include "kubetail.fullname" $) }}
+  labels:
+    {{- include "kubetail.labels" $ | nindent 4 }}
+    {{- with $r.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- with $r.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+rules:
+- apiGroups: ["", "apps", "batch"]
+  resources: ["cronjobs", "daemonsets", "deployments", "jobs", "pods", "pods/log", "replicasets", "statefulsets"]
+  verbs: ["get", "list", "watch"]
+---
+{{- end }}
+{{- end }}

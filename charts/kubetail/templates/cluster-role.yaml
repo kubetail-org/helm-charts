@@ -14,7 +14,13 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
 rules:
+{{- if .Values.kubetail.allowedNamespaces }}
+- apiGroups: [""]
+  resources: [namespaces, nodes]
+  verbs: [get, list, watch]
+{{- else }}
 - apiGroups: ["", apps, batch]
   resources: [cronjobs, daemonsets, deployments, jobs, namespaces, nodes, pods, pods/log, replicasets, statefulsets]
   verbs: [get, list, watch]
+{{- end }}
 {{- end }}
