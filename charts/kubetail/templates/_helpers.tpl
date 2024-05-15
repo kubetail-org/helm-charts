@@ -113,6 +113,10 @@ Kubetail config
 {{- define "kubetail.config" -}}
 addr: :{{ .Values.kubetail.podTemplate.port }}
 auth-mode: {{ .Values.kubetail.authMode }}
+{{- with .Values.kubetail.allowedNamespaces }}
+allowed-namespaces: 
+{{- toYaml . | nindent 0 }}
+{{- end }}
 {{- with .Values.kubetail.config }}
 {{- tpl . $ | nindent 0 }}
 {{- end }}
