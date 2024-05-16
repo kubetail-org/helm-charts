@@ -25,6 +25,9 @@ kubetail:
   # - local: Uses local kubectl config
   authMode: cluster
 
+  # --- Restrict namespaces
+  allowedNamespaces: []
+
   # -- config file contents (see https://github.com/kubetail-org/kubetail for defaults)
   config: |
     session:
@@ -167,6 +170,22 @@ kubetail:
     nodeSelector: {}
     # -- Tolerations
     tolerations: []
+
+  role:
+    # -- Overrides Role resources' name whose default is the chart's computed fullname
+    name: null
+    # -- Additional annotations
+    annotations: {}
+    # -- Additional labels
+    labels: {}
+  
+  roleBinding:
+    # -- Overrides the RoleBinding resources' name whose default is the chart's computed fullname
+    name: null
+    # -- Additional annotations
+    annotations: {}
+    # -- Additional labels
+    labels: {}
 
   secret:
     # If true, add Secret resource with configured values

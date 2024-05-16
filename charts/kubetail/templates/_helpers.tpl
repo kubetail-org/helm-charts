@@ -80,6 +80,13 @@ ClusterRole name
 {{- end }}
 
 {{/*
+Role name
+*/}}
+{{- define "kubetail.roleName" -}}
+{{ if .Values.kubetail.role.name }}{{ .Values.kubetail.role.name }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
+{{- end }}
+
+{{/*
 ConfigMap name
 */}}
 {{- define "kubetail.configMapName" -}}
@@ -113,6 +120,10 @@ Kubetail config
 {{- define "kubetail.config" -}}
 addr: :{{ .Values.kubetail.podTemplate.port }}
 auth-mode: {{ .Values.kubetail.authMode }}
+{{- with .Values.kubetail.allowedNamespaces }}
+allowed-namespaces: 
+{{- toYaml . | nindent 0 }}
+{{- end }}
 {{- with .Values.kubetail.config }}
 {{- tpl . $ | nindent 0 }}
 {{- end }}

@@ -56,6 +56,7 @@ These are the configurable parameters for the kubetail chart and their default v
 |                                                        |          |                                        |                   |
 | KUBETAIL:                                              |          |                                        |                   |
 | `kubetail.authMode`                                    | string   | Auth mode (token, cluster, local)      | "cluster"         |
+| `kubetail.allowedNamespaces`                           | array    | Restricted namespaces                  | []                |
 | `kubetail.config`                                      | string   | Kubetail dashboard config contents     | *See values.yaml* |
 | `kubetail.image.registry`                              | string   | Image registry                         | docker.io         |
 | `kubetail.image.repository`                            | string   | Image repository                       | kubetail/kubetail |
