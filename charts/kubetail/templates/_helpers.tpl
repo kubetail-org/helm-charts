@@ -80,6 +80,13 @@ ClusterRole name
 {{- end }}
 
 {{/*
+Role name
+*/}}
+{{- define "kubetail.roleName" -}}
+{{ if .Values.kubetail.role.name }}{{ .Values.kubetail.role.name }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
+{{- end }}
+
+{{/*
 ConfigMap name
 */}}
 {{- define "kubetail.configMapName" -}}
