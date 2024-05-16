@@ -9,7 +9,7 @@ keywords:
 - realtime
 type: application
 version: 0.5.0
-appVersion: "0.5.0"
+appVersion: "0.5.1"
 home: https://github.com/kubetail-org/kubetail
 maintainers:
 - email: andres@kubetail.com
