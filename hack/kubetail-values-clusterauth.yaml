@@ -1,0 +1,13 @@
+namespaceOverride: kubetail
+
+kubetail:
+  authMode: cluster
+
+  config: |
+    session:
+      secret: REPLACEME
+    csrf:
+      secret: REPLACEME
+
+  secret:
+    enabled: false
