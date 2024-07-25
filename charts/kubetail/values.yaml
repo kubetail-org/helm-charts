@@ -105,6 +105,8 @@ kubetail:
     rules: []
     # -- TLS
     tls: []
+    # -- Class name
+    className: null
 
   podTemplate:
     # -- Additional annotations

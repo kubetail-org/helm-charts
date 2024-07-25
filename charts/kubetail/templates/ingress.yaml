@@ -15,6 +15,9 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
+  {{- if $ing.className }}
+  ingressClassName: {{ $ing.className }}
+  {{- end }}
   rules:
   {{- range $ing.rules }}
   - host: {{ tpl .host $ }}
