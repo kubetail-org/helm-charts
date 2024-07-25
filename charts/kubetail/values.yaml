@@ -105,7 +105,7 @@ kubetail:
     rules: []
     # -- TLS
     tls: []
-    # -- Optional - ingressClassName to be used
+    # -- Class name
     className: null
 
   podTemplate:
