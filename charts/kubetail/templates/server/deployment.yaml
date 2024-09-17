@@ -1,12 +1,12 @@
-{{- $dep := index .Values "kubetail" "deployment" -}}
-{{- $podTmpl := index .Values "kubetail" "podTemplate" -}}
+{{- $dep := index .Values "kubetail" "server" "deployment" -}}
+{{- $podTmpl := index .Values "kubetail" "server" "podTemplate" -}}
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: {{ $dep.name | default (include "kubetail.fullname" .) }}
+  name: {{ include "kubetail.server.deploymentName" . }}
   namespace: {{ include "kubetail.namespace" . }}
   labels:
-    {{- include "kubetail.labels" . | nindent 4 }}
+    {{- include "kubetail.server.labels" . | nindent 4 }}
     {{- with $dep.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -19,13 +19,13 @@ spec:
   revisionHistoryLimit: {{ $dep.revisionHistoryLimit }}
   selector:
     matchLabels:
-      {{- include "kubetail.selectorLabels" . | nindent 6 }}
+      {{- include "kubetail.server.selectorLabels" . | nindent 6 }}
   strategy:
     {{- toYaml $dep.strategy | nindent 4 }}
   template:
     metadata:
       labels:
-        {{- include "kubetail.labels" . | nindent 8 }}
+        {{- include "kubetail.server.labels" . | nindent 8 }}
         {{- with $podTmpl.labels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -37,16 +37,16 @@ spec:
     spec:
       automountServiceAccountToken: {{ $podTmpl.automountServiceAccountToken }}
       {{- if eq .Values.kubetail.authMode "cluster" }}
-      serviceAccountName: {{ include "kubetail.serviceAccountName" . }}
+      serviceAccountName: {{ include "kubetail.server.serviceAccountName" . }}
       {{- end }}
       securityContext:
         {{- toYaml $podTmpl.securityContext | nindent 8 }}
       containers:
       - name: kubetail
-        image: {{ include "kubetail.image" . }}
+        image: {{ include "kubetail.server.image" . }}
         securityContext:
           {{- toYaml $podTmpl.containerSecurityContext | nindent 10 }}
-        imagePullPolicy: {{ .Values.kubetail.image.pullPolicy }}
+        imagePullPolicy: {{ .Values.kubetail.server.image.pullPolicy }}
         env:
           {{- with $podTmpl.env }}
           {{- toYaml . | nindent 10 }}
