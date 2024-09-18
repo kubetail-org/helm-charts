@@ -108,13 +108,6 @@ Server image
 {{- end }}
 
 {{/*
-Server Secret name
-*/}}
-{{- define "kubetail.server.secretName" -}}
-{{ if .Values.kubetail.server.secret.name }}{{ .Values.kubetail.server.secret.name }}{{ else }}{{ include "kubetail.fullname" . }}-server{{ end }}
-{{- end }}
-
-{{/*
 Server ClusterRole name
 */}}
 {{- define "kubetail.server.clusterRoleName" -}}
@@ -126,6 +119,13 @@ Server ClusterRoleBinding name
 */}}
 {{- define "kubetail.server.clusterRoleBindingName" -}}
 {{ if .Values.kubetail.server.clusterRoleBinding.name }}{{ .Values.kubetail.server.clusterRoleBinding.name }}{{ else }}{{ include "kubetail.fullname" . }}-server{{ end }}
+{{- end }}
+
+{{/*
+Server Deployment name
+*/}}
+{{- define "kubetail.server.deploymentName" -}}
+{{ if .Values.kubetail.server.deployment.name }}{{ .Values.kubetail.server.deployment.name }}{{ else }}{{ include "kubetail.fullname" . }}-server{{ end }}
 {{- end }}
 
 {{/*
@@ -143,10 +143,10 @@ Server RoleBinding name
 {{- end }}
 
 {{/*
-Server ServiceAccount name
+Server Secret name
 */}}
-{{- define "kubetail.server.serviceAccountName" -}}
-{{ if .Values.kubetail.server.serviceAccount.name }}{{ .Values.kubetail.server.serviceAccount.name }}{{ else }}{{ include "kubetail.fullname" . }}-server{{ end }}
+{{- define "kubetail.server.secretName" -}}
+{{ if .Values.kubetail.server.secret.name }}{{ .Values.kubetail.server.secret.name }}{{ else }}{{ include "kubetail.fullname" . }}-server{{ end }}
 {{- end }}
 
 {{/*
@@ -157,10 +157,10 @@ Server Service name
 {{- end }}
 
 {{/*
-Server Deployment name
+Server ServiceAccount name
 */}}
-{{- define "kubetail.server.deploymentName" -}}
-{{ if .Values.kubetail.server.deployment.name }}{{ .Values.kubetail.server.deployment.name }}{{ else }}{{ include "kubetail.fullname" . }}-server{{ end }}
+{{- define "kubetail.server.serviceAccountName" -}}
+{{ if .Values.kubetail.server.serviceAccount.name }}{{ .Values.kubetail.server.serviceAccount.name }}{{ else }}{{ include "kubetail.fullname" . }}-server{{ end }}
 {{- end }}
 
 {{/**************** Agent helpers ****************/}}
@@ -198,20 +198,6 @@ Agent image
 {{- end }}
 
 {{/*
-Agent ServiceAccount name
-*/}}
-{{- define "kubetail.agent.serviceAccountName" -}}
-{{ if .Values.kubetail.agent.serviceAccount.name }}{{ .Values.kubetail.agent.serviceAccount.name }}{{ else }}{{ include "kubetail.fullname" . }}-agent{{ end }}
-{{- end }}
-
-{{/*
-Agent DaemonSet name
-*/}}
-{{- define "kubetail.agent.daemonSetName" -}}
-{{ if .Values.kubetail.agent.daemonSet.name }}{{ .Values.kubetail.agent.daemonSet.name }}{{ else }}{{ include "kubetail.fullname" . }}-agent{{ end }}
-{{- end }}
-
-{{/*
 Agent ClusterRole name
 */}}
 {{- define "kubetail.agent.clusterRoleName" -}}
@@ -223,6 +209,20 @@ Agent ClusterRoleBinding name
 */}}
 {{- define "kubetail.agent.clusterRoleBindingName" -}}
 {{ if .Values.kubetail.agent.clusterRoleBinding.name }}{{ .Values.kubetail.agent.clusterRoleBinding.name }}{{ else }}{{ include "kubetail.fullname" . }}-agent{{ end }}
+{{- end }}
+
+{{/*
+Agent DaemonSet name
+*/}}
+{{- define "kubetail.agent.daemonSetName" -}}
+{{ if .Values.kubetail.agent.daemonSet.name }}{{ .Values.kubetail.agent.daemonSet.name }}{{ else }}{{ include "kubetail.fullname" . }}-agent{{ end }}
+{{- end }}
+
+{{/*
+Agent NetworkPolicy name
+*/}}
+{{- define "kubetail.agent.networkPolicyName" -}}
+{{ if .Values.kubetail.agent.networkPolicy.name }}{{ .Values.kubetail.agent.networkPolicy.name }}{{ else }}{{ include "kubetail.fullname" . }}-agent{{ end }}
 {{- end }}
 
 {{/*
@@ -247,8 +247,8 @@ Agent Service name
 {{- end }}
 
 {{/*
-Agent NetworkPolicy name
+Agent ServiceAccount name
 */}}
-{{- define "kubetail.agent.networkPolicyName" -}}
-{{ if .Values.kubetail.agent.networkPolicy.name }}{{ .Values.kubetail.agent.networkPolicy.name }}{{ else }}{{ include "kubetail.fullname" . }}-agent{{ end }}
+{{- define "kubetail.agent.serviceAccountName" -}}
+{{ if .Values.kubetail.agent.serviceAccount.name }}{{ .Values.kubetail.agent.serviceAccount.name }}{{ else }}{{ include "kubetail.fullname" . }}-agent{{ end }}
 {{- end }}

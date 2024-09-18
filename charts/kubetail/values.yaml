@@ -55,6 +55,22 @@ kubetail:
     # -- Additional labels
     labels: {}
 
+  ingress:
+    # If true, adds Ingress resource
+    enabled: false
+    # -- Overrides the ClusterRole resource name whose default is the chart's computed fullname
+    name: null
+    # -- Additional annotations
+    annotations: {}
+    # -- Additional labels
+    labels: {}
+    # -- Rules
+    rules: []
+    # -- TLS
+    tls: []
+    # -- Class name
+    className: null
+
   # ########################################################################################
   #
   # Server resource configurations
@@ -117,22 +133,6 @@ kubetail:
       # -- Strategy
       strategy:
         type: RollingUpdate
-
-    ingress:
-      # If true, adds Ingress resource
-      enabled: false
-      # -- Overrides the ClusterRole resource name whose default is the chart's computed fullname
-      name: null
-      # -- Additional annotations
-      annotations: {}
-      # -- Additional labels
-      labels: {}
-      # -- Rules
-      rules: []
-      # -- TLS
-      tls: []
-      # -- Class name
-      className: null
 
     podTemplate:
       # -- Additional annotations
