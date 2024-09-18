@@ -144,11 +144,14 @@ kubetail:
       # -- AutomountServiceAccounttoken for pods
       automountServiceAccountToken: true
       # -- Additional env
-      env: {}
+      env:
+      - name: GIN_MODE
+        value: "release"
       # -- Additional envFrom
       envFrom: {}
       # -- Additional args
-      args: []
+      args:
+      - --gin-mode=release
       # -- Port number
       port: 4000
       # -- Liveness probe
