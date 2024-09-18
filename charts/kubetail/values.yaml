@@ -315,7 +315,7 @@ kubetail:
       # -- Security context
       securityContext:
         fsGroup: 0  # Set file system group ownership to root (to match /var/log permissions)
-      ## -- Kubetail container's security context (permissions necessary for accessing host's /var/log)
+      ## -- Kubetail agent container's security context (permissions necessary for accessing host's /var/log)
       containerSecurityContext:
         runAsUser: 0
         runAsGroup: 0
