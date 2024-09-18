@@ -314,6 +314,8 @@ kubetail:
       resources: {}
       # -- Security context
       securityContext:
+        fsGroup: 0  # Set file system group ownership to root (to match /var/log permissions)
+
         runAsUser: 0  # Run as root user, needed for accessing /var/log
         runAsGroup: 0
         fsGroup: 0
@@ -322,11 +324,16 @@ kubetail:
           type: RuntimeDefault
       ## -- Kubetail container's security context
       containerSecurityContext:
+        # Minimal permissions necessary for accessing host's /var/log
+        runAsUser: 0
+        runAsGroup: 0
         allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        seccompProfile:
+          type: RuntimeDefault
         capabilities:
           drop:
             - ALL
-        readOnlyRootFilesystem: true
       # -- volumes
       volumes: []
       # -- volume mounts
