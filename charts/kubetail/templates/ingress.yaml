@@ -29,7 +29,7 @@ spec:
         pathType: {{ .pathType }}
         backend:
           service:
-            name: {{ include "kubetail.serviceName" $ }}
+            name: {{ include "kubetail.server.serviceName" $ }}
             port:
               name: kubetail
       {{- end }}
