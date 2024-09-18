@@ -335,7 +335,13 @@ kubetail:
       # -- Node selector
       nodeSelector: {}
       # -- Tolerations
-      tolerations: []
+      tolerations:
+      - key: "node-role.kubernetes.io/master"
+        operator: "Exists"
+        effect: "NoSchedule"
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
 
     networkPolicy:
       # If true, add NetworkPolicy resource with configured values

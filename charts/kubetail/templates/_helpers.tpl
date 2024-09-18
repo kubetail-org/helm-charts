@@ -40,20 +40,6 @@ Print the namespace
 {{/**************** Shared helpers ****************/}}
 
 {{/*
-Kubetail config
-*/}}
-{{- define "kubetail.config" -}}
-auth-mode: {{ .Values.kubetail.authMode }}
-{{- with .Values.kubetail.allowedNamespaces }}
-allowed-namespaces: 
-{{- toYaml . | nindent 0 }}
-{{- end }}
-{{- with .Values.kubetail.config }}
-{{- tpl . $ | nindent 0 }}
-{{- end }}
-{{- end }}
-
-{{/*
 Kubetail shared app labels
 */}}
 {{- define "kubetail.labels" -}}
@@ -71,6 +57,20 @@ ConfigMap name
 */}}
 {{- define "kubetail.configMapName" -}}
 {{ default (include "kubetail.fullname" .) .Values.kubetail.configMap.name }}
+{{- end }}
+
+{{/*
+Kubetail config
+*/}}
+{{- define "kubetail.config" -}}
+auth-mode: {{ .Values.kubetail.authMode }}
+{{- with .Values.kubetail.allowedNamespaces }}
+allowed-namespaces: 
+{{- toYaml . | nindent 0 }}
+{{- end }}
+{{- with .Values.kubetail.config }}
+{{- tpl . $ | nindent 0 }}
+{{- end }}
 {{- end }}
 
 {{/**************** Server helpers ****************/}}
