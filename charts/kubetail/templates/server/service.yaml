@@ -1,11 +1,11 @@
-{{- $svc := index .Values "kubetail" "service" -}}
+{{- $svc := index .Values "kubetail" "server" "service" -}}
 kind: Service
 apiVersion: v1
 metadata:
-  name: {{ include "kubetail.serviceName" . }}
+  name: {{ include "kubetail.server.serviceName" . }}
   namespace: {{ include "kubetail.namespace" . }}
   labels:
-    {{- include "kubetail.labels" . | nindent 4 }}
+    {{- include "kubetail.server.labels" . | nindent 4 }}
     {{- with $svc.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -16,7 +16,7 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    {{- include "kubetail.selectorLabels" . | nindent 4 }}
+    {{- include "kubetail.server.selectorLabels" . | nindent 4 }}
   ports:
   - name: kubetail
     protocol: TCP

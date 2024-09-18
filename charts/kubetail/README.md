@@ -18,7 +18,7 @@ After you've installed the repo you can create a new release from the `kubetail/
 helm install kubetail kubetail/kubetail --namespace kubetail --create-namespace
 ```
 
-By default, the chart will autogenerate the required secrets (`KUBETAIL_CSRF_SECRET`, `KUBETAIL_SESSION_SECRET`) and
+By default, the chart will autogenerate the required secrets (`KUBETAIL_SERVER_CSRF_SECRET`, `KUBETAIL_SERVER_SESSION_SECRET`) and
 store them in a kubernetes Secret to be used on subsequent upgrades.
 
 ## Upgrade
@@ -106,8 +106,8 @@ These are the configurable parameters for the kubetail chart and their default v
 | `kubetail.secret.name`                                 | string   | Override chart's computed fullname     | null              |
 | `kubetail.secret.annotations`                          | map      | Additional annotations                 | {}                |
 | `kubetail.secret.labels`                               | map      | Additional labels                      | {}                |
-| `kubetail.secret.KUBETAIL_CSRF_SECRET`                 | string   | B64-encoded value (autogen if null)    | null              |
-| `kubetail.secret.KUBETAIL_SESSION_SECRET`              | string   | B64-encoded value (autogen if null)    | null              |
+| `kubetail.secret.KUBETAIL_SERVER_CSRF_SECRET`          | string   | B64-encoded value (autogen if null)    | null              |
+| `kubetail.secret.KUBETAIL_SERVER_SESSION_SECRET`       | string   | B64-encoded value (autogen if null)    | null              |
 | `kubetail.service.name`                                | string   | Override chart's computed fullname     | null              |
 | `kubetail.service.annotations`                         | map      | Additional annotations                 | {}                |
 | `kubetail.service.labels`                              | map      | Additional labels                      | {}                |

@@ -1,14 +1,13 @@
 {{- if eq .Values.kubetail.authMode "cluster" }}
-{{- $cr := index .Values "kubetail" "clusterRole" -}}
-{{- $crb := index .Values "kubetail" "clusterRoleBinding" -}}
-{{- $r := index .Values "kubetail" "role" -}}
-{{- $rb := index .Values "kubetail" "roleBinding" -}}
+{{- if not .Values.kubetail.allowedNamespaces }}
+{{- $cr := index .Values "kubetail" "agent" "clusterRole" -}}
+{{- $crb := index .Values "kubetail" "agent" "clusterRoleBinding" -}}
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ $cr.name | default (include "kubetail.fullname" .) }}
+  name: {{ include "kubetail.agent.clusterRoleName" . }}
   labels:
-    {{- include "kubetail.labels" . | nindent 4 }}
+    {{- include "kubetail.agent.labels" . | nindent 4 }}
     {{- with $cr.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -17,22 +16,16 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
 rules:
-{{- if .Values.kubetail.allowedNamespaces }}
 - apiGroups: [""]
-  resources: [namespaces, nodes]
-  verbs: [get, list, watch]
-{{- else }}
-- apiGroups: ["", apps, batch]
-  resources: [cronjobs, daemonsets, deployments, jobs, namespaces, nodes, pods, pods/log, replicasets, statefulsets]
-  verbs: [get, list, watch]
-{{- end }}
+  resources: [pods/log]
+  verbs: [list, watch]
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ $crb.name | default (include "kubetail.fullname" .) }}
+  name: {{ include "kubetail.agent.clusterRoleBindingName" . }}
   labels:
-    {{- include "kubetail.labels" . | nindent 4 }}
+    {{- include "kubetail.agent.labels" . | nindent 4 }}
     {{- with $crb.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -43,20 +36,22 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ include "kubetail.clusterRoleName" . }}
+  name: {{ include "kubetail.agent.clusterRoleName" . }}
 subjects:
 - kind: ServiceAccount
-  name: {{ include "kubetail.serviceAccountName" . }}
+  name: {{ include "kubetail.agent.serviceAccountName" . }}
   namespace: {{ include "kubetail.namespace" . }}
+{{- else }}
+{{- $r := index .Values "kubetail" "agent" "role" -}}
+{{- $rb := index .Values "kubetail" "agent" "roleBinding" }}
 {{- range .Values.kubetail.allowedNamespaces }}
----
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   namespace: {{ . }}
-  name: {{ include "kubetail.roleName" $ }}
+  name: {{ include "kubetail.agent.roleName" $ }}
   labels:
-    {{- include "kubetail.labels" $ | nindent 4 }}
+    {{- include "kubetail.agent.labels" $ | nindent 4 }}
     {{- with $r.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -65,17 +60,17 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
 rules:
-- apiGroups: ["", apps, batch]
-  resources: [cronjobs, daemonsets, deployments, jobs, pods, pods/log, replicasets, statefulsets]
-  verbs: [get, list, watch]
+- apiGroups: [""]
+  resources: [pods/log]
+  verbs: [list, watch]
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   namespace: {{ . }}
-  name: {{ $rb.name | default (include "kubetail.fullname" $) }}
+  name: {{ include "kubetail.agent.roleBindingName" $ }}
   labels:
-    {{- include "kubetail.labels" $ | nindent 4 }}
+    {{- include "kubetail.agent.labels" $ | nindent 4 }}
     {{- with $rb.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -86,10 +81,11 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: {{ include "kubetail.roleName" $ }}
+  name: {{ include "kubetail.agent.roleName" $ }}
 subjects:
 - kind: ServiceAccount
-  name: {{ include "kubetail.serviceAccountName" $ }}
+  name: {{ include "kubetail.agent.serviceAccountName" $ }}
   namespace: {{ include "kubetail.namespace" $ }}
+{{- end }}
 {{- end }}
 {{- end }}
