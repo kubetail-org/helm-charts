@@ -1,0 +1,19 @@
+{{- $svc := index .Values "kubetail" "agent" "service" -}}
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ include "kubetail.agent.serviceName" . }}
+  namespace: {{ include "kubetail.namespace" . }}
+  labels:
+    {{- include "kubetail.agent.labels" . | nindent 4 }}
+    {{- with $svc.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- with $svc.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  clusterIP: None
+  selector:
+    {{- include "kubetail.agent.selectorLabels" . | nindent 4 }}

@@ -52,9 +52,9 @@ spec:
           {{- toYaml . | nindent 10 }}
           {{- end }}
         envFrom:
-        {{- if .Values.kubetail.secret.enabled }}
+        {{- if .Values.kubetail.server.secret.enabled }}
         - secretRef:
-            name: {{ include "kubetail.secretName" . }}
+            name: {{ include "kubetail.server.secretName" . }}
         {{- end }}
         {{- with $podTmpl.envFrom }}
         {{- toYaml . | nindent 8 }}

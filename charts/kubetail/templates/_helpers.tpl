@@ -67,13 +67,6 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
-Secret name
-*/}}
-{{- define "kubetail.secretName" -}}
-{{ if .Values.kubetail.secret.name }}{{ .Values.kubetail.secret.name }}{{ else }}{{ include "kubetail.fullname" . }}{{ end }}
-{{- end }}
-
-{{/*
 ConfigMap name
 */}}
 {{- define "kubetail.configMapName" -}}
@@ -112,6 +105,13 @@ Server image
 {{- else -}}
   {{- printf "%s%s%s" $registry $repository $ref -}}
 {{- end -}}
+{{- end }}
+
+{{/*
+Server Secret name
+*/}}
+{{- define "kubetail.server.secretName" -}}
+{{ if .Values.kubetail.server.secret.name }}{{ .Values.kubetail.server.secret.name }}{{ else }}{{ include "kubetail.fullname" . }}-server{{ end }}
 {{- end }}
 
 {{/*
@@ -205,8 +205,50 @@ Agent ServiceAccount name
 {{- end }}
 
 {{/*
-Server DaemonSet name
+Agent DaemonSet name
 */}}
 {{- define "kubetail.agent.daemonSetName" -}}
 {{ if .Values.kubetail.agent.daemonSet.name }}{{ .Values.kubetail.agent.daemonSet.name }}{{ else }}{{ include "kubetail.fullname" . }}-agent{{ end }}
+{{- end }}
+
+{{/*
+Agent ClusterRole name
+*/}}
+{{- define "kubetail.agent.clusterRoleName" -}}
+{{ if .Values.kubetail.agent.clusterRole.name }}{{ .Values.kubetail.agent.clusterRole.name }}{{ else }}{{ include "kubetail.fullname" . }}-agent{{ end }}
+{{- end }}
+
+{{/*
+Agent ClusterRoleBinding name
+*/}}
+{{- define "kubetail.agent.clusterRoleBindingName" -}}
+{{ if .Values.kubetail.agent.clusterRoleBinding.name }}{{ .Values.kubetail.agent.clusterRoleBinding.name }}{{ else }}{{ include "kubetail.fullname" . }}-agent{{ end }}
+{{- end }}
+
+{{/*
+Agent Role name
+*/}}
+{{- define "kubetail.agent.roleName" -}}
+{{ if .Values.kubetail.agent.role.name }}{{ .Values.kubetail.agent.role.name }}{{ else }}{{ include "kubetail.fullname" . }}-agent{{ end }}
+{{- end }}
+
+{{/*
+Agent RoleBinding name
+*/}}
+{{- define "kubetail.agent.roleBindingName" -}}
+{{ if .Values.kubetail.agent.roleBinding.name }}{{ .Values.kubetail.agent.roleBinding.name }}{{ else }}{{ include "kubetail.fullname" . }}-agent{{ end }}
+{{- end }}
+
+{{/*
+Agent Service name
+*/}}
+{{- define "kubetail.agent.serviceName" -}}
+{{ if .Values.kubetail.agent.service.name }}{{ .Values.kubetail.agent.service.name }}{{ else }}{{ include "kubetail.fullname" . }}-agent{{ end }}
+{{- end }}
+
+{{/*
+Agent NetworkPolicy name
+*/}}
+{{- define "kubetail.agent.networkPolicyName" -}}
+{{ if .Values.kubetail.agent.networkPolicy.name }}{{ .Values.kubetail.agent.networkPolicy.name }}{{ else }}{{ include "kubetail.fullname" . }}-agent{{ end }}
 {{- end }}
