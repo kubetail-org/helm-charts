@@ -115,52 +115,6 @@ kubetail:
       # -- Docker image pull policy
       pullPolicy: IfNotPresent
 
-    # -- ConfigMap resource settings
-    configMap:
-      # -- Create resource if it doesn't exist
-      create: true
-      # -- Overrides the ConfigMap resource name whose default is based on the chart's computed fullname
-      name: null
-      # -- Additional annotations
-      annotations: {}
-      # -- Additional labels
-      labels: {}
-
-    # -- Deployment resource settings
-    deployment:
-      # -- Create resource if it doesn't exist
-      create: true
-      # -- Overrides the Deployment resource name whose default is based on the chart's computed fullname
-      name: null
-      # -- Additional annotations
-      annotations: {}
-      # -- Additional labels
-      labels: {}
-      # -- Replicas
-      replicas: 1
-      # -- Revision history limit
-      revisionHistoryLimit: 5
-      # -- Strategy
-      strategy:
-        type: RollingUpdate
-
-    # -- Ingress resource settings
-    ingress:
-      # -- Create resource if it doesn't exist
-      create: true
-      # -- Overrides the ClusterRole resource name whose default is based on the chart's computed fullname
-      name: null
-      # -- Additional annotations
-      annotations: {}
-      # -- Additional labels
-      labels: {}
-      # -- Rules
-      rules: []
-      # -- TLS
-      tls: []
-      # -- Class name
-      className: null
-
     # -- Pod resource settings
     podTemplate:
       # -- Additional annotations
@@ -172,9 +126,7 @@ kubetail:
       # -- AutomountServiceAccounttoken for pods
       automountServiceAccountToken: true
       # -- Additional env
-      env:
-      - name: GIN_MODE
-        value: "release"
+      env: {}
       # -- Additional envFrom
       envFrom: {}
       # -- Additional args
@@ -231,6 +183,52 @@ kubetail:
       nodeSelector: {}
       # -- Tolerations
       tolerations: []
+
+    # -- ConfigMap resource settings
+    configMap:
+      # -- Create resource if it doesn't exist
+      create: true
+      # -- Overrides the ConfigMap resource name whose default is based on the chart's computed fullname
+      name: null
+      # -- Additional annotations
+      annotations: {}
+      # -- Additional labels
+      labels: {}
+
+    # -- Deployment resource settings
+    deployment:
+      # -- Create resource if it doesn't exist
+      create: true
+      # -- Overrides the Deployment resource name whose default is based on the chart's computed fullname
+      name: null
+      # -- Additional annotations
+      annotations: {}
+      # -- Additional labels
+      labels: {}
+      # -- Replicas
+      replicas: 1
+      # -- Revision history limit
+      revisionHistoryLimit: 5
+      # -- Strategy
+      strategy:
+        type: RollingUpdate
+
+    # -- Ingress resource settings
+    ingress:
+      # -- Create resource if it doesn't exist
+      create: true
+      # -- Overrides the ClusterRole resource name whose default is based on the chart's computed fullname
+      name: null
+      # -- Additional annotations
+      annotations: {}
+      # -- Additional labels
+      labels: {}
+      # -- Rules
+      rules: []
+      # -- TLS
+      tls: []
+      # -- Class name
+      className: null
 
     # -- RBAC resource settings
     rbac:
@@ -314,39 +312,6 @@ kubetail:
       # -- Docker image pull policy
       pullPolicy: IfNotPresent
 
-    # -- ConfigMap resource settings
-    configMap:
-      # -- Create resource if it doesn't exist
-      create: true
-      # -- Overrides the ConfigMap resource name whose default is based on the chart's computed fullname
-      name: null
-      # -- Additional annotations
-      annotations: {}
-      # -- Additional labels
-      labels: {}
-  
-    # -- DaemonSet resource settings
-    daemonSet:
-      # -- Create resource if it doesn't exist
-      create: true
-      # -- Overrides the Deployment resource name whose default is based on the chart's computed fullname
-      name: null
-      # -- Additional annotations
-      annotations: {}
-      # -- Additional labels
-      labels: {}
-
-    # -- NetworkPolicy resource settings
-    networkPolicy:
-      # -- Create resource if it doesn't exist
-      create: true
-      # -- Overrides the NetworkPolicy resource name whose default is based on the chart's computed fullname
-      name: null
-      # -- Additional annotations
-      annotations: {}
-      # -- Additional labels
-      labels: {}
-
     # -- Pod resource settings
     podTemplate:
       # -- Additional annotations
@@ -416,7 +381,40 @@ kubetail:
       - key: "node-role.kubernetes.io/control-plane"
         operator: "Exists"
         effect: "NoSchedule"
-    
+
+    # -- ConfigMap resource settings
+    configMap:
+      # -- Create resource if it doesn't exist
+      create: true
+      # -- Overrides the ConfigMap resource name whose default is based on the chart's computed fullname
+      name: null
+      # -- Additional annotations
+      annotations: {}
+      # -- Additional labels
+      labels: {}
+
+    # -- DaemonSet resource settings
+    daemonSet:
+      # -- Create resource if it doesn't exist
+      create: true
+      # -- Overrides the Deployment resource name whose default is based on the chart's computed fullname
+      name: null
+      # -- Additional annotations
+      annotations: {}
+      # -- Additional labels
+      labels: {}
+
+    # -- NetworkPolicy resource settings
+    networkPolicy:
+      # -- Create resource if it doesn't exist
+      create: true
+      # -- Overrides the NetworkPolicy resource name whose default is based on the chart's computed fullname
+      name: null
+      # -- Additional annotations
+      annotations: {}
+      # -- Additional labels
+      labels: {}
+
     # -- RBAC resource settings
     rbac:
       # -- Create RBAC resources if they don't exist
