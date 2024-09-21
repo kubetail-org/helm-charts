@@ -50,27 +50,23 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
         envFrom:
-        {{- with $podTmpl.envFrom }}
+        {{- with $container.envFrom }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
-        ports:
-        - name: grpc
-          protocol: TCP
-          containerPort: {{ $container.port }}
         args:
         - --config=/etc/kubetail/config.yaml
         {{- with $container.args }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+        ports:
+        {{- with $container.ports }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         livenessProbe:
-          grpc:
-            port: {{ $container.port }}
           {{- with $container.livenessProbe }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
         readinessProbe:
-          grpc:
-            port: {{ $container.port }}
           {{- with $container.readinessProbe }}
           {{- toYaml . | nindent 10 }}
           {{- end }}

@@ -19,7 +19,7 @@ namespaceOverride: null
 
 kubetail:
   # -- Auth mode lets you specify Kubetail's authentication mode (cluster, token)
-  authMode: cluster
+  authMode: "cluster"
 
   # --- Restrict namespaces
   allowedNamespaces: []
@@ -35,22 +35,24 @@ kubetail:
   server:
     # -- Runtime config options
     runtimeConfig:
+      # -- Sets the port to listen on
+      port: 4000
       # -- Sets the url path prefix (useful for deploying on a sub-path behind a reverse proxy)
       basePath: /
       # -- Sets the mode for the Gin framework
-      ginMode: release
+      ginMode: "release"
       # -- CSRF options
       csrf: 
         # -- Enables/disables csrf protection
         enabled: true
         # -- Sets the name to use for token in forms
-        fieldName: csrf_token
+        fieldName: "csrf_token"
         # -- Cookie options
         cookie:
           # -- Sets the cookie `name` property
-          name: csrf
+          name: "csrf"
           # -- Sets the cookie `path` property
-          path: /
+          path: "/"
           # -- Sets the cookie `domain` property
           domain: null
           # -- Sets the cookie max age (in seconds)
@@ -60,15 +62,15 @@ kubetail:
           # -- Sets the cookie `httpOnly` property
           httpOnly: true
           # -- Sets the cookie `sameSite` property (strict, lax, none)
-          sameSite: strict
+          sameSite: "strict"
       # -- Logging options
       logging:
         # -- Enables/disables logging
         enabled: true
         # -- Sets the logging level (debug, info, warn, error, disabled)
-        level: info
+        level: "info"
         # -- Sets the logging format (json, pretty)
-        format: json
+        format: "json"
         # -- Access log options
         accessLog:
           # -- Enables/disables logging
@@ -80,9 +82,9 @@ kubetail:
         # -- Cookie options
         cookie:
           # -- Sets the cookie `name` property
-          name: csrf
+          name: "csrf"
           # -- Sets the cookie `path` property
-          path: /
+          path: "/"
           # -- Sets the cookie `domain` property
           domain: null
           # -- Sets the cookie max age (in seconds)
@@ -92,7 +94,7 @@ kubetail:
           # -- Sets the cookie `httpOnly` property
           httpOnly: true
           # -- Sets the cookie `sameSite` property (strict, lax none)
-          sameSite: lax
+          sameSite: "lax"
       # -- TLS options
       tls:
         # -- Enables/disables TLS termination
@@ -105,28 +107,31 @@ kubetail:
     # -- Docker image settings
     image:
       # -- Image registry
-      registry: docker.io
+      registry: "docker.io"
       # -- Image repository
-      repository: kubetail/kubetail-server
+      repository: "kubetail/kubetail-server"
       # -- Overrides the image tag whose default is the chart's appVersion
       tag: null
       # -- Overrides the image tag with an image digest
       digest: null
       # -- Docker image pull policy
-      pullPolicy: IfNotPresent
+      pullPolicy: "IfNotPresent"
 
     # -- Container settings
     container:
       # -- Name
-      name: kubetail-server
-      # -- Port
-      port: 4000
+      name: "kubetail-server"
       # -- Additional env
       env: []
       # -- Additional envFrom
       envFrom: []
       # -- Additional args
       args: []
+      # -- Ports
+      ports: 
+      - name: "kubetail"
+        protocol: "TCP"
+        containerPort: 4000
       # -- Container security context
       securityContext:
         allowPrivilegeEscalation: false
@@ -136,12 +141,20 @@ kubetail:
         readOnlyRootFilesystem: true
       # -- Liveness probe
       livenessProbe:
+        httpGet:
+          scheme: "HTTP"
+          path: "/healthz"
+          port: "kubetail"
         initialDelaySeconds: 30
         timeoutSeconds: 30
         periodSeconds: 10
         failureThreshold: 3
       # -- Readiness probe
       readinessProbe:
+        httpGet:
+          scheme: "HTTP"
+          path: "/healthz"
+          port: "kubetail"
         initialDelaySeconds: 30
         timeoutSeconds: 30
         periodSeconds: 10
@@ -168,7 +181,7 @@ kubetail:
         fsGroup: 1000
         runAsNonRoot: true
         seccompProfile:
-          type: RuntimeDefault
+          type: "RuntimeDefault"
       # -- Affinity settings
       affinity: {}
       # -- Node selector settings
@@ -203,7 +216,7 @@ kubetail:
       revisionHistoryLimit: 5
       # -- Strategy
       strategy:
-        type: RollingUpdate
+        type: "RollingUpdate"
 
     # -- Ingress resource settings
     ingress:
@@ -254,8 +267,13 @@ kubetail:
       annotations: {}
       # -- Additional labels
       labels: {}
-      # -- Port
-      port: 80
+      # -- Ports
+      ports:
+      - name: "kubetail"
+        protocol: "TCP"
+        port: 80
+        targetPort: "kubetail"
+        appProtocol: "http"
 
     # -- ServiceAccount resource settings
     serviceAccount:
@@ -274,14 +292,16 @@ kubetail:
   agent:
     # -- Runtime configuration settings
     runtimeConfig:
+      # -- Sets the port to listen on
+      port: 50051
       # -- Logging options
       logging:
         # -- Enables/disables logging
         enabled: true
         # -- Sets the logging level (debug, info, warn, error, disabled)
-        level: info
+        level: "info"
         # -- Sets the logging format (json, pretty)
-        format: json
+        format: "json"
       # -- TLS options
       tls:
         # -- Enables/disables TLS termination
@@ -294,28 +314,31 @@ kubetail:
     # -- Docker image settings
     image:
       # -- Image registry
-      registry: docker.io
+      registry: "docker.io"
       # -- Image repository
-      repository: kubetail/kubetail-agent
+      repository: "kubetail/kubetail-agent"
       # -- Overrides the image tag whose default is the chart's appVersion
       tag: null
       # -- Overrides the image tag with an image digest
       digest: null
       # -- Docker image pull policy
-      pullPolicy: IfNotPresent
+      pullPolicy: "IfNotPresent"
 
     # -- Container settings
     container:
       # -- Name
-      name: kubetail-agent
-      # -- Port
-      port: 50051
+      name: "kubetail-agent"
       # -- Additional env
       env: []
       # -- Additional envFrom
       envFrom: []
       # -- Additional args
       args: []
+      # -- Ports
+      ports:
+      - name: "grpc"
+        protocol: "TCP"
+        containerPort: 50051
       # -- Container security context
       securityContext:
         runAsUser: 0
@@ -323,18 +346,22 @@ kubetail:
         allowPrivilegeEscalation: false
         readOnlyRootFilesystem: true
         seccompProfile:
-          type: RuntimeDefault
+          type: "RuntimeDefault"
         capabilities:
           drop:
             - ALL
       # -- Liveness probe
       livenessProbe:
+        grpc:
+          port: 50051
         initialDelaySeconds: 5
         timeoutSeconds: 30
         periodSeconds: 3
         failureThreshold: 3
       # -- Readiness probe
       readinessProbe:
+        grpc:
+          port: 50051
         initialDelaySeconds: 5
         timeoutSeconds: 30
         periodSeconds: 3

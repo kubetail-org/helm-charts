@@ -61,28 +61,20 @@ spec:
         {{- with $container.envFrom }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
-        ports:
-        - name: kubetail
-          protocol: TCP
-          containerPort: {{ $container.port }}
         args:
         - --config=/etc/kubetail/config.yaml
         {{- with $container.args }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+        ports:
+        {{- with $container.ports }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         livenessProbe:
-          httpGet:
-            scheme: HTTP
-            path: /healthz
-            port: kubetail
           {{- with $container.livenessProbe }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
         readinessProbe:
-          httpGet:
-            scheme: HTTP
-            path: /healthz
-            port: kubetail
           {{- with $container.readinessProbe }}
           {{- toYaml . | nindent 10 }}
           {{- end }}

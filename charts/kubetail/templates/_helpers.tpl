@@ -81,8 +81,8 @@ allowed-namespaces:
 {{- toYaml . | nindent 0 }}
 {{- end }}
 server:
-  addr: :{{ .Values.kubetail.server.container.port }}
-  {{- $cfg := index .Values "kubetail" "server" "runtimeConfig" }}
+  addr: :{{ .Values.kubetail.server.runtimeConfig.port }}
+  {{- $cfg := omit .Values.kubetail.server.runtimeConfig "port" }}
   {{- $_ := set $cfg.csrf "secret" "${KUBETAIL_SERVER_CSRF_SECRET}" }}
   {{- $_ := set $cfg.session "secret" "${KUBETAIL_SERVER_SESSION_SECRET}" }}
   {{- toYaml $cfg | nindent 2 }}
@@ -195,8 +195,8 @@ allowed-namespaces:
 {{- toYaml . | nindent 0 }}
 {{- end }}
 agent:
-  addr: :{{ .Values.kubetail.agent.container.port }}
-  {{- $cfg := index .Values "kubetail" "agent" "runtimeConfig" }}
+  addr: :{{ .Values.kubetail.agent.runtimeConfig.port }}
+  {{- $cfg := omit .Values.kubetail.agent.runtimeConfig "port" }}
   {{- toYaml $cfg | nindent 2 }}
 {{- end }}
 
