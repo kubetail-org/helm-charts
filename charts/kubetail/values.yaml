@@ -35,6 +35,8 @@ kubetail:
   server:
     # -- Runtime config options
     runtimeConfig:
+      # -- Port
+      port: 4000
       # -- Sets the url path prefix (useful for deploying on a sub-path behind a reverse proxy)
       basePath: /
       # -- Sets the mode for the Gin framework
@@ -286,6 +288,8 @@ kubetail:
   agent:
     # -- Runtime configuration settings
     runtimeConfig:
+      # -- Port
+      port: 50051
       # -- Logging options
       logging:
         # -- Enables/disables logging
