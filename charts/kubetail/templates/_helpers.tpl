@@ -72,7 +72,7 @@ app.kubernetes.io/component: server
 {{- end }}
 
 {{/*
-Kubetail server config
+Server config
 */}}
 {{- define "kubetail.server.config" -}}
 auth-mode: {{ .Values.kubetail.authMode }}
@@ -117,10 +117,10 @@ Server ClusterRoleBinding name
 {{- end }}
 
 {{/*
-ConfigMap name
+Server ConfigMap name
 */}}
 {{- define "kubetail.server.configMapName" -}}
-{{ default (include "kubetail.fullname" .) .Values.kubetail.server.configMap.name }}
+{{ default (include "kubetail.fullname" .) .Values.kubetail.server.configMap.name }}-server
 {{- end }}
 
 {{/*
@@ -185,6 +185,20 @@ app.kubernetes.io/component: agent
 {{- end }}
 
 {{/*
+Agent config
+*/}}
+{{- define "kubetail.agent.config" -}}
+auth-mode: {{ .Values.kubetail.authMode }}
+{{- with .Values.kubetail.allowedNamespaces }}
+allowed-namespaces: 
+{{- toYaml . | nindent 0 }}
+{{- end }}
+agent:
+  {{- $cfg := index .Values "kubetail" "agent" "runtimeConfig" }}
+  {{- toYaml $cfg | nindent 2 }}
+{{- end }}
+
+{{/*
 Agent image
 */}}
 {{- define "kubetail.agent.image" -}}
@@ -211,6 +225,13 @@ Agent ClusterRoleBinding name
 */}}
 {{- define "kubetail.agent.clusterRoleBindingName" -}}
 {{ if .Values.kubetail.agent.clusterRoleBinding.name }}{{ .Values.kubetail.agent.clusterRoleBinding.name }}{{ else }}{{ include "kubetail.fullname" . }}-agent{{ end }}
+{{- end }}
+
+{{/*
+Agent ConfigMap name
+*/}}
+{{- define "kubetail.agent.configMapName" -}}
+{{ default (include "kubetail.fullname" .) .Values.kubetail.agent.configMap.name }}-agent
 {{- end }}
 
 {{/*

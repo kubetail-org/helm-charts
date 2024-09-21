@@ -1,0 +1,115 @@
+{{- $ds := index .Values "kubetail" "agent" "daemonSet" -}}
+{{- if $ds.create }}
+{{- $podTmpl := index .Values "kubetail" "agent" "podTemplate" }}
+{{- $container := index .Values "kubetail" "agent" "container" -}}
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: {{ include "kubetail.agent.daemonSetName" . }}
+  namespace: {{ include "kubetail.namespace" . }}
+  labels:
+    {{- include "kubetail.agent.labels" . | nindent 4 }}
+    {{- with $ds.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- with $ds.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "kubetail.agent.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "kubetail.agent.labels" . | nindent 8 }}
+        {{- with $podTmpl.labels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      annotations:
+        checksum/config: {{ include "kubetail.agent.config" . | sha256sum }}
+        {{- with $podTmpl.annotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      automountServiceAccountToken: {{ $podTmpl.automountServiceAccountToken }}
+      {{- if eq .Values.kubetail.authMode "cluster" }}
+      serviceAccountName: {{ include "kubetail.agent.serviceAccountName" . }}
+      {{- end }}
+      securityContext:
+        {{- toYaml $podTmpl.securityContext | nindent 8 }}
+      containers:
+      - name: {{ $container.name }}
+        image: {{ include "kubetail.agent.image" . }}
+        securityContext:
+          {{- toYaml $container.containerSecurityContext | nindent 10 }}
+        imagePullPolicy: {{ .Values.kubetail.agent.image.pullPolicy }}
+        env:
+        {{- with $container.env }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        envFrom:
+        {{- with $podTmpl.envFrom }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        ports:
+        - name: grpc
+          protocol: TCP
+          containerPort: 50051
+        args:
+        - --config=/etc/kubetail/config.yaml
+        {{- with $container.args }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        livenessProbe:
+          {{- with $container.livenessProbe }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+        readinessProbe:
+          {{- with $container.readinessProbe }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+        resources:
+          {{- with $container.resources }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+        volumeMounts:
+        - name: config
+          mountPath: /etc/kubetail
+          readOnly: true
+        - name: varlog
+          mountPath: /var/log
+          readOnly: true
+        {{- with $container.volumeMounts }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with $podTmpl.containers  }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+      volumes:
+      - name: config
+        configMap:
+          name: {{ include "kubetail.agent.configMapName" . }}
+      - name: varlog
+        hostPath:
+          path: /var/log
+      {{- with $podTmpl.volumes }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- if $podTmpl.priorityClassName }}
+      priorityClassName: {{ $podTmpl.priorityClassName }}
+      {{- end }}
+      nodeSelector:
+        {{- with $podTmpl.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+        {{- end}}
+      affinity:
+        {{- with $podTmpl.affinity }}
+        {{- toYaml . | nindent 8 }}
+        {{- end}}
+      tolerations:
+      {{- with $podTmpl.tolerations }}
+      {{- toYaml . | nindent 6 }}
+      {{- end}}
+{{- end }}
