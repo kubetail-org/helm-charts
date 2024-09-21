@@ -35,8 +35,6 @@ kubetail:
   server:
     # -- Runtime config options
     runtimeConfig:
-      # -- Port
-      port: 4000
       # -- Sets the url path prefix (useful for deploying on a sub-path behind a reverse proxy)
       basePath: /
       # -- Sets the mode for the Gin framework
@@ -121,16 +119,14 @@ kubetail:
     container:
       # -- Name
       name: kubetail-server
+      # -- Port
+      port: 4000
       # -- Additional env
       env: []
       # -- Additional envFrom
       envFrom: []
-      # -- Additional ports
-      ports: []
       # -- Additional args
       args: []
-      # -- Additional volume mounts
-      volumeMounts: []
       # -- Container security context
       securityContext:
         allowPrivilegeEscalation: false
@@ -140,20 +136,12 @@ kubetail:
         readOnlyRootFilesystem: true
       # -- Liveness probe
       livenessProbe:
-        httpGet:
-          scheme: HTTP
-          path: /healthz
-          port: kubetail
         initialDelaySeconds: 30
         timeoutSeconds: 30
         periodSeconds: 10
         failureThreshold: 3
       # -- Readiness probe
       readinessProbe:
-        httpGet:
-          scheme: HTTP
-          path: /healthz
-          port: kubetail
         initialDelaySeconds: 30
         timeoutSeconds: 30
         periodSeconds: 10
@@ -169,8 +157,6 @@ kubetail:
       labels: {}
       # -- Additional containers
       containers: []
-      # -- Additional volumes
-      volumes: []
       # -- AutomountServiceAccountToken for pods
       automountServiceAccountToken: true
       # -- PriorityClassName
@@ -288,8 +274,6 @@ kubetail:
   agent:
     # -- Runtime configuration settings
     runtimeConfig:
-      # -- Port
-      port: 50051
       # -- Logging options
       logging:
         # -- Enables/disables logging
@@ -324,16 +308,14 @@ kubetail:
     container:
       # -- Name
       name: kubetail-agent
+      # -- Port
+      port: 50051
       # -- Additional env
       env: []
       # -- Additional envFrom
       envFrom: []
-      # -- Additional ports
-      ports: []
       # -- Additional args
       args: []
-      # -- Additional volume mounts
-      volumeMounts: []
       # -- Container security context
       securityContext:
         runAsUser: 0
@@ -347,16 +329,12 @@ kubetail:
             - ALL
       # -- Liveness probe
       livenessProbe:
-        grpc:
-          port: 50051
         initialDelaySeconds: 5
         timeoutSeconds: 30
         periodSeconds: 3
         failureThreshold: 3
       # -- Readiness probe
       readinessProbe:
-        grpc:
-          port: 50051
         initialDelaySeconds: 5
         timeoutSeconds: 30
         periodSeconds: 3
@@ -372,8 +350,6 @@ kubetail:
       labels: {}
       # -- Additional containers
       containers: []
-      # -- Additional volumes
-      volumes: []
       # -- AutomountServiceAccounttoken for pods
       automountServiceAccountToken: true
       # -- PriorityClassName

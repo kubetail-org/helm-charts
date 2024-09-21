@@ -56,17 +56,21 @@ spec:
         ports:
         - name: grpc
           protocol: TCP
-          containerPort: 50051
+          containerPort: {{ $container.port }}
         args:
         - --config=/etc/kubetail/config.yaml
         {{- with $container.args }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
         livenessProbe:
+          grpc:
+            port: {{ $container.port }}
           {{- with $container.livenessProbe }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
         readinessProbe:
+          grpc:
+            port: {{ $container.port }}
           {{- with $container.readinessProbe }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
@@ -81,9 +85,6 @@ spec:
         - name: varlog
           mountPath: /var/log
           readOnly: true
-        {{- with $container.volumeMounts }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
       {{- with $podTmpl.containers  }}
       {{- toYaml . | nindent 6 }}
       {{- end }}
@@ -94,9 +95,6 @@ spec:
       - name: varlog
         hostPath:
           path: /var/log
-      {{- with $podTmpl.volumes }}
-      {{- toYaml . | nindent 6 }}
-      {{- end }}
       {{- if $podTmpl.priorityClassName }}
       priorityClassName: {{ $podTmpl.priorityClassName }}
       {{- end }}
