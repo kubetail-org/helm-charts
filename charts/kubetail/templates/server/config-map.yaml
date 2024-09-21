@@ -1,0 +1,20 @@
+{{- $cfgMap := index .Values "kubetail" "server" "configMap" -}}
+{{- if $cfgMap.create }}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "kubetail.server.configMapName" . }}
+  namespace: {{ include "kubetail.namespace" . }}
+  labels:
+    {{- include "kubetail.labels" . | nindent 4 }}
+    {{- with $cfgMap.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- with $cfgMap.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+data:
+  config.yaml: |
+    {{- include "kubetail.server.config" . | nindent 4 }}
+{{- end }}

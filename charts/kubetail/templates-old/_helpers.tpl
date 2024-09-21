@@ -52,6 +52,27 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
+{{/*
+ConfigMap name
+*/}}
+{{- define "kubetail.configMapName" -}}
+{{ default (include "kubetail.fullname" .) .Values.kubetail.configMap.name }}
+{{- end }}
+
+{{/*
+Kubetail config
+*/}}
+{{- define "kubetail.config" -}}
+auth-mode: {{ .Values.kubetail.authMode }}
+{{- with .Values.kubetail.allowedNamespaces }}
+allowed-namespaces: 
+{{- toYaml . | nindent 0 }}
+{{- end }}
+{{- with .Values.kubetail.config }}
+{{- tpl . $ | nindent 0 }}
+{{- end }}
+{{- end }}
+
 {{/**************** Server helpers ****************/}}
 
 {{/*
@@ -69,22 +90,6 @@ Server selector labels
 app.kubernetes.io/name: {{ include "kubetail.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/component: server
-{{- end }}
-
-{{/*
-Kubetail server config
-*/}}
-{{- define "kubetail.server.config" -}}
-auth-mode: {{ .Values.kubetail.authMode }}
-{{- with .Values.kubetail.allowedNamespaces }}
-allowed-namespaces: 
-{{- toYaml . | nindent 0 }}
-{{- end }}
-server:
-  {{- $cfg := index .Values "kubetail" "server" "runtimeConfig" }}
-  {{- $_ := set $cfg.csrf "secret" "${KUBETAIL_SERVER_CSRF_SECRET}" }}
-  {{- $_ := set $cfg.session "secret" "${KUBETAIL_SERVER_SESSION_SECRET}" }}
-  {{- toYaml $cfg | nindent 2 }}
 {{- end }}
 
 {{/*
@@ -114,13 +119,6 @@ Server ClusterRoleBinding name
 */}}
 {{- define "kubetail.server.clusterRoleBindingName" -}}
 {{ if .Values.kubetail.server.clusterRoleBinding.name }}{{ .Values.kubetail.server.clusterRoleBinding.name }}{{ else }}{{ include "kubetail.fullname" . }}-server{{ end }}
-{{- end }}
-
-{{/*
-ConfigMap name
-*/}}
-{{- define "kubetail.server.configMapName" -}}
-{{ default (include "kubetail.fullname" .) .Values.kubetail.server.configMap.name }}
 {{- end }}
 
 {{/*

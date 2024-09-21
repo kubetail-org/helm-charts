@@ -1,7 +1,5 @@
 {{- $dep := index .Values "kubetail" "server" "deployment" -}}
-{{- if $dep.create }}
-{{- $podTmpl := index .Values "kubetail" "server" "podTemplate" }}
-{{- $container := index .Values "kubetail" "server" "container" -}}
+{{- $podTmpl := index .Values "kubetail" "server" "podTemplate" -}}
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -32,7 +30,7 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
       annotations:
-        checksum/config: {{ include "kubetail.server.config" . | sha256sum }}
+        checksum/config: {{ include "kubetail.config" . | sha256sum }}
         {{- with $podTmpl.annotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -44,61 +42,55 @@ spec:
       securityContext:
         {{- toYaml $podTmpl.securityContext | nindent 8 }}
       containers:
-      - name: {{ $container.name }}
+      - name: kubetail
         image: {{ include "kubetail.server.image" . }}
         securityContext:
-          {{- toYaml $container.securityContext | nindent 10 }}
+          {{- toYaml $podTmpl.containerSecurityContext | nindent 10 }}
         imagePullPolicy: {{ .Values.kubetail.server.image.pullPolicy }}
         env:
-        {{- with $container.env }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
+          {{- with $podTmpl.env }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
         envFrom:
         {{- if .Values.kubetail.server.secret.enabled }}
         - secretRef:
             name: {{ include "kubetail.server.secretName" . }}
         {{- end }}
-        {{- with $container.envFrom }}
+        {{- with $podTmpl.envFrom }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
         ports:
-        - name: http
+        - name: kubetail
           protocol: TCP
-          containerPort: 4000
-        {{- with $container.ports }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
+          containerPort: {{ $podTmpl.port }}
         args:
         - --config=/etc/kubetail/config.yaml
-        {{- with $container.args }}
-        {{- toYaml . | nindent 8 }}
+        {{- range $podTmpl.args }}
+        - {{ . }}
         {{- end }}
         livenessProbe:
-          {{- with $container.livenessProbe }}
+          {{- with $podTmpl.livenessProbe }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
         readinessProbe:
-          {{- with $container.readinessProbe }}
+          {{- with $podTmpl.readinessProbe }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
         resources:
-          {{- with $container.resources }}
+          {{- with $podTmpl.resources }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
         volumeMounts:
         - name: config
           mountPath: /etc/kubetail
           readOnly: true
-        {{- with $container.volumeMounts }}
+        {{- with $podTmpl.volumeMounts }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
-      {{- with $podTmpl.containers  }}
-      {{- toYaml . | nindent 6 }}
-      {{- end }}
       volumes:
       - name: config
         configMap:
-          name: {{ include "kubetail.server.configMapName" . }}
+          name: {{ include "kubetail.configMapName" . }}
       {{- with $podTmpl.volumes }}
       {{- toYaml . | nindent 6 }}
       {{- end }}
@@ -117,4 +109,3 @@ spec:
       {{- with $podTmpl.tolerations }}
       {{- toYaml . | nindent 6 }}
       {{- end}}
-{{- end }}
