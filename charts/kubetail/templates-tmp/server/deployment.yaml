@@ -1,4 +1,5 @@
 {{- $dep := index .Values "kubetail" "server" "deployment" -}}
+{{- if $dep.create }}
 {{- $podTmpl := index .Values "kubetail" "server" "podTemplate" }}
 {{- $container := index .Values "kubetail" "server" "container" -}}
 kind: Deployment
@@ -7,7 +8,6 @@ metadata:
   name: {{ include "kubetail.server.deploymentName" . }}
   namespace: {{ include "kubetail.namespace" . }}
   labels:
-    {{- include "kubetail.global.labels" . | nindent 4 }}
     {{- include "kubetail.server.labels" . | nindent 4 }}
     {{- with $dep.labels }}
     {{- toYaml . | nindent 4 }}
@@ -109,3 +109,4 @@ spec:
       {{- with $podTmpl.tolerations }}
       {{- toYaml . | nindent 6 }}
       {{- end}}
+{{- end }}

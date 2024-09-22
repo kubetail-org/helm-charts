@@ -52,6 +52,27 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
+{{/*
+Kubetail shared app attributes
+*/}}
+{{- define "kubetail.attributes" -}}
+{{- with .Values.kubetail.global.attributes }}
+{{- toYaml . }}
+{{- end -}}
+{{- end }}
+
+{{/**************** Global helpers ****************/}}
+
+{{/*
+Global labels
+*/}}
+{{- define "kubetail.global.labels" -}}
+{{- with .Values.kubetail.global.labels }}
+{{- toYaml . }}
+{{- end }}
+{{- end }}
+
+
 {{/**************** Server helpers ****************/}}
 
 {{/*
