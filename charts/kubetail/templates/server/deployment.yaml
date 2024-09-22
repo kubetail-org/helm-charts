@@ -6,10 +6,8 @@ apiVersion: apps/v1
 metadata:
   name: {{ include "kubetail.server.deploymentName" . }}
   namespace: {{ include "kubetail.namespace" . }}
-  labels:
-    {{- include "kubetail.global.labels" . | nindent 4 }}
-  annotations:
-    {{- include "kubetail.global.annotations" . | trim | nindent 4 }}
+  labels: {{- include "kubetail.labels" (dict "root" $ "labels" $dep.labels) | indent 4 }}
+  annotations: {{- include "kubetail.printDict" (merge $dep.annotations .Values.kubetail.global.annotations) | indent 4 }}
 spec:
   replicas: {{ $dep.replicas }}
   revisionHistoryLimit: {{ $dep.revisionHistoryLimit }}

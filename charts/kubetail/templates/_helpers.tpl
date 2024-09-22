@@ -37,6 +37,43 @@ Print the namespace
 {{- default .Release.Namespace .Values.namespaceOverride }}
 {{- end }}
 
+{{/**************** Shared helpers ****************/}}
+
+{{/*
+Print key/value quoted pairs
+*/}}
+{{- define "kubetail.printDict" -}}
+{{- if . -}}
+{{- range $key, $value := . }}
+{{ $key }}: {{ $value | quote }}
+{{- end }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Print labels
+*/}}
+{{- define "kubetail.labels" -}}
+{{- $labels := merge .labels .root.Values.kubetail.global.labels -}}
+{{- if $labels -}}
+{{- range $key, $value := $labels }}
+{{ $key }}: {{ $value | quote }}
+{{- end }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Print annotations
+*/}}
+{{- define "kubetail.annotations" -}}
+{{- if . }}
+annotations:
+  {{- range $key, $value := . }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
 {{/**************** Global helpers ****************/}}
 
 {{/*
@@ -56,6 +93,16 @@ Global labels
 {{- toYaml .Values.kubetail.global.labels nindent 4 }}
 {{- end }}
 {{- end }}
+
+{{/*
+Full labels
+*/}}
+{{- define "kubetail.fullLabels" -}}
+{{- $labels := . | default dict -}}
+{{- range $key, $value := $labels -}}
+  {{ $key }}: {{ $value | quote }}
+{{- end -}}
+{{- end -}}
 
 {{/**************** Server helpers ****************/}}
 
