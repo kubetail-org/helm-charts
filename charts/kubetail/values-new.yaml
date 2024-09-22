@@ -193,7 +193,7 @@ kubetail:
 
     # -- RBAC resource settings
     rbac:
-      # -- Overrides RBAC resources' name whose default is based on the chart's computed fullname
+      # -- Overrides RBAC resource names whose defaults are based on the chart's computed fullname
       name: null
       # -- Additional annotations
       annotations: {}
@@ -336,7 +336,7 @@ kubetail:
 
     # -- RBAC resource settings
     rbac:
-      # -- Overrides RBAC resources' name whose default is based on the chart's computed fullname
+      # -- Overrides RBAC resource names whose defaults are based on the chart's computed fullname
       name: null
       # -- Additional annotations
       annotations: {}
