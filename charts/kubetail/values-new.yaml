@@ -41,14 +41,14 @@ kubetail:
   # -- Kubetail server component settings
   server:
     runtimeConfig:
-      # -- Sets the port to listen on
+      # -- Sets the container port to listen on
       port: 4000
       # -- Sets the url path prefix (useful for deploying on a sub-path behind a reverse proxy)
       basePath: /
       # -- Sets the mode for the Gin framework
       ginMode: "release"
       # -- CSRF options
-      csrf: 
+      csrf:
         # -- Enables/disables csrf protection
         enabled: true
         # -- Sets the name to use for token in forms
@@ -177,7 +177,7 @@ kubetail:
     # -- Ingress resource settings
     ingress:
       # -- Enable resource
-      enable: true
+      enabled: false
       # -- Overrides the ClusterRole resource name whose default is based on the chart's computed fullname
       name: null
       # -- Additional annotations
@@ -203,7 +203,7 @@ kubetail:
     # -- Secret resource settings
     secret:
       # -- Enable resource
-      enable: true
+      enabled: true
       # -- Overrides the Secret resource name whose default is based on the chart's computed fullname
       name: null
       # -- Additional annotations
@@ -225,8 +225,6 @@ kubetail:
       ports:
         # -- Kubetail port settings
         kubetail:
-          # -- Enable port
-          enabled: true
           # -- Port number
           port: 80
 
@@ -243,7 +241,7 @@ kubetail:
   agent:
     # -- Runtime configuration settings
     runtimeConfig:
-      # -- Sets the port to listen on
+      # -- Sets the container port to listen on
       port: 50051
       # -- Logging options
       logging:
@@ -328,7 +326,7 @@ kubetail:
     # -- NetworkPolicy resource settings
     networkPolicy:
       # -- Enable resource
-      enable: true
+      enabled: true
       # -- Overrides the NetworkPolicy resource name whose default is based on the chart's computed fullname
       name: null
       # -- Additional annotations
