@@ -8,15 +8,8 @@ metadata:
   namespace: {{ include "kubetail.namespace" . }}
   labels:
     {{- include "kubetail.global.labels" . | nindent 4 }}
-    {{- include "kubetail.server.labels" . | nindent 4 }}
-    {{- with $dep.labels }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
   annotations:
-    {{- include "kubetail.attributes" . | nindent 4 }}
-    {{- with $dep.annotations }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
+    {{- include "kubetail.global.annotations" . | trim | nindent 4 }}
 spec:
   replicas: {{ $dep.replicas }}
   revisionHistoryLimit: {{ $dep.revisionHistoryLimit }}

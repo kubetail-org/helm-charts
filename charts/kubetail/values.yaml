@@ -36,8 +36,7 @@ kubetail:
     # -- Additional annotations
     annotations: {}
     # -- Additional labels
-    labels:
-      xxx: "yyy"
+    labels: {}
 
   # -- Kubetail server component settings
   server:

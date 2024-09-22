@@ -37,41 +37,25 @@ Print the namespace
 {{- default .Release.Namespace .Values.namespaceOverride }}
 {{- end }}
 
-{{/**************** Shared helpers ****************/}}
-
-{{/*
-Kubetail shared app labels
-*/}}
-{{- define "kubetail.labels" -}}
-helm.sh/chart: {{ include "kubetail.chart" . }}
-app.kubernetes.io/name: {{ include "kubetail.name" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- end }}
-
-{{/*
-Kubetail shared app attributes
-*/}}
-{{- define "kubetail.attributes" -}}
-{{- with .Values.kubetail.global.attributes }}
-{{- toYaml . }}
-{{- end -}}
-{{- end }}
-
 {{/**************** Global helpers ****************/}}
+
+{{/*
+Global annotations
+*/}}
+{{- define "kubetail.global.annotations" -}}
+{{- with .Values.kubetail.global.annotations }}
+{{- toYaml . }}
+{{- end }}
+{{- end }}
 
 {{/*
 Global labels
 */}}
 {{- define "kubetail.global.labels" -}}
-{{- with .Values.kubetail.global.labels }}
-{{- toYaml . }}
+{{ if .Values.kubetail.global.labels }}
+{{- toYaml .Values.kubetail.global.labels nindent 4 }}
 {{- end }}
 {{- end }}
-
 
 {{/**************** Server helpers ****************/}}
 
@@ -79,7 +63,13 @@ Global labels
 Server labels (including shared app labels)
 */}}
 {{- define "kubetail.server.labels" -}}
-{{ include "kubetail.labels" . }}
+helm.sh/chart: {{ include "kubetail.chart" . }}
+app.kubernetes.io/name: {{ include "kubetail.name" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
 app.kubernetes.io/component: server
 {{- end }}
 
