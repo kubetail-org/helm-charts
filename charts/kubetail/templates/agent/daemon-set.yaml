@@ -1,43 +1,40 @@
-{{- $dep := index .Values "kubetail" "server" "deployment" -}}
-{{- $podTmpl := index .Values "kubetail" "server" "podTemplate" }}
-{{- $container := index .Values "kubetail" "server" "container" -}}
-kind: Deployment
+{{- $ds := index .Values "kubetail" "agent" "daemonSet" -}}
+{{- $podTmpl := index .Values "kubetail" "agent" "podTemplate" }}
+{{- $container := index .Values "kubetail" "agent" "container" -}}
+kind: DaemonSet
 apiVersion: apps/v1
 metadata:
-  name: {{ include "kubetail.server.deploymentName" . }}
+  name: {{ include "kubetail.agent.daemonSetName" . }}
   namespace: {{ include "kubetail.namespace" . }}
   labels:
-    {{- include "kubetail.server.labels" (list $ $dep.labels) | indent 4 }}
-  annotations: {{- include "kubetail.annotations" (list $ $dep.annotations) | indent 4 }}
+    {{- include "kubetail.agent.labels" (list $ $ds.labels) | indent 4 }}
+  annotations:
+    {{- include "kubetail.annotations" (list $ $ds.annotations) | indent 4 }}
 spec:
-  replicas: {{ $dep.replicas }}
-  revisionHistoryLimit: {{ $dep.revisionHistoryLimit }}
   selector:
     matchLabels:
-      {{- include "kubetail.server.selectorLabels" . | nindent 6 }}
-  strategy:
-    {{- toYaml $dep.strategy | nindent 4 }}
+      {{- include "kubetail.agent.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "kubetail.server.labels" (list $ $podTmpl.labels) | indent 8 }}
+        {{- include "kubetail.agent.labels" (list $ $podTmpl.labels) | indent 8 }}
       annotations:
         {{- include "kubetail.annotations" (list $ $podTmpl.annotations) | indent 8 }}
-        checksum/config: {{ include "kubetail.server.config" . | sha256sum | quote }}
+        checksum/config: {{ include "kubetail.agent.config" . | sha256sum | quote }}
     spec:
       automountServiceAccountToken: true
       {{- if eq .Values.kubetail.authMode "cluster" }}
-      serviceAccountName: {{ include "kubetail.server.serviceAccountName" . }}
+      serviceAccountName: {{ include "kubetail.agent.serviceAccountName" . }}
       {{- end }}
       securityContext:
-        fsGroup: 1000
+        fsGroup: 0
       containers:
       - name: {{ $container.name }}
-        image: {{ include "kubetail.server.image" . }}
+        image: {{ include "kubetail.agent.image" . }}
         securityContext:
           runAsNonRoot: true
-          runAsUser: 1000
-          runAsGroup: 1000
+          runAsUser: 0
+          runAsGroup: 0
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
           privileged: false
@@ -45,43 +42,35 @@ spec:
             drop:
               - ALL
           seccompProfile:
-            type: "RuntimeDefault"
-        imagePullPolicy: {{ .Values.kubetail.server.image.pullPolicy }}
+            type: RuntimeDefault
+        imagePullPolicy: {{ .Values.kubetail.agent.image.pullPolicy }}
         env:
         {{- with $container.env }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
         envFrom:
-        {{- if .Values.kubetail.server.secret.enabled }}
-        - secretRef:
-            name: {{ include "kubetail.server.secretName" . }}
-        {{- end }}
         {{- with $container.envFrom }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
         args:
         - --config=/etc/kubetail/config.yaml
         ports:
-        - name: kubetail-server
+        - name: kubetail-agent
           protocol: TCP
-          containerPort: {{ .Values.kubetail.server.runtimeConfig.port }}
+          containerPort: {{ .Values.kubetail.agent.runtimeConfig.port }}
         livenessProbe:
-          httpGet:
-            scheme: HTTP
-            path: /healthz
-            port: kubetail-server
-          initialDelaySeconds: 30
+          grpc:
+            port: {{ .Values.kubetail.agent.runtimeConfig.port }}
+          initialDelaySeconds: 5
           timeoutSeconds: 30
-          periodSeconds: 10
+          periodSeconds: 3
           failureThreshold: 3
         readinessProbe:
-          httpGet:
-            scheme: HTTP
-            path: /healthz
-            port: kubetail-server
-          initialDelaySeconds: 30
+          grpc:
+            port: {{ .Values.kubetail.agent.runtimeConfig.port }}
+          initialDelaySeconds: 5
           timeoutSeconds: 30
-          periodSeconds: 10
+          periodSeconds: 3
           failureThreshold: 3
         resources:
           {{- with $container.resources }}
@@ -91,13 +80,19 @@ spec:
         - name: config
           mountPath: /etc/kubetail
           readOnly: true
+        - name: varlog
+          mountPath: /var/log
+          readOnly: true
       {{- with $podTmpl.containers  }}
       {{- toYaml . | nindent 6 }}
       {{- end }}
       volumes:
       - name: config
         configMap:
-          name: {{ include "kubetail.server.configMapName" . }}
+          name: {{ include "kubetail.agent.configMapName" . }}
+      - name: varlog
+        hostPath:
+          path: /var/log
       nodeSelector:
         {{- with $podTmpl.nodeSelector }}
         {{- toYaml . | nindent 8 }}

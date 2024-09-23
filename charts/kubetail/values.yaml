@@ -33,9 +33,9 @@ kubetail:
 
   # -- Global settings
   global:
-    # -- Additional annotations
+    # -- Extra annotations
     annotations: {}
-    # -- Additional labels
+    # -- Extra labels
     labels: {}
 
   # -- Kubetail server component settings
@@ -224,8 +224,8 @@ kubetail:
       labels: {}
       # -- Ports
       ports:
-        # -- Kubetail port settings
-        kubetail:
+        # -- kubetail-server port settings
+        kubetailServer:
           # -- Port number
           port: 80
 

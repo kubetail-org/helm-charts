@@ -51,57 +51,27 @@ Print key/value quoted pairs
 {{- end -}}
 
 {{/*
-Print labels
+Add global labels to input dict
 */}}
-{{- define "kubetail.labels" -}}
-{{- $labels := merge .labels .root.Values.kubetail.global.labels -}}
-{{- if $labels -}}
-{{- range $key, $value := $labels }}
-{{ $key }}: {{ $value | quote }}
-{{- end }}
-{{- end -}}
+{{- define "kubetail.addGlobalLabels" -}}
+{{- $ctx := index . 0 -}}
+{{- $inputDict := index . 1 -}}
+{{- $_ := set $inputDict "helm.sh/chart" (include "kubetail.chart" $ctx) -}}
+{{- $_ := set $inputDict "app.kubernetes.io/name" (include "kubetail.name" $ctx) -}}
+{{- $_ := set $inputDict "app.kubernetes.io/version" $ctx.Chart.AppVersion -}}
+{{- $_ := set $inputDict "app.kubernetes.io/instance" $ctx.Release.Name -}}
+{{- $_ := set $inputDict "app.kubernetes.io/managed-by" $ctx.Release.Service -}}
+{{- $inputDict = merge $ctx.Values.kubetail.global.labels $inputDict -}}
 {{- end -}}
 
 {{/*
 Print annotations
 */}}
 {{- define "kubetail.annotations" -}}
-{{- if . }}
-annotations:
-  {{- range $key, $value := . }}
-  {{ $key }}: {{ $value | quote }}
-  {{- end }}
-{{- end }}
-{{- end -}}
-
-{{/**************** Global helpers ****************/}}
-
-{{/*
-Global annotations
-*/}}
-{{- define "kubetail.global.annotations" -}}
-{{- with .Values.kubetail.global.annotations }}
-{{- toYaml . }}
-{{- end }}
-{{- end }}
-
-{{/*
-Global labels
-*/}}
-{{- define "kubetail.global.labels" -}}
-{{ if .Values.kubetail.global.labels }}
-{{- toYaml .Values.kubetail.global.labels nindent 4 }}
-{{- end }}
-{{- end }}
-
-{{/*
-Full labels
-*/}}
-{{- define "kubetail.fullLabels" -}}
-{{- $labels := . | default dict -}}
-{{- range $key, $value := $labels -}}
-  {{ $key }}: {{ $value | quote }}
-{{- end -}}
+{{- $ctx := index . 0 -}}
+{{- $annotationSet := index . 1 -}}
+{{- $annotations := (merge $annotationSet $ctx.Values.kubetail.global.annotations) -}}
+{{- include "kubetail.printDict" $annotations -}}
 {{- end -}}
 
 {{/**************** Server helpers ****************/}}
@@ -110,23 +80,24 @@ Full labels
 Server labels (including shared app labels)
 */}}
 {{- define "kubetail.server.labels" -}}
-helm.sh/chart: {{ include "kubetail.chart" . }}
-app.kubernetes.io/name: {{ include "kubetail.name" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
-app.kubernetes.io/component: server
-{{- end }}
+{{- $ctx := index . 0 -}}
+{{- $labelSets := slice . 1 -}}
+{{- $outputDict := dict -}}
+{{- include "kubetail.addGlobalLabels" (list $ctx $outputDict) -}}
+{{- $_ := set $outputDict "app.kubernetes.io/component" "server" -}}
+{{- range $labelSet := $labelSets -}}
+{{- $outputDict = merge $labelSet $outputDict -}}
+{{- end -}}
+{{- include "kubetail.printDict" $outputDict -}}
+{{- end -}}
 
 {{/*
 Server selector labels
 */}}
 {{- define "kubetail.server.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "kubetail.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-app.kubernetes.io/component: server
+app.kubernetes.io/name: {{ include "kubetail.name" . | quote }}
+app.kubernetes.io/instance: {{ .Release.Name | quote }}
+app.kubernetes.io/component: "server"
 {{- end }}
 
 {{/*
@@ -230,17 +201,24 @@ Server ServiceAccount name
 Agent labels (including shared app labels)
 */}}
 {{- define "kubetail.agent.labels" -}}
-{{ include "kubetail.labels" . }}
-app.kubernetes.io/component: agent
-{{- end }}
+{{- $ctx := index . 0 -}}
+{{- $labelSets := slice . 1 -}}
+{{- $outputDict := dict -}}
+{{- include "kubetail.addGlobalLabels" (list $ctx $outputDict) -}}
+{{- $_ := set $outputDict "app.kubernetes.io/component" "agent" -}}
+{{- range $labelSet := $labelSets -}}
+{{- $outputDict = merge $labelSet $outputDict -}}
+{{- end -}}
+{{- include "kubetail.printDict" $outputDict -}}
+{{- end -}}
 
 {{/*
 Agent selector labels
 */}}
 {{- define "kubetail.agent.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "kubetail.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-app.kubernetes.io/component: agent
+app.kubernetes.io/name: {{ include "kubetail.name" . | quote }}
+app.kubernetes.io/instance: {{ .Release.Name | quote }}
+app.kubernetes.io/component: "agent"
 {{- end }}
 
 {{/*
