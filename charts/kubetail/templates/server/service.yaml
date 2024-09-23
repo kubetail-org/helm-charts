@@ -1,5 +1,4 @@
 {{- $svc := index .Values "kubetail" "server" "service" -}}
-{{- if $svc.enabled }}
 kind: Service
 apiVersion: v1
 metadata:
@@ -19,4 +18,3 @@ spec:
     port: {{ $svc.ports.kubetailServer.port }}
     targetPort: kubetail-server
     appProtocol: http
-{{- end }}

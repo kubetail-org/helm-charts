@@ -225,8 +225,6 @@ kubetail:
 
     # -- Service resource settings
     service:
-      # -- Enable resource
-      enabled: true
       # -- Overrides the Service resource name whose default is based on the chart's computed fullname
       name: null
       # -- Additional annotations
