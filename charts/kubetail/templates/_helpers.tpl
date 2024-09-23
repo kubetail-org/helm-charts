@@ -189,6 +189,13 @@ Server Deployment name
 {{- end }}
 
 {{/*
+Server ingress name
+*/}}
+{{- define "kubetail.server.ingressName" -}}
+{{ default (include "kubetail.fullname" .) .Values.kubetail.server.ingress.name }}-server
+{{- end }}
+
+{{/*
 Server Role name
 */}}
 {{- define "kubetail.server.roleName" -}}
