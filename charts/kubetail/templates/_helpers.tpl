@@ -74,6 +74,34 @@ Print annotations
 {{- include "kubetail.printDict" $annotations -}}
 {{- end -}}
 
+{{/*
+Convert YAML keys to kebab-case
+*/}}
+{{- define "kubetail.toKebabYaml" -}}
+{{- $result := dict -}}
+{{- range $key, $value := . -}}
+  {{- $newKey := $key | kebabcase -}}
+  {{- if kindIs "map" $value -}}
+    {{- $newValue := include "kubetail.toKebabYaml" $value | fromYaml -}}
+    {{- $_ := set $result $newKey $newValue -}}
+  {{- else if kindIs "slice" $value -}}
+    {{- $newValue := list -}}
+    {{- range $item := $value -}}
+      {{- if kindIs "map" $item -}}
+        {{- $convertedItem := include "kubetail.toKebabYaml" $item | fromYaml -}}
+        {{- $newValue = append $newValue $convertedItem -}}
+      {{- else -}}
+        {{- $newValue = append $newValue $item -}}
+      {{- end -}}
+    {{- end -}}
+    {{- $_ := set $result $newKey $newValue -}}
+  {{- else -}}
+    {{- $_ := set $result $newKey $value -}}
+  {{- end -}}
+{{- end -}}
+{{- $result | toYaml -}}
+{{- end -}}
+
 {{/**************** Server helpers ****************/}}
 
 {{/*
@@ -114,7 +142,7 @@ server:
   {{- $cfg := omit .Values.kubetail.server.runtimeConfig "port" }}
   {{- $_ := set $cfg.csrf "secret" "${KUBETAIL_SERVER_CSRF_SECRET}" }}
   {{- $_ := set $cfg.session "secret" "${KUBETAIL_SERVER_SESSION_SECRET}" }}
-  {{- toYaml $cfg | nindent 2 }}
+  {{- include "kubetail.toKebabYaml" $cfg | nindent 2 }}
 {{- end }}
 
 {{/*
@@ -136,14 +164,14 @@ Server image
 Server ClusterRole name
 */}}
 {{- define "kubetail.server.clusterRoleName" -}}
-{{ if .Values.kubetail.server.clusterRole.name }}{{ .Values.kubetail.server.clusterRole.name }}{{ else }}{{ include "kubetail.fullname" . }}-server{{ end }}
+{{ if .Values.kubetail.server.rbac.name }}{{ .Values.kubetail.server.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-server{{ end }}
 {{- end }}
 
 {{/*
 Server ClusterRoleBinding name
 */}}
 {{- define "kubetail.server.clusterRoleBindingName" -}}
-{{ if .Values.kubetail.server.clusterRoleBinding.name }}{{ .Values.kubetail.server.clusterRoleBinding.name }}{{ else }}{{ include "kubetail.fullname" . }}-server{{ end }}
+{{ if .Values.kubetail.server.rbac.name }}{{ .Values.kubetail.server.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-server{{ end }}
 {{- end }}
 
 {{/*
@@ -164,14 +192,14 @@ Server Deployment name
 Server Role name
 */}}
 {{- define "kubetail.server.roleName" -}}
-{{ if .Values.kubetail.server.role.name }}{{ .Values.kubetail.server.role.name }}{{ else }}{{ include "kubetail.fullname" . }}-server{{ end }}
+{{ if .Values.kubetail.server.rbac.name }}{{ .Values.kubetail.server.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-server{{ end }}
 {{- end }}
 
 {{/*
 Server RoleBinding name
 */}}
 {{- define "kubetail.server.roleBindingName" -}}
-{{ if .Values.kubetail.server.roleBinding.name }}{{ .Values.kubetail.server.roleBinding.name }}{{ else }}{{ include "kubetail.fullname" . }}-server{{ end }}
+{{ if .Values.kubetail.server.rbac.name }}{{ .Values.kubetail.server.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-server{{ end }}
 {{- end }}
 
 {{/*
@@ -233,7 +261,7 @@ allowed-namespaces:
 agent:
   addr: :{{ .Values.kubetail.agent.runtimeConfig.port }}
   {{- $cfg := omit .Values.kubetail.agent.runtimeConfig "port" }}
-  {{- toYaml $cfg | nindent 2 }}
+  {{- include "kubetail.toKebabYaml" $cfg | nindent 2 }}
 {{- end }}
 
 {{/*
@@ -255,14 +283,14 @@ Agent image
 Agent ClusterRole name
 */}}
 {{- define "kubetail.agent.clusterRoleName" -}}
-{{ if .Values.kubetail.agent.clusterRole.name }}{{ .Values.kubetail.agent.clusterRole.name }}{{ else }}{{ include "kubetail.fullname" . }}-agent{{ end }}
+{{ if .Values.kubetail.agent.rbac.name }}{{ .Values.kubetail.agent.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-agent{{ end }}
 {{- end }}
 
 {{/*
 Agent ClusterRoleBinding name
 */}}
 {{- define "kubetail.agent.clusterRoleBindingName" -}}
-{{ if .Values.kubetail.agent.clusterRoleBinding.name }}{{ .Values.kubetail.agent.clusterRoleBinding.name }}{{ else }}{{ include "kubetail.fullname" . }}-agent{{ end }}
+{{ if .Values.kubetail.agent.rbac.name }}{{ .Values.kubetail.agent.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-agent{{ end }}
 {{- end }}
 
 {{/*
@@ -290,14 +318,14 @@ Agent NetworkPolicy name
 Agent Role name
 */}}
 {{- define "kubetail.agent.roleName" -}}
-{{ if .Values.kubetail.agent.role.name }}{{ .Values.kubetail.agent.role.name }}{{ else }}{{ include "kubetail.fullname" . }}-agent{{ end }}
+{{ if .Values.kubetail.agent.rbac.name }}{{ .Values.kubetail.agent.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-agent{{ end }}
 {{- end }}
 
 {{/*
 Agent RoleBinding name
 */}}
 {{- define "kubetail.agent.roleBindingName" -}}
-{{ if .Values.kubetail.agent.roleBinding.name }}{{ .Values.kubetail.agent.roleBinding.name }}{{ else }}{{ include "kubetail.fullname" . }}-agent{{ end }}
+{{ if .Values.kubetail.agent.rbac.name }}{{ .Values.kubetail.agent.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-agent{{ end }}
 {{- end }}
 
 {{/*

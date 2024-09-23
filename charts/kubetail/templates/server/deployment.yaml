@@ -8,7 +8,8 @@ metadata:
   namespace: {{ include "kubetail.namespace" . }}
   labels:
     {{- include "kubetail.server.labels" (list $ $dep.labels) | indent 4 }}
-  annotations: {{- include "kubetail.annotations" (list $ $dep.annotations) | indent 4 }}
+  annotations:
+    {{- include "kubetail.annotations" (list $ $dep.annotations) | indent 4 }}
 spec:
   replicas: {{ $dep.replicas }}
   revisionHistoryLimit: {{ $dep.revisionHistoryLimit }}

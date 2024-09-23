@@ -33,16 +33,29 @@ spec:
         image: {{ include "kubetail.agent.image" . }}
         securityContext:
           runAsNonRoot: true
-          runAsUser: 0
-          runAsGroup: 0
+          runAsUser: 1000 # Non-root user ID
+          runAsGroup: 1000 # Non-root group ID
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
           privileged: false
           capabilities:
+            add:
+              - DAC_READ_SEARCH
             drop:
               - ALL
           seccompProfile:
             type: RuntimeDefault
+          #runAsNonRoot: true
+          #runAsUser: 0
+          #runAsGroup: 0
+          #allowPrivilegeEscalation: false
+          #readOnlyRootFilesystem: true
+          #privileged: false
+          #capabilities:
+          #  drop:
+          #    - ALL
+          #seccompProfile:
+          #  type: RuntimeDefault
         imagePullPolicy: {{ .Values.kubetail.agent.image.pullPolicy }}
         env:
         {{- with $container.env }}
