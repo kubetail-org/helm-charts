@@ -231,12 +231,8 @@ kubetail:
       annotations: {}
       # -- Additional labels
       labels: {}
-      # -- Ports
-      ports:
-        # -- kubetail-server port settings
-        kubetailServer:
-          # -- Port number
-          port: 80
+      # -- External port
+      port: 80
 
     # -- ServiceAccount resource settings
     serviceAccount:
