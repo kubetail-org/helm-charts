@@ -31,25 +31,19 @@ spec:
       serviceAccountName: {{ include "kubetail.server.serviceAccountName" . }}
       {{- end }}
       securityContext:
-        fsGroup: 1000
+        {{- with $podTmpl.securityContext -}}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       containers:
       - name: {{ $container.name }}
         image: {{ include "kubetail.server.image" . }}
         securityContext:
-          runAsNonRoot: true
-          runAsUser: 1000
-          runAsGroup: 1000
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-          privileged: false
-          capabilities:
-            drop:
-              - ALL
-          seccompProfile:
-            type: "RuntimeDefault"
+          {{- with $container.securityContext -}}
+          {{ toYaml . | nindent 10 }}
+          {{- end }}
         imagePullPolicy: {{ .Values.kubetail.server.image.pullPolicy }}
         env:
-        {{- with $container.env }}
+        {{- with $container.extraEnv }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
         envFrom:
@@ -57,7 +51,7 @@ spec:
         - secretRef:
             name: {{ include "kubetail.server.secretName" . }}
         {{- end }}
-        {{- with $container.envFrom }}
+        {{- with $container.extraEnvFrom }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
         args:
@@ -92,7 +86,7 @@ spec:
         - name: config
           mountPath: /etc/kubetail
           readOnly: true
-      {{- with $podTmpl.containers  }}
+      {{- with $podTmpl.extraContainers  }}
       {{- toYaml . | nindent 6 }}
       {{- end }}
       volumes:

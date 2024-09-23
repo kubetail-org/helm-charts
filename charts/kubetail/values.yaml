@@ -129,9 +129,18 @@ kubetail:
       # -- Name
       name: "kubetail-server"
       # -- Additional env
-      env: []
+      extraEnv: []
       # -- Additional envFrom
-      envFrom: []
+      extraEnvFrom: []
+      # -- Container security context
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        readOnlyRootFilesystem: true
+        runAsUser: 1000
+        runAsGroup: 1000
       # -- Resources
       resources: {}
 
@@ -142,7 +151,9 @@ kubetail:
       # -- Additional labels
       labels: {}
       # -- Additional containers
-      containers: []
+      extraContainers: []
+      # -- Pod security context
+      securityContext: {}
       # -- Affinity settings
       affinity: {}
       # -- Node selector settings
@@ -279,9 +290,20 @@ kubetail:
       # -- Name
       name: "kubetail-agent"
       # -- Additional env
-      env: []
+      extraEnv: []
       # -- Additional envFrom
-      envFrom: []
+      extraEnvFrom: []
+      # -- Container security context
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          add:
+            - DAC_READ_SEARCH
+          drop:
+            - ALL
+        readOnlyRootFilesystem: true
+        runAsGroup: 1000
+        runAsUser: 1000
       # -- Resources
       resources: {}
 
@@ -292,7 +314,10 @@ kubetail:
       # -- Additional labels
       labels: {}
       # -- Additional containers
-      containers: []
+      extraContainers: []
+      # -- Pod security context
+      securityContext:
+        fsGroup: 0
       # -- Affinity settings
       affinity: {}
       # -- Node selector settings

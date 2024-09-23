@@ -27,42 +27,23 @@ spec:
       serviceAccountName: {{ include "kubetail.agent.serviceAccountName" . }}
       {{- end }}
       securityContext:
-        fsGroup: 0
+        {{- with $podTmpl.securityContext -}}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       containers:
       - name: {{ $container.name }}
         image: {{ include "kubetail.agent.image" . }}
         securityContext:
-          runAsNonRoot: true
-          runAsUser: 1000 # Non-root user ID
-          runAsGroup: 1000 # Non-root group ID
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-          privileged: false
-          capabilities:
-            add:
-              - DAC_READ_SEARCH
-            drop:
-              - ALL
-          seccompProfile:
-            type: RuntimeDefault
-          #runAsNonRoot: true
-          #runAsUser: 0
-          #runAsGroup: 0
-          #allowPrivilegeEscalation: false
-          #readOnlyRootFilesystem: true
-          #privileged: false
-          #capabilities:
-          #  drop:
-          #    - ALL
-          #seccompProfile:
-          #  type: RuntimeDefault
+          {{- with $container.securityContext -}}
+          {{ toYaml . | nindent 10 }}
+          {{- end }}
         imagePullPolicy: {{ .Values.kubetail.agent.image.pullPolicy }}
         env:
-        {{- with $container.env }}
+        {{- with $container.extraEnv }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
         envFrom:
-        {{- with $container.envFrom }}
+        {{- with $container.extraEnvFrom }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
         args:
@@ -96,7 +77,7 @@ spec:
         - name: varlog
           mountPath: /var/log
           readOnly: true
-      {{- with $podTmpl.containers  }}
+      {{- with $podTmpl.extraContainers  }}
       {{- toYaml . | nindent 6 }}
       {{- end }}
       volumes:
