@@ -1,0 +1,13 @@
+{{- $cfgMap := index .Values "kubetail" "server" "configMap" -}}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "kubetail.server.configMapName" . }}
+  namespace: {{ include "kubetail.namespace" . }}
+  labels:
+    {{- include "kubetail.server.labels" (list $ $cfgMap.labels) | indent 4 }}
+  annotations:
+    {{- include "kubetail.annotations" (list $ $cfgMap.annotations) | indent 4 }}
+data:
+  config.yaml: |
+    {{- include "kubetail.server.config" . | nindent 4 }}

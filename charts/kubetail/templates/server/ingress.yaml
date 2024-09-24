@@ -1,19 +1,14 @@
-{{- $ing := index .Values "kubetail" "ingress" -}}
+{{- $ing := index .Values "kubetail" "server" "ingress" -}}
 {{- if $ing.enabled }}
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: {{ $ing.name | default (include "kubetail.fullname" .) }}
+  name: {{ include "kubetail.server.ingressName" . }}
   namespace: {{ include "kubetail.namespace" . }}
   labels:
-    {{- include "kubetail.labels" . | nindent 4 }}
-    {{- with $ing.labels }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
+    {{- include "kubetail.server.labels" (list $ $ing.labels) | indent 4 }}
   annotations:
-    {{- with $ing.annotations }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
+    {{- include "kubetail.annotations" (list $ $ing.annotations) | indent 4 }}
 spec:
   {{- if $ing.className }}
   ingressClassName: {{ $ing.className }}
@@ -29,7 +24,7 @@ spec:
         pathType: {{ .pathType }}
         backend:
           service:
-            name: {{ include "kubetail.serviceName" $ }}
+            name: {{ include "kubetail.server.serviceName" $ }}
             port:
               name: kubetail
       {{- end }}

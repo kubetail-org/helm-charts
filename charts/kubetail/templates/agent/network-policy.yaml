@@ -1,0 +1,21 @@
+{{- $np := index .Values "kubetail" "agent" "networkPolicy" -}}
+{{- if $np.enabled }}
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: {{ include "kubetail.agent.networkPolicyName" . }}
+  namespace: {{ include "kubetail.namespace" . }}
+  labels:
+    {{- include "kubetail.agent.labels" (list $ $np.labels) | indent 4 }}
+  annotations:
+    {{- include "kubetail.annotations" (list $ $np.annotations) | indent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "kubetail.agent.selectorLabels" . | nindent 6 }}
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          {{- include "kubetail.server.selectorLabels" . | nindent 10 }}
+{{- end }}
