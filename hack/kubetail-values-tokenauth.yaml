@@ -3,11 +3,6 @@ namespaceOverride: kubetail
 kubetail:
   authMode: token
 
-  config: |
-    session:
-      secret: REPLACEME
-    csrf:
-      secret: REPLACEME
-
-  secret:
-    enabled: false
+  secrets:
+    KUBETAIL_SERVER_CSRF_SECRET: "cmVwbGFjZW1l"
+    KUBETAIL_SERVER_SESSION_SECRET: "cmVwbGFjZW1l"
