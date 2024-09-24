@@ -1,6 +1,6 @@
 {{- if eq .Values.kubetail.authMode "cluster" }}
-{{- if not .Values.kubetail.allowedNamespaces }}
 {{- $rbac := index .Values "kubetail" "agent" "rbac" -}}
+{{- if not .Values.kubetail.allowedNamespaces }}
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
