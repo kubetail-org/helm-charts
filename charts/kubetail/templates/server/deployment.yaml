@@ -1,6 +1,7 @@
 {{- $dep := index .Values "kubetail" "server" "deployment" -}}
 {{- $podTmpl := index .Values "kubetail" "server" "podTemplate" }}
 {{- $container := index .Values "kubetail" "server" "container" -}}
+{{- $secret := index .Values "kubetail" "server" "secret" -}}
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -25,6 +26,9 @@ spec:
       annotations:
         {{- include "kubetail.annotations" (list $ $podTmpl.annotations) | indent 8 }}
         checksum/config: {{ include "kubetail.server.config" . | sha256sum | quote }}
+        {{- if $secret.enabled }}
+        checksum/secret: {{ include "kubetail.server.secretData" . | sha256sum | quote }}
+        {{- end }}
     spec:
       automountServiceAccountToken: true
       {{- if eq .Values.kubetail.authMode "cluster" }}

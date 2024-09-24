@@ -218,6 +218,19 @@ Server Secret name
 {{- end }}
 
 {{/*
+Server Secret data
+*/}}
+{{- define "kubetail.server.secretData" -}}
+{{- $currentValsRef := dict "data" dict -}}
+{{- $currentResource := (lookup "v1" "Secret" (include "kubetail.namespace" .) (include "kubetail.server.secretName" .)) -}}
+{{- if $currentResource -}}
+{{- $_ := set $currentValsRef "data" (index $currentResource "data") -}}
+{{- end -}}
+KUBETAIL_SERVER_CSRF_SECRET: {{ .Values.kubetail.secrets.KUBETAIL_SERVER_CSRF_SECRET | default $currentValsRef.data.KUBETAIL_SERVER_CSRF_SECRET | default ((randAlphaNum 32) | b64enc | quote) }}
+KUBETAIL_SERVER_SESSION_SECRET: {{ .Values.kubetail.secrets.KUBETAIL_SERVER_SESSION_SECRET | default $currentValsRef.data.KUBETAIL_SERVER_SESSION_SECRET | default ((randAlphaNum 32) | b64enc | quote) }}
+{{- end }}
+
+{{/*
 Server Service name
 */}}
 {{- define "kubetail.server.serviceName" -}}
