@@ -26,7 +26,7 @@ spec:
           service:
             name: {{ include "kubetail.server.serviceName" $ }}
             port:
-              name: kubetail
+              name: kubetail-server
       {{- end }}
       {{- end }}
   {{- end}}
