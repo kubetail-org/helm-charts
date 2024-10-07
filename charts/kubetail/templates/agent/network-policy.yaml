@@ -1,3 +1,4 @@
+{{- if .Values.kubetail.agent.enabled }}
 {{- $np := index .Values "kubetail" "agent" "networkPolicy" -}}
 {{- if $np.enabled }}
 kind: NetworkPolicy
@@ -18,4 +19,5 @@ spec:
     - podSelector:
         matchLabels:
           {{- include "kubetail.server.selectorLabels" . | nindent 10 }}
+{{- end }}
 {{- end }}

@@ -1,3 +1,4 @@
+{{- if .Values.kubetail.agent.enabled }}
 {{- $svc := index .Values "kubetail" "agent" "service" -}}
 kind: Service
 apiVersion: v1
@@ -12,3 +13,4 @@ spec:
   clusterIP: None
   selector:
     {{- include "kubetail.agent.selectorLabels" . | nindent 4 }}
+{{- end }}

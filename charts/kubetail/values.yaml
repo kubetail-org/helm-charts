@@ -245,6 +245,9 @@ kubetail:
 
   # -- Kubetail agent component settings
   agent:
+    # -- Enabled/disable agent (EXPERIMENTAL)
+    enabled: true
+
     # -- Runtime configuration settings
     runtimeConfig:
       # -- Sets the container port to listen on
