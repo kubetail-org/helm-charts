@@ -1,3 +1,4 @@
+{{- if .Values.kubetail.agent.enabled }}
 {{- if eq .Values.kubetail.authMode "cluster" }}
 {{- $rbac := index .Values "kubetail" "agent" "rbac" -}}
 {{- if not .Values.kubetail.allowedNamespaces }}
@@ -63,6 +64,7 @@ subjects:
 - kind: ServiceAccount
   name: {{ include "kubetail.agent.serviceAccountName" $ }}
   namespace: {{ include "kubetail.namespace" $ }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

@@ -1,3 +1,4 @@
+{{- if .Values.kubetail.agent.enabled }}
 {{- $ds := index .Values "kubetail" "agent" "daemonSet" -}}
 {{- $podTmpl := index .Values "kubetail" "agent" "podTemplate" }}
 {{- $container := index .Values "kubetail" "agent" "container" -}}
@@ -99,3 +100,4 @@ spec:
       {{- with $podTmpl.tolerations }}
       {{- toYaml . | nindent 6 }}
       {{- end}}
+{{- end }}

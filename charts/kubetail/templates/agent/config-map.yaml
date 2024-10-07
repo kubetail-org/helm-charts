@@ -1,3 +1,4 @@
+{{- if .Values.kubetail.agent.enabled }}
 {{- $cfgMap := index .Values "kubetail" "agent" "configMap" -}}
 kind: ConfigMap
 apiVersion: v1
@@ -11,3 +12,4 @@ metadata:
 data:
   config.yaml: |
     {{- include "kubetail.agent.config" . | nindent 4 }}
+{{- end }}
