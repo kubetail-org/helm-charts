@@ -70,6 +70,7 @@ subjects:
   namespace: {{ include "kubetail.namespace" $ }}
 {{- end }}
 {{- end }}
+{{- if .Values.kubetail.agent.enabled }}
 ---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
@@ -102,3 +103,4 @@ subjects:
 - kind: ServiceAccount
   name: {{ include "kubetail.server.serviceAccountName" $ }}
   namespace: {{ include "kubetail.namespace" $ }}
+{{- end }}
