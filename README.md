@@ -14,7 +14,7 @@ helm repo update
 helm search repo kubetail
 ```
 
-Install/upgrade:
+Next steps:
 
 ```console
 # install into the default namespace
@@ -28,4 +28,7 @@ helm install kubetail kubetail/kubetail --namespace kubetail-system --create-nam
 
 # upgrade an existing installation
 helm upgrade kubetail kubetail/kubetail --namespace kubetail-system
+
+# uninstall
+helm uninstall kubetail --namespace kubetail-system
 ```
