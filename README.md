@@ -6,7 +6,7 @@
 
 ## Quickstart
 
-Add this repo to helm:
+First, add this repo to helm:
 
 ```console
 helm repo add kubetail https://kubetail-org.github.io/helm-charts/
@@ -14,7 +14,7 @@ helm repo update
 helm search repo kubetail
 ```
 
-Next steps:
+Next install/upgrade/uninstall:
 
 ```console
 # install into the default namespace
