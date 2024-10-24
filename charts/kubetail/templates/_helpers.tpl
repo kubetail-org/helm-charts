@@ -140,6 +140,7 @@ allowed-namespaces:
 server:
   addr: :{{ .Values.kubetail.server.runtimeConfig.port }}
   agent-dispatch-url: "kubernetes://{{ include "kubetail.agent.serviceName" . }}:{{ .Values.kubetail.agent.runtimeConfig.port }}"
+  extensions-enabled: {{ .Values.kubetail.agent.enabled }}
   {{- $cfg := omit .Values.kubetail.server.runtimeConfig "port" }}
   {{- $_ := set $cfg.csrf "secret" "${KUBETAIL_SERVER_CSRF_SECRET}" }}
   {{- $_ := set $cfg.session "secret" "${KUBETAIL_SERVER_SESSION_SECRET}" }}

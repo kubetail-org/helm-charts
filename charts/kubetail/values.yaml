@@ -117,8 +117,8 @@ kubetail:
       registry: "docker.io"
       # -- Image repository
       repository: "kubetail/kubetail-server"
-      # -- Overrides the image tag whose default is the chart's appVersion
-      tag: null
+      # -- Overrides the image tag
+      tag: "0.9.0"
       # -- Overrides the image tag with an image digest
       digest: null
       # -- Docker image pull policy
@@ -276,7 +276,7 @@ kubetail:
       # -- Image repository
       repository: "kubetail/kubetail-agent"
       # -- Overrides the image tag whose default is the chart's appVersion
-      tag: null
+      tag: "0.9.0"
       # -- Overrides the image tag with an image digest
       digest: null
       # -- Docker image pull policy
