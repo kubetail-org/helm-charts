@@ -1,4 +1,4 @@
-namespaceOverride: kubetail
+namespaceOverride: kubetail-system
 
 kubetail:
   authMode: cluster
