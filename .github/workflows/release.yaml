@@ -73,7 +73,7 @@ jobs:
       - name: Attach quickstart manifests to gh release
         uses: softprops/action-gh-release@v2
         with:
-          tag: latest
+          tag_name: latest
           files: |
             kubetail-clusterauth.yaml
             kubetail-tokenauth.yaml
