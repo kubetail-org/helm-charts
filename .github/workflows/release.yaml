@@ -70,10 +70,16 @@ jobs:
           helm template kubetail charts/kubetail --values hack/kubetail-values-clusterauth.yaml > kubetail-clusterauth.yaml
           helm template kubetail charts/kubetail --values hack/kubetail-values-tokenauth.yaml > kubetail-tokenauth.yaml
 
+      - name: Get kubetail chart version
+        id: get_version
+        uses: mikefarah/yq@v4
+        with:
+          cmd: yq '.version' charts/kubetail/Chart.yaml
+
       - name: Attach quickstart manifests to gh release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: latest
+          tag_name: kubetail-${{ steps.get_version.outputs.result }}
           files: |
             kubetail-clusterauth.yaml
             kubetail-tokenauth.yaml
