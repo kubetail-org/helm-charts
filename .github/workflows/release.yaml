@@ -52,15 +52,3 @@ jobs:
             fi
             helm push "${pkg}" "oci://ghcr.io/${GITHUB_REPOSITORY_OWNER}/helm-charts"
           done
-
-      - name: Create quickstart manifests
-        run: |
-          helm template charts/kubetail --values hack/kubetail-values-clusterauth.yaml > kubetail-clusterauth.yaml
-          helm template charts/kubetail --values hack/kubetail-values-tokenauth.yaml > kubetail-tokenauth.yaml
-
-      - name: Attach quickstart manifests to gh release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            kubetail-clusterauth.yaml
-            kubetail-tokenauth.yaml
