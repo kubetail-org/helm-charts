@@ -118,7 +118,7 @@ kubetail:
       # -- Image repository
       repository: "kubetail/kubetail-server"
       # -- Image tag
-      tag: "0.9.1"
+      tag: "0.9.2"
       # -- Overrides the image tag with an image digest
       digest: null
       # -- Docker image pull policy
