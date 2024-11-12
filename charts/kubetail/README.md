@@ -2,7 +2,9 @@
 
 Kubetail is a web-based, real-time log viewer for Kubernetes clusters
 
+<a href="https://discord.gg/CmsmWAVkvX"><img src="https://img.shields.io/discord/1212031524216770650?logo=Discord&style=flat-square&logoColor=FFFFFF&labelColor=5B65F0&label=Discord&color=64B73A"></a>
 [![slack](https://img.shields.io/badge/Slack-Join%20Our%20Community-364954?logo=slack&labelColor=4D1C51)](https://join.slack.com/t/kubetail/shared_invite/zt-2cq01cbm8-e1kbLT3EmcLPpHSeoFYm1w)
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/kubetail)](https://artifacthub.io/packages/search?repo=kubetail)
 
 ## Install
 
@@ -19,7 +21,7 @@ helm install kubetail kubetail/kubetail --namespace kubetail --create-namespace
 ```
 
 By default, the chart will autogenerate the required secrets (`KUBETAIL_SERVER_CSRF_SECRET`, `KUBETAIL_SERVER_SESSION_SECRET`) and
-store them in a kubernetes Secret to be used on subsequent upgrades.
+store them in a Kubernetes Secret to be re-used on subsequent upgrades.
 
 ## Upgrade
 
@@ -109,7 +111,7 @@ These are the configurable parameters for the kubetail chart and their default v
 | `kubetail.server.service.name`                    | string   | Override chart's computed fullname    | null                     |
 | `kubetail.server.service.annotations`             | map      | Additional annotations                | {}                       |
 | `kubetail.server.service.labels`                  | map      | Additional labels                     | {}                       |
-| `kubetail.server.service.port`                    | int      | Service external port number          | 80                       |
+| `kubetail.server.service.port`                    | int      | Service external port number          | 7500                     |
 | `kubetail.server.serviceAccount.name`             | string   | Override chart's computed fullname    | null                     |
 | `kubetail.server.serviceAccount.annotations`      | map      | Additional annotations                | {}                       |
 | `kubetail.server.serviceAccount.labels`           | map      | Additional labels                     | {}                       |
