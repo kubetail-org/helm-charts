@@ -43,7 +43,7 @@ kubetail:
     # -- Runtime configuration settings
     runtimeConfig:
       # -- Sets the container port to listen on
-      port: 4000
+      port: 7500
       # -- Sets the url path prefix (useful for deploying on a sub-path behind a reverse proxy)
       basePath: /
       # -- Sets the mode for the Gin framework
@@ -232,7 +232,7 @@ kubetail:
       # -- Additional labels
       labels: {}
       # -- External port
-      port: 80
+      port: 7500
 
     # -- ServiceAccount resource settings
     serviceAccount:
