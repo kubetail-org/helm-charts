@@ -18,6 +18,6 @@ spec:
   - from:
     - podSelector:
         matchLabels:
-          {{- include "kubetail.server.selectorLabels" . | nindent 10 }}
+          {{- include "kubetail.api.selectorLabels" . | nindent 10 }}
 {{- end }}
 {{- end }}

@@ -1,0 +1,70 @@
+{{- if .Values.kubetail.api.enabled }}
+{{- if eq .Values.kubetail.authMode "cluster" }}
+{{- $rbac := index .Values "kubetail" "api" "rbac" -}}
+{{- if not .Values.kubetail.allowedNamespaces }}
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "kubetail.api.clusterRoleName" . }}
+  labels:
+    {{- include "kubetail.api.labels" (list $ $rbac.labels) | indent 4 }}
+  annotations:
+    {{- include "kubetail.annotations" (list $ $rbac.annotations) | indent 4 }}
+rules:
+- apiGroups: [""]
+  resources: [pods/log]
+  verbs: [list, watch]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "kubetail.api.clusterRoleBindingName" . }}
+  labels:
+    {{- include "kubetail.api.labels" (list $ $rbac.labels) | indent 4 }}
+  annotations:
+    {{- include "kubetail.annotations" (list $ $rbac.annotations) | indent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "kubetail.api.clusterRoleName" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "kubetail.api.serviceAccountName" . }}
+  namespace: {{ include "kubetail.namespace" . }}
+{{- else }}
+{{- range .Values.kubetail.allowedNamespaces }}
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: {{ . }}
+  name: {{ include "kubetail.api.roleName" $ }}
+  labels:
+    {{- include "kubetail.api.labels" (list $ $rbac.labels) | indent 4 }}
+  annotations:
+    {{- include "kubetail.annotations" (list $ $rbac.annotations) | indent 4 }}
+rules:
+- apiGroups: [""]
+  resources: [pods/log]
+  verbs: [list, watch]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: {{ . }}
+  name: {{ include "kubetail.api.roleBindingName" $ }}
+  labels:
+    {{- include "kubetail.api.labels" (list $ $rbac.labels) | indent 4 }}
+  annotations:
+    {{- include "kubetail.annotations" (list $ $rbac.annotations) | indent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "kubetail.api.roleName" $ }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "kubetail.api.serviceAccountName" $ }}
+  namespace: {{ include "kubetail.namespace" $ }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

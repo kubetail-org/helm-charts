@@ -102,17 +102,17 @@ Convert YAML keys to kebab-case
 {{- $result | toYaml -}}
 {{- end -}}
 
-{{/**************** Server helpers ****************/}}
+{{/**************** Dashboard helpers ****************/}}
 
 {{/*
-Server labels (including shared app labels)
+Dashboard labels (including shared app labels)
 */}}
-{{- define "kubetail.server.labels" -}}
+{{- define "kubetail.dashboard.labels" -}}
 {{- $ctx := index . 0 -}}
 {{- $labelSets := slice . 1 -}}
 {{- $outputDict := dict -}}
 {{- include "kubetail.addGlobalLabels" (list $ctx $outputDict) -}}
-{{- $_ := set $outputDict "app.kubernetes.io/component" "server" -}}
+{{- $_ := set $outputDict "app.kubernetes.io/component" "dashboard" -}}
 {{- range $labelSet := $labelSets -}}
 {{- $outputDict = merge $labelSet $outputDict -}}
 {{- end -}}
@@ -120,38 +120,37 @@ Server labels (including shared app labels)
 {{- end -}}
 
 {{/*
-Server selector labels
+Dashboard selector labels
 */}}
-{{- define "kubetail.server.selectorLabels" -}}
+{{- define "kubetail.dashboard.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "kubetail.name" . | quote }}
 app.kubernetes.io/instance: {{ .Release.Name | quote }}
-app.kubernetes.io/component: "server"
+app.kubernetes.io/component: "dashboard"
 {{- end }}
 
 {{/*
-Server config
+Dashboard config
 */}}
-{{- define "kubetail.server.config" -}}
+{{- define "kubetail.dashboard.config" -}}
 auth-mode: {{ .Values.kubetail.authMode }}
 {{- with .Values.kubetail.allowedNamespaces }}
 allowed-namespaces: 
 {{- toYaml . | nindent 0 }}
 {{- end }}
-server:
-  addr: :{{ .Values.kubetail.server.runtimeConfig.port }}
-  agent-dispatch-url: "kubernetes://{{ include "kubetail.agent.serviceName" . }}:{{ .Values.kubetail.agent.runtimeConfig.port }}"
-  extensions-enabled: {{ .Values.kubetail.agent.enabled }}
-  {{- $cfg := omit .Values.kubetail.server.runtimeConfig "port" }}
-  {{- $_ := set $cfg.csrf "secret" "${KUBETAIL_SERVER_CSRF_SECRET}" }}
-  {{- $_ := set $cfg.session "secret" "${KUBETAIL_SERVER_SESSION_SECRET}" }}
+dashboard:
+  addr: :{{ .Values.kubetail.dashboard.runtimeConfig.port }}
+  extensions-enabled: {{ .Values.kubetail.api.enabled }}
+  {{- $cfg := omit .Values.kubetail.dashboard.runtimeConfig "port" }}
+  {{- $_ := set $cfg.csrf "secret" "${KUBETAIL_DASHBOARD_CSRF_SECRET}" }}
+  {{- $_ := set $cfg.session "secret" "${KUBETAIL_DASHBOARD_SESSION_SECRET}" }}
   {{- include "kubetail.toKebabYaml" $cfg | nindent 2 }}
 {{- end }}
 
 {{/*
-Server image
+Dashboard image
 */}}
-{{- define "kubetail.server.image" -}}
-{{- $img := .Values.kubetail.server.image -}}
+{{- define "kubetail.dashboard.image" -}}
+{{- $img := .Values.kubetail.dashboard.image -}}
 {{- $registry := $img.registry | default "" -}}
 {{- $repository := $img.repository | default "" -}}
 {{- $ref := ternary (printf ":%s" ($img.tag | default .Chart.AppVersion | toString)) (printf "@%s" $img.digest) (empty $img.digest) -}}
@@ -163,86 +162,199 @@ Server image
 {{- end }}
 
 {{/*
-Server ClusterRole name
+Dashboard ClusterRole name
 */}}
-{{- define "kubetail.server.clusterRoleName" -}}
-{{ if .Values.kubetail.server.rbac.name }}{{ .Values.kubetail.server.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-server{{ end }}
+{{- define "kubetail.dashboard.clusterRoleName" -}}
+{{ if .Values.kubetail.dashboard.rbac.name }}{{ .Values.kubetail.dashboard.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-dashboard{{ end }}
 {{- end }}
 
 {{/*
-Server ClusterRoleBinding name
+Dashboard ClusterRoleBinding name
 */}}
-{{- define "kubetail.server.clusterRoleBindingName" -}}
-{{ if .Values.kubetail.server.rbac.name }}{{ .Values.kubetail.server.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-server{{ end }}
+{{- define "kubetail.dashboard.clusterRoleBindingName" -}}
+{{ if .Values.kubetail.dashboard.rbac.name }}{{ .Values.kubetail.dashboard.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-dashboard{{ end }}
 {{- end }}
 
 {{/*
-Server ConfigMap name
+Dashboard ConfigMap name
 */}}
-{{- define "kubetail.server.configMapName" -}}
-{{ default (include "kubetail.fullname" .) .Values.kubetail.server.configMap.name }}-server
+{{- define "kubetail.dashboard.configMapName" -}}
+{{ default (include "kubetail.fullname" .) .Values.kubetail.dashboard.configMap.name }}-dashboard
 {{- end }}
 
 {{/*
-Server Deployment name
+Dashboard Deployment name
 */}}
-{{- define "kubetail.server.deploymentName" -}}
-{{ if .Values.kubetail.server.deployment.name }}{{ .Values.kubetail.server.deployment.name }}{{ else }}{{ include "kubetail.fullname" . }}-server{{ end }}
+{{- define "kubetail.dashboard.deploymentName" -}}
+{{ if .Values.kubetail.dashboard.deployment.name }}{{ .Values.kubetail.dashboard.deployment.name }}{{ else }}{{ include "kubetail.fullname" . }}-dashboard{{ end }}
 {{- end }}
 
 {{/*
-Server ingress name
+Dashboard ingress name
 */}}
-{{- define "kubetail.server.ingressName" -}}
-{{ default (include "kubetail.fullname" .) .Values.kubetail.server.ingress.name }}-server
+{{- define "kubetail.dashboard.ingressName" -}}
+{{ default (include "kubetail.fullname" .) .Values.kubetail.dashboard.ingress.name }}-dashboard
 {{- end }}
 
 {{/*
-Server Role name
+Dashboard Role name
 */}}
-{{- define "kubetail.server.roleName" -}}
-{{ if .Values.kubetail.server.rbac.name }}{{ .Values.kubetail.server.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-server{{ end }}
+{{- define "kubetail.dashboard.roleName" -}}
+{{ if .Values.kubetail.dashboard.rbac.name }}{{ .Values.kubetail.dashboard.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-dashboard{{ end }}
 {{- end }}
 
 {{/*
-Server RoleBinding name
+Dashboard RoleBinding name
 */}}
-{{- define "kubetail.server.roleBindingName" -}}
-{{ if .Values.kubetail.server.rbac.name }}{{ .Values.kubetail.server.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-server{{ end }}
+{{- define "kubetail.dashboard.roleBindingName" -}}
+{{ if .Values.kubetail.dashboard.rbac.name }}{{ .Values.kubetail.dashboard.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-dashboard{{ end }}
 {{- end }}
 
 {{/*
-Server Secret name
+Dashboard Secret name
 */}}
-{{- define "kubetail.server.secretName" -}}
-{{ if .Values.kubetail.server.secret.name }}{{ .Values.kubetail.server.secret.name }}{{ else }}{{ include "kubetail.fullname" . }}-server{{ end }}
+{{- define "kubetail.dashboard.secretName" -}}
+{{ if .Values.kubetail.dashboard.secret.name }}{{ .Values.kubetail.dashboard.secret.name }}{{ else }}{{ include "kubetail.fullname" . }}-dashboard{{ end }}
 {{- end }}
 
 {{/*
-Server Secret data
+Dashboard Secret data
 */}}
-{{- define "kubetail.server.secretData" -}}
+{{- define "kubetail.dashboard.secretData" -}}
 {{- $currentValsRef := dict "data" dict -}}
-{{- $currentResource := (lookup "v1" "Secret" (include "kubetail.namespace" .) (include "kubetail.server.secretName" .)) -}}
+{{- $currentResource := (lookup "v1" "Secret" (include "kubetail.namespace" .) (include "kubetail.dashboard.secretName" .)) -}}
 {{- if $currentResource -}}
 {{- $_ := set $currentValsRef "data" (index $currentResource "data") -}}
 {{- end -}}
-KUBETAIL_SERVER_CSRF_SECRET: {{ .Values.kubetail.secrets.KUBETAIL_SERVER_CSRF_SECRET | default $currentValsRef.data.KUBETAIL_SERVER_CSRF_SECRET | default ((randAlphaNum 32) | b64enc | quote) }}
-KUBETAIL_SERVER_SESSION_SECRET: {{ .Values.kubetail.secrets.KUBETAIL_SERVER_SESSION_SECRET | default $currentValsRef.data.KUBETAIL_SERVER_SESSION_SECRET | default ((randAlphaNum 32) | b64enc | quote) }}
+KUBETAIL_DASHBOARD_CSRF_SECRET: {{ .Values.kubetail.secrets.KUBETAIL_DASHBOARD_CSRF_SECRET | default $currentValsRef.data.KUBETAIL_DASHBOARD_CSRF_SECRET | default ((randAlphaNum 32) | b64enc | quote) }}
+KUBETAIL_DASHBOARD_SESSION_SECRET: {{ .Values.kubetail.secrets.KUBETAIL_DASHBOARD_SESSION_SECRET | default $currentValsRef.data.KUBETAIL_DASHBOARD_SESSION_SECRET | default ((randAlphaNum 32) | b64enc | quote) }}
 {{- end }}
 
 {{/*
-Server Service name
+Dashboard Service name
 */}}
-{{- define "kubetail.server.serviceName" -}}
-{{ if .Values.kubetail.server.service.name }}{{ .Values.kubetail.server.service.name }}{{ else }}{{ include "kubetail.fullname" . }}-server{{ end }}
+{{- define "kubetail.dashboard.serviceName" -}}
+{{ if .Values.kubetail.dashboard.service.name }}{{ .Values.kubetail.dashboard.service.name }}{{ else }}{{ include "kubetail.fullname" . }}-dashboard{{ end }}
 {{- end }}
 
 {{/*
-Server ServiceAccount name
+Dashboard ServiceAccount name
 */}}
-{{- define "kubetail.server.serviceAccountName" -}}
-{{ if .Values.kubetail.server.serviceAccount.name }}{{ .Values.kubetail.server.serviceAccount.name }}{{ else }}{{ include "kubetail.fullname" . }}-server{{ end }}
+{{- define "kubetail.dashboard.serviceAccountName" -}}
+{{ if .Values.kubetail.dashboard.serviceAccount.name }}{{ .Values.kubetail.dashboard.serviceAccount.name }}{{ else }}{{ include "kubetail.fullname" . }}-dashboard{{ end }}
+{{- end }}
+
+{{/**************** API helpers ****************/}}
+
+{{/*
+API labels (including shared app labels)
+*/}}
+{{- define "kubetail.api.labels" -}}
+{{- $ctx := index . 0 -}}
+{{- $labelSets := slice . 1 -}}
+{{- $outputDict := dict -}}
+{{- include "kubetail.addGlobalLabels" (list $ctx $outputDict) -}}
+{{- $_ := set $outputDict "app.kubernetes.io/component" "api" -}}
+{{- range $labelSet := $labelSets -}}
+{{- $outputDict = merge $labelSet $outputDict -}}
+{{- end -}}
+{{- include "kubetail.printDict" $outputDict -}}
+{{- end -}}
+
+{{/*
+API selector labels
+*/}}
+{{- define "kubetail.api.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "kubetail.name" . | quote }}
+app.kubernetes.io/instance: {{ .Release.Name | quote }}
+app.kubernetes.io/component: "api"
+{{- end }}
+
+{{/*
+API config
+*/}}
+{{- define "kubetail.api.config" -}}
+auth-mode: {{ .Values.kubetail.authMode }}
+{{- with .Values.kubetail.allowedNamespaces }}
+allowed-namespaces: 
+{{- toYaml . | nindent 0 }}
+{{- end }}
+api:
+  addr: :{{ .Values.kubetail.api.runtimeConfig.ports.grpc }}
+  agent-dispatch-url: "kubernetes://{{ include "kubetail.agent.serviceName" . }}:{{ .Values.kubetail.agent.runtimeConfig.port }}"
+  {{- $cfg := omit .Values.kubetail.api.runtimeConfig "ports" "grpc" }}
+  {{- include "kubetail.toKebabYaml" $cfg | nindent 2 }}
+{{- end }}
+
+{{/*
+API image
+*/}}
+{{- define "kubetail.api.image" -}}
+{{- $img := .Values.kubetail.api.image -}}
+{{- $registry := $img.registry | default "" -}}
+{{- $repository := $img.repository | default "" -}}
+{{- $ref := ternary (printf ":%s" ($img.tag | default .Chart.AppVersion | toString)) (printf "@%s" $img.digest) (empty $img.digest) -}}
+{{- if and $registry $repository -}}
+  {{- printf "%s/%s%s" $registry $repository $ref -}}
+{{- else -}}
+  {{- printf "%s%s%s" $registry $repository $ref -}}
+{{- end -}}
+{{- end }}
+
+{{/*
+API ClusterRole name
+*/}}
+{{- define "kubetail.api.clusterRoleName" -}}
+{{ if .Values.kubetail.api.rbac.name }}{{ .Values.kubetail.api.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-api{{ end }}
+{{- end }}
+
+{{/*
+API ClusterRoleBinding name
+*/}}
+{{- define "kubetail.api.clusterRoleBindingName" -}}
+{{ if .Values.kubetail.api.rbac.name }}{{ .Values.kubetail.api.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-api{{ end }}
+{{- end }}
+
+{{/*
+API ConfigMap name
+*/}}
+{{- define "kubetail.api.configMapName" -}}
+{{ default (include "kubetail.fullname" .) .Values.kubetail.api.configMap.name }}-api
+{{- end }}
+
+{{/*
+API Deployment name
+*/}}
+{{- define "kubetail.api.deploymentName" -}}
+{{ if .Values.kubetail.api.deployment.name }}{{ .Values.kubetail.api.deployment.name }}{{ else }}{{ include "kubetail.fullname" . }}-api{{ end }}
+{{- end }}
+
+{{/*
+API Role name
+*/}}
+{{- define "kubetail.api.roleName" -}}
+{{ if .Values.kubetail.api.rbac.name }}{{ .Values.kubetail.api.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-api{{ end }}
+{{- end }}
+
+{{/*
+API RoleBinding name
+*/}}
+{{- define "kubetail.api.roleBindingName" -}}
+{{ if .Values.kubetail.api.rbac.name }}{{ .Values.kubetail.api.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-api{{ end }}
+{{- end }}
+
+{{/*
+API Service name
+*/}}
+{{- define "kubetail.api.serviceName" -}}
+{{ if .Values.kubetail.api.service.name }}{{ .Values.kubetail.api.service.name }}{{ else }}{{ include "kubetail.fullname" . }}-api{{ end }}
+{{- end }}
+
+{{/*
+API ServiceAccount name
+*/}}
+{{- define "kubetail.api.serviceAccountName" -}}
+{{ if .Values.kubetail.api.serviceAccount.name }}{{ .Values.kubetail.api.serviceAccount.name }}{{ else }}{{ include "kubetail.fullname" . }}-api{{ end }}
 {{- end }}
 
 {{/**************** Agent helpers ****************/}}
