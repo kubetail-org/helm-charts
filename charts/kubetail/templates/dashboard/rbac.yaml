@@ -71,38 +71,4 @@ subjects:
   namespace: {{ include "kubetail.namespace" $ }}
 {{- end }}
 {{- end }}
-{{- if .Values.kubetail.agent.enabled }}
----
-kind: Role
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  namespace: {{ include "kubetail.namespace" . }}
-  name: {{ include "kubetail.dashboard.roleName" $ }}-grpc
-  labels:
-    {{- include "kubetail.dashboard.labels" (list $ $rbac.labels) | indent 4 }}
-  annotations:
-    {{- include "kubetail.annotations" (list $ $rbac.annotations) | indent 4 }}
-rules:
-- apiGroups: [discovery.k8s.io]
-  resources: [endpointslices]
-  verbs: [list, watch]
----
-kind: RoleBinding
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  namespace: {{ include "kubetail.namespace" . }}
-  name: {{ include "kubetail.dashboard.roleBindingName" $ }}-grpc
-  labels:
-    {{- include "kubetail.dashboard.labels" (list $ $rbac.labels) | indent 4 }}
-  annotations:
-    {{- include "kubetail.annotations" (list $ $rbac.annotations) | indent 4 }}
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: {{ include "kubetail.dashboard.roleName" $ }}-grpc
-subjects:
-- kind: ServiceAccount
-  name: {{ include "kubetail.dashboard.serviceAccountName" $ }}
-  namespace: {{ include "kubetail.namespace" $ }}
-{{- end }}
 {{- end }}

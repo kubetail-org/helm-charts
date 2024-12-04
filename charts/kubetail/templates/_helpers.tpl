@@ -302,20 +302,6 @@ API image
 {{- end }}
 
 {{/*
-API ClusterRole name
-*/}}
-{{- define "kubetail.api.clusterRoleName" -}}
-{{ if .Values.kubetail.api.rbac.name }}{{ .Values.kubetail.api.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-api{{ end }}
-{{- end }}
-
-{{/*
-API ClusterRoleBinding name
-*/}}
-{{- define "kubetail.api.clusterRoleBindingName" -}}
-{{ if .Values.kubetail.api.rbac.name }}{{ .Values.kubetail.api.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-api{{ end }}
-{{- end }}
-
-{{/*
 API ConfigMap name
 */}}
 {{- define "kubetail.api.configMapName" -}}

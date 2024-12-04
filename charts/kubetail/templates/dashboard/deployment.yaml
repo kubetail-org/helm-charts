@@ -62,14 +62,14 @@ spec:
         args:
         - --config=/etc/kubetail/config.yaml
         ports:
-        - name: kubetail-dashboard
+        - name: http
           protocol: TCP
           containerPort: {{ .Values.kubetail.dashboard.runtimeConfig.port }}
         livenessProbe:
           httpGet:
             scheme: HTTP
             path: /healthz
-            port: kubetail-dashboard
+            port: http
           initialDelaySeconds: 30
           timeoutSeconds: 30
           periodSeconds: 10
@@ -78,7 +78,7 @@ spec:
           httpGet:
             scheme: HTTP
             path: /healthz
-            port: kubetail-dashboard
+            port: http
           initialDelaySeconds: 30
           timeoutSeconds: 30
           periodSeconds: 10

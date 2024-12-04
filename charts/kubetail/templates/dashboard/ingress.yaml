@@ -27,7 +27,7 @@ spec:
           service:
             name: {{ include "kubetail.dashboard.serviceName" $ }}
             port:
-              name: kubetail-dashboard
+              name: http
       {{- end }}
       {{- end }}
   {{- end}}

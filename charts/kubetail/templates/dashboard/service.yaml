@@ -14,9 +14,9 @@ spec:
   selector:
     {{- include "kubetail.dashboard.selectorLabels" . | nindent 4 }}
   ports:
-  - name: kubetail-dashboard
+  - name: http
     protocol: TCP
     port: {{ $svc.port }}
-    targetPort: kubetail-dashboard
+    targetPort: http
     appProtocol: http
 {{- end }}
