@@ -33,6 +33,7 @@ subjects:
   namespace: {{ include "kubetail.namespace" . }}
 {{- else }}
 {{- range .Values.kubetail.allowedNamespaces }}
+---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
