@@ -49,7 +49,7 @@ kubetail:
       # -- Sets the container ports to listen on
       ports:
         # -- Sets the http port number
-        http: 80
+        http: 8080
       # -- Sets the url path prefix (useful for deploying on a sub-path behind a reverse proxy)
       basePath: /
       # -- Sets the mode for the Gin framework
@@ -240,7 +240,7 @@ kubetail:
       # -- External ports
       ports:
         # -- Sets the http port number
-        http: 80
+        http: 8080
 
     # -- ServiceAccount resource settings
     serviceAccount:
@@ -261,7 +261,7 @@ kubetail:
       # -- Sets the container ports to listen on
       ports:
         # -- Sets the http port number
-        http: 80
+        http: 8080
       # -- Sets the url path prefix (useful for deploying on a sub-path behind a reverse proxy)
       basePath: /
       # -- Sets the mode for the Gin framework
@@ -417,7 +417,7 @@ kubetail:
       # -- External ports
       ports:
         # -- Sets the http port number
-        http: 80
+        http: 8080
 
     # -- ServiceAccount resource settings
     serviceAccount:

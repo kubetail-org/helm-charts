@@ -113,7 +113,7 @@ These are the configurable parameters for the kubetail chart and their default v
 | `kubetail.dashboard.service.name`                     | string   | Override chart's computed fullname    | null                            |
 | `kubetail.dashboard.service.annotations`              | map      | Additional annotations                | {}                              |
 | `kubetail.dashboard.service.labels`                   | map      | Additional labels                     | {}                              |
-| `kubetail.dashboard.service.ports.http`               | int      | Service external port number (http)   | 80                              |
+| `kubetail.dashboard.service.ports.http`               | int      | Service external port number (http)   | 8080                            |
 | `kubetail.dashboard.serviceAccount.name`              | string   | Override chart's computed fullname    | null                            |
 | `kubetail.dashboard.serviceAccount.annotations`       | map      | Additional annotations                | {}                              |
 | `kubetail.dashboard.serviceAccount.labels`            | map      | Additional labels                     | {}                              |
@@ -155,7 +155,7 @@ These are the configurable parameters for the kubetail chart and their default v
 | `kubetail.clusterAPI.service.name`                    | string   | Override chart's computed fullname    | null                            |
 | `kubetail.clusterAPI.service.annotations`             | map      | Additional annotations                | {}                              |
 | `kubetail.clusterAPI.service.labels`                  | map      | Additional labels                     | {}                              |
-| `kubetail.clusterAPI.service.ports.http`              | int      | Service external port number (http)   | 80                              |
+| `kubetail.clusterAPI.service.ports.http`              | int      | Service external port number (http)   | 8080                            |
 | `kubetail.clusterAPI.serviceAccount.name`             | string   | Override chart's computed fullname    | null                            |
 | `kubetail.clusterAPI.serviceAccount.annotations`      | map      | Additional annotations                | {}                              |
 | `kubetail.clusterAPI.serviceAccount.labels`           | map      | Additional labels                     | {}                              |
