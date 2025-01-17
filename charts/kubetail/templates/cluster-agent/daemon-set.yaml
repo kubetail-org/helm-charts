@@ -1,48 +1,42 @@
-{{- if .Values.kubetail.api.enabled }}
-{{- $dep := index .Values "kubetail" "api" "deployment" -}}
-{{- $podTmpl := index .Values "kubetail" "api" "podTemplate" }}
-{{- $container := index .Values "kubetail" "api" "container" -}}
-kind: Deployment
+{{- if .Values.kubetail.clusterAgent.enabled }}
+{{- $ds := index .Values "kubetail" "clusterAgent" "daemonSet" -}}
+{{- $podTmpl := index .Values "kubetail" "clusterAgent" "podTemplate" }}
+{{- $container := index .Values "kubetail" "clusterAgent" "container" -}}
+kind: DaemonSet
 apiVersion: apps/v1
 metadata:
-  name: {{ include "kubetail.api.deploymentName" . }}
+  name: {{ include "kubetail.clusterAgent.daemonSetName" . }}
   namespace: {{ include "kubetail.namespace" . }}
   labels:
-    {{- include "kubetail.api.labels" (list $ $dep.labels) | indent 4 }}
+    {{- include "kubetail.clusterAgent.labels" (list $ $ds.labels) | indent 4 }}
   annotations:
-    {{- include "kubetail.annotations" (list $ $dep.annotations) | indent 4 }}
+    {{- include "kubetail.annotations" (list $ $ds.annotations) | indent 4 }}
 spec:
-  replicas: {{ $dep.replicas }}
-  revisionHistoryLimit: {{ $dep.revisionHistoryLimit }}
   selector:
     matchLabels:
-      {{- include "kubetail.api.selectorLabels" . | nindent 6 }}
-  strategy:
-    {{- toYaml $dep.strategy | nindent 4 }}
+      {{- include "kubetail.clusterAgent.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "kubetail.api.labels" (list $ $podTmpl.labels) | indent 8 }}
+        {{- include "kubetail.clusterAgent.labels" (list $ $podTmpl.labels) | indent 8 }}
       annotations:
         {{- include "kubetail.annotations" (list $ $podTmpl.annotations) | indent 8 }}
-        checksum/config: {{ include "kubetail.api.config" . | sha256sum | quote }}
+        checksum/config: {{ include "kubetail.clusterAgent.config" . | sha256sum | quote }}
     spec:
       automountServiceAccountToken: true
-      {{- if eq .Values.kubetail.authMode "cluster" }}
-      serviceAccountName: {{ include "kubetail.api.serviceAccountName" . }}
-      {{- end }}
+      serviceAccountName: {{ include "kubetail.clusterAgent.serviceAccountName" . }}
       securityContext:
         {{- with $podTmpl.securityContext -}}
         {{- toYaml . | nindent 8 }}
         {{- end }}
       containers:
       - name: {{ $container.name }}
-        image: {{ include "kubetail.api.image" . }}
+        image: {{ include "kubetail.clusterAgent.image" . }}
         securityContext:
           {{- with $container.securityContext -}}
           {{ toYaml . | nindent 10 }}
           {{- end }}
-        imagePullPolicy: {{ .Values.kubetail.api.image.pullPolicy }}
+        imagePullPolicy: {{ .Values.kubetail.clusterAgent.image.pullPolicy }}
         env:
         {{- with $container.extraEnv }}
         {{- toYaml . | nindent 8 }}
@@ -56,20 +50,20 @@ spec:
         ports:
         - name: grpc
           protocol: TCP
-          containerPort: {{ .Values.kubetail.api.runtimeConfig.ports.grpc }}
+          containerPort: {{ .Values.kubetail.clusterAgent.runtimeConfig.ports.grpc }}
         livenessProbe:
           grpc:
-            port: {{ .Values.kubetail.api.runtimeConfig.ports.grpc }}
-          initialDelaySeconds: 10
+            port: {{ .Values.kubetail.clusterAgent.runtimeConfig.ports.grpc }}
+          initialDelaySeconds: 5
           timeoutSeconds: 30
-          periodSeconds: 5
+          periodSeconds: 3
           failureThreshold: 3
         readinessProbe:
           grpc:
-            port: {{ .Values.kubetail.api.runtimeConfig.ports.grpc }}
-          initialDelaySeconds: 10
+            port: {{ .Values.kubetail.clusterAgent.runtimeConfig.ports.grpc }}
+          initialDelaySeconds: 5
           timeoutSeconds: 30
-          periodSeconds: 5
+          periodSeconds: 3
           failureThreshold: 3
         resources:
           {{- with $container.resources }}
@@ -79,13 +73,19 @@ spec:
         - name: config
           mountPath: /etc/kubetail
           readOnly: true
+        - name: varlog
+          mountPath: /var/log
+          readOnly: true
       {{- with $podTmpl.extraContainers  }}
       {{- toYaml . | nindent 6 }}
       {{- end }}
       volumes:
       - name: config
         configMap:
-          name: {{ include "kubetail.api.configMapName" . }}
+          name: {{ include "kubetail.clusterAgent.configMapName" . }}
+      - name: varlog
+        hostPath:
+          path: /var/log
       nodeSelector:
         {{- with $podTmpl.nodeSelector }}
         {{- toYaml . | nindent 8 }}

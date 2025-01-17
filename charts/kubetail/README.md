@@ -49,150 +49,158 @@ helm uninstall kubetail --namespace kubetail
 
 These are the configurable parameters for the kubetail chart and their default values:
 
-| Name                                                 | Datatype | Description                           | Default                     |
-| ---------------------------------------------------- | -------- | ------------------------------------- | --------------------------- |
-| CHART:                                               |          |                                       |                             |
-| `fullnameOverride`                                   | string   | Override chart's computed fullname    | null                        |
-| `nameOverride`                                       | string   | Override chart's name                 | null                        |
-| `namespaceOverride`                                  | string   | Override release's namespace          | null                        |
-|                                                      |          |                                       |                             |
-| KUBETAIL GENERAL:                                    |          |                                       |                             |
-| `kubetail.authMode`                                  | string   | Auth mode (token, cluster, local)     | "cluster"                   |
-| `kubetail.allowedNamespaces`                         | array    | Restricted namespaces                 | []                          |
-| `kubetail.secrets.KUBETAIL_DASHBOARD_CSRF_SECRET`    | string   | B64-encoded value (autogen if null)   | null                        |
-| `kubetail.secrets.KUBETAIL_DASHBOARD_SESSION_SECRET` | string   | B64-encoded value (autogen if null)   | null                        |
-| `kubetail.global.annotations`                        | map      | Annotations for all resources         | {}                          |
-| `kubetail.global.labels`                             | map      | Labels for all resources              | {}                          |
-|                                                      |          |                                       |                             |
-| KUBETAIL DASHBOARD:                                  |          |                                       |                             |
-| `kubetail.dashboard.enabled`                         | bool     | Enable/disable dashboard              | true                        |
-| `kubetail.dashboard.runtimeConfig`                   | map      | Dashboard runtime configuration       | *See values.yaml*           |
-| `kubetail.dashboard.image.registry`                  | string   | Dashboard image registry              | docker.io                   |
-| `kubetail.dashboard.image.repository`                | string   | Dashboard image repository            | kubetail/kubetail-dashboard |      
-| `kubetail.dashboard.image.tag`                       | string   | Override image default tag            | *See values.yaml*           |
-| `kubetail.dashboard.image.digest`                    | string   | Override image tag with digest        | null                        |
-| `kubetail.dashboard.image.pullPolicy`                | string   | Kubernetes image pull policy          | "IfNotPresent"              |
-| `kubetail.dashboard.container.name`                  | string   | Override chart's computed fullname    | null                        |
-| `kubetail.dashboard.container.extraEnv`              | array    | Additional env                        | []                          |
-| `kubetail.dashboard.container.extraEnvFrom`          | array    | Additional envFrom                    | []                          |
-| `kubetail.dashboard.container.securityContext`       | map      | Dashboard container security context  | *See values.yaml*           |
-| `kubetail.dashboard.container.resources`             | map      | Dashboard container resource limits   | {}                          |
-| `kubetail.dashboard.podTemplate.annotations`         | map      | Additional annotations                | {}                          |
-| `kubetail.dashboard.podTemplate.labels`              | map      | Additional labels                     | {}                          |
-| `kubetail.dashboard.podTemplate.extraContainers`     | array    | Additional containers                 | []                          |
-| `kubetail.dashboard.podTemplate.securityContext`     | map      | Dashboard pod security context        | {}                          |
-| `kubetail.dashboard.podTemplate.env`                 | map      | Kubetail container additional env     | {}                          |
-| `kubetail.dashboard.podTemplate.envFrom`             | map      | Kubetail container additional envFrom | {}                          |
-| `kubetail.dashboard.podTemplate.affinity`            | map      | Pod affinity                          | {}                          |
-| `kubetail.dashboard.podTemplate.nodeSelector`        | map      | Pod node selector                     | {}                          |
-| `kubetail.dashboard.podTemplate.tolerations`         | array    | Pod tolerations                       | []                          |
-| `kubetail.dashboard.configMap.name`                  | string   | Override chart's computed fullname    | null                        |
-| `kubetail.dashboard.configMap.annotations`           | map      | Additional annotations                | {}                          |
-| `kubetail.dashboard.configMap.labels`                | map      | Additional labels                     | {}                          |
-| `kubetail.dashboard.deployment.name`                 | string   | Override chart's computed fullname    | null                        |
-| `kubetail.dashboard.deployment.annotations`          | map      | Additional annotations                | {}                          |
-| `kubetail.dashboard.deployment.labels`               | map      | Additional labels                     | {}                          |
-| `kubetail.dashboard.deployment.replicas`             | int      | Number of replicas                    | 1                           |
-| `kubetail.dashboard.deployment.revisionHistoryLimit` | int      | Revision history limit                | 5                           |
-| `kubetail.dashboard.deployment.strategy`             | map      | Deployment strategy                   | *See values.yaml*           |
-| `kubetail.dashboard.ingress.enabled`                 | bool     | If true, add Ingress resource         | false                       |
-| `kubetail.dashboard.ingress.name`                    | string   | Override chart's computed fullname    | null                        |
-| `kubetail.dashboard.ingress.annotations`             | map      | Additional annotations                | {}                          |
-| `kubetail.dashboard.ingress.labels`                  | map      | Additional labels                     | {}                          |
-| `kubetail.dashboard.ingress.rules`                   | array    | Ingress rules array                   | []                          |
-| `kubetail.dashboard.ingress.tls`                     | array    | Ingress tls array                     | []                          |
-| `kubetail.dashboard.ingress.className`               | string   | Ingress class name                    | null                        |
-| `kubetail.dashboard.rbac.name`                       | string   | Override chart's computed fullname    | null                        |
-| `kubetail.dashboard.rbac.annotations`                | map      | Additional annotations                | {}                          |
-| `kubetail.dashboard.rbac.labels`                     | map      | Additional labels                     | {}                          |
-| `kubetail.dashboard.secret.enabled`                  | bool     | If true, add Secret resource          | true                        |
-| `kubetail.dashboard.secret.name`                     | string   | Override chart's computed fullname    | null                        |
-| `kubetail.dashboard.secret.annotations`              | map      | Additional annotations                | {}                          |
-| `kubetail.dashboard.secret.labels`                   | map      | Additional labels                     | {}                          |
-| `kubetail.dashboard.service.name`                    | string   | Override chart's computed fullname    | null                        |
-| `kubetail.dashboard.service.annotations`             | map      | Additional annotations                | {}                          |
-| `kubetail.dashboard.service.labels`                  | map      | Additional labels                     | {}                          |
-| `kubetail.dashboard.service.port`                    | int      | Service external port number          | 7500                        |
-| `kubetail.dashboard.serviceAccount.name`             | string   | Override chart's computed fullname    | null                        |
-| `kubetail.dashboard.serviceAccount.annotations`      | map      | Additional annotations                | {}                          |
-| `kubetail.dashboard.serviceAccount.labels`           | map      | Additional labels                     | {}                          |
-|                                                      |          |                                       |                             |
-| KUBETAIL API:                                        |          |                                       |                             |
-| `kubetail.api.enabled`                               | bool     | Enable/disable API                    | true                        |
-| `kubetail.api.runtimeConfig`                         | map      | API runtime configuration             | *See values.yaml*           |
-| `kubetail.api.image.registry`                        | string   | API image registry                    | docker.io                   |
-| `kubetail.api.image.repository`                      | string   | API image repository                  | kubetail/kubetail-api       |      
-| `kubetail.api.image.tag`                             | string   | Override image default tag            | *See values.yaml*           |
-| `kubetail.api.image.digest`                          | string   | Override image tag with digest        | null                        |
-| `kubetail.api.image.pullPolicy`                      | string   | Kubernetes image pull policy          | "IfNotPresent"              |
-| `kubetail.api.container.name`                        | string   | Override chart's computed fullname    | null                        |
-| `kubetail.api.container.extraEnv`                    | array    | Additional env                        | []                          |
-| `kubetail.api.container.extraEnvFrom`                | array    | Additional envFrom                    | []                          |
-| `kubetail.api.container.securityContext`             | map      | API container security context        | *See values.yaml*           |
-| `kubetail.api.container.resources`                   | map      | API container resource limits         | {}                          |
-| `kubetail.api.podTemplate.annotations`               | map      | Additional annotations                | {}                          |
-| `kubetail.api.podTemplate.labels`                    | map      | Additional labels                     | {}                          |
-| `kubetail.api.podTemplate.extraContainers`           | array    | Additional containers                 | []                          |
-| `kubetail.api.podTemplate.securityContext`           | map      | API pod security context              | {}                          |
-| `kubetail.api.podTemplate.env`                       | map      | Kubetail container additional env     | {}                          |
-| `kubetail.api.podTemplate.envFrom`                   | map      | Kubetail container additional envFrom | {}                          |
-| `kubetail.api.podTemplate.affinity`                  | map      | Pod affinity                          | {}                          |
-| `kubetail.api.podTemplate.nodeSelector`              | map      | Pod node selector                     | {}                          |
-| `kubetail.api.podTemplate.tolerations`               | array    | Pod tolerations                       | *See values.yaml*           |
-| `kubetail.api.configMap.name`                        | string   | Override chart's computed fullname    | null                        |
-| `kubetail.api.configMap.annotations`                 | map      | Additional annotations                | {}                          |
-| `kubetail.api.configMap.labels`                      | map      | Additional labels                     | {}                          |
-| `kubetail.api.deployment.name`                       | string   | Override chart's computed fullname    | null                        |
-| `kubetail.api.deployment.annotations`                | map      | Additional annotations                | {}                          |
-| `kubetail.api.deployment.labels`                     | map      | Additional labels                     | {}                          |
-| `kubetail.api.deployment.replicas`                   | int      | Number of replicas                    | 1                           |
-| `kubetail.api.deployment.revisionHistoryLimit`       | int      | Revision history limit                | 5                           |
-| `kubetail.api.deployment.strategy`                   | map      | Deployment strategy                   | *See values.yaml*           |
-| `kubetail.api.rbac.name`                             | string   | Override chart's computed fullname    | null                        |
-| `kubetail.api.rbac.annotations`                      | map      | Additional annotations                | {}                          |
-| `kubetail.api.rbac.labels`                           | map      | Additional labels                     | {}                          |
-| `kubetail.api.service.name`                          | string   | Override chart's computed fullname    | null                        |
-| `kubetail.api.service.annotations`                   | map      | Additional annotations                | {}                          |
-| `kubetail.api.service.labels`                        | map      | Additional labels                     | {}                          |
-| `kubetail.api.service.ports.grpc`                    | int      | Service external grpc port number     | 50051                       |
-| `kubetail.api.serviceAccount.name`                   | string   | Override chart's computed fullname    | null                        |
-| `kubetail.api.serviceAccount.annotations`            | map      | Additional annotations                | {}                          |
-| `kubetail.api.serviceAccount.labels`                 | map      | Additional labels                     | {}                          |
-|                                                      |          |                                       |                             |
-| KUBETAIL AGENT:                                      |          |                                       |                             |
-| `kubetail.agent.enabled`                             | bool     | Enable/disable agent                  | true                        |
-| `kubetail.agent.runtimeConfig`                       | map      | Agent runtime configuration           | *See values.yaml*           |
-| `kubetail.agent.image.registry`                      | string   | Agent image registry                  | docker.io                   |
-| `kubetail.agent.image.repository`                    | string   | Agent image repository                | kubetail/kubetail-agent     |      
-| `kubetail.agent.image.tag`                           | string   | Override image default tag            | *See values.yaml*           |
-| `kubetail.agent.image.digest`                        | string   | Override image tag with digest        | null                        |
-| `kubetail.agent.image.pullPolicy`                    | string   | Kubernetes image pull policy          | "IfNotPresent"              |
-| `kubetail.agent.container.name`                      | string   | Override chart's computed fullname    | null                        |
-| `kubetail.agent.container.extraEnv`                  | array    | Additional env                        | []                          |
-| `kubetail.agent.container.extraEnvFrom`              | array    | Additional envFrom                    | []                          |
-| `kubetail.agent.container.securityContext`           | map      | Agent container security context      | *See values.yaml*           |
-| `kubetail.agent.container.resources`                 | map      | Agent container resource limits       | {}                          |
-| `kubetail.agent.podTemplate.annotations`             | map      | Additional annotations                | {}                          |
-| `kubetail.agent.podTemplate.labels`                  | map      | Additional labels                     | {}                          |
-| `kubetail.agent.podTemplate.extraContainers`         | array    | Additional containers                 | []                          |
-| `kubetail.agent.podTemplate.securityContext`         | map      | Agent pod security context            | {}                          |
-| `kubetail.agent.podTemplate.env`                     | map      | Kubetail container additional env     | {}                          |
-| `kubetail.agent.podTemplate.envFrom`                 | map      | Kubetail container additional envFrom | {}                          |
-| `kubetail.agent.podTemplate.affinity`                | map      | Pod affinity                          | {}                          |
-| `kubetail.agent.podTemplate.nodeSelector`            | map      | Pod node selector                     | {}                          |
-| `kubetail.agent.podTemplate.tolerations`             | array    | Pod tolerations                       | *See values.yaml*           |
-| `kubetail.agent.configMap.name`                      | string   | Override chart's computed fullname    | null                        |
-| `kubetail.agent.configMap.annotations`               | map      | Additional annotations                | {}                          |
-| `kubetail.agent.configMap.labels`                    | map      | Additional labels                     | {}                          |
-| `kubetail.agent.daemonset.name`                      | string   | Override chart's computed fullname    | null                        |
-| `kubetail.agent.daemonset.annotations`               | map      | Additional annotations                | {}                          |
-| `kubetail.agent.daemonset.labels`                    | map      | Additional labels                     | {}                          |
-| `kubetail.agent.rbac.name`                           | string   | Override chart's computed fullname    | null                        |
-| `kubetail.agent.rbac.annotations`                    | map      | Additional annotations                | {}                          |
-| `kubetail.agent.rbac.labels`                         | map      | Additional labels                     | {}                          |
-| `kubetail.agent.service.name`                        | string   | Override chart's computed fullname    | null                        |
-| `kubetail.agent.service.annotations`                 | map      | Additional annotations                | {}                          |
-| `kubetail.agent.service.labels`                      | map      | Additional labels                     | {}                          |
-| `kubetail.agent.serviceAccount.name`                 | string   | Override chart's computed fullname    | null                        |
-| `kubetail.agent.serviceAccount.annotations`          | map      | Additional annotations                | {}                          |
-| `kubetail.agent.serviceAccount.labels`               | map      | Additional labels                     | {}                          |
+| Name                                                  | Datatype | Description                           | Default                         |
+| ----------------------------------------------------- | -------- | ------------------------------------- | ------------------------------- |
+| CHART:                                                |          |                                       |                                 |
+| `fullnameOverride`                                    | string   | Override chart's computed fullname    | null                            |
+| `nameOverride`                                        | string   | Override chart's name                 | null                            |
+| `namespaceOverride`                                   | string   | Override release's namespace          | null                            |
+|                                                       |          |                                       |                                 |
+| KUBETAIL GENERAL:                                     |          |                                       |                                 |
+| `kubetail.allowedNamespaces`                          | array    | Restricted namespaces                 | []                              |
+| `kubetail.global.annotations`                         | map      | Annotations for all resources         | {}                              |
+| `kubetail.global.labels`                              | map      | Labels for all resources              | {}                              |
+| `kubetail.secrets.KUBETAIL_DASHBOARD_CSRF_SECRET`     | string   | B64-encoded value (autogen if null)   | null                            |
+| `kubetail.secrets.KUBETAIL_DASHBOARD_SESSION_SECRET`  | string   | B64-encoded value (autogen if null)   | null                            |
+| `kubetail.secrets.KUBETAIL_CLUSTER_API_CSRF_SECRET`   | string   | B64-encoded value (autogen if null)   | null                            |
+|                                                       |          |                                       |                                 |
+| KUBETAIL DASHBOARD:                                   |          |                                       |                                 |
+| `kubetail.dashboard.enabled`                          | bool     | Enable/disable dashboard              | true                            |
+| `kubetail.dashboard.authMode`                         | string   | Auth mode (auto, token)               | "auto"                          |
+| `kubetail.dashboard.runtimeConfig`                    | map      | Dashboard runtime configuration       | *See values.yaml*               |
+| `kubetail.dashboard.image.registry`                   | string   | Dashboard image registry              | docker.io                       |
+| `kubetail.dashboard.image.repository`                 | string   | Dashboard image repository            | kubetail/kubetail-dashboard     |      
+| `kubetail.dashboard.image.tag`                        | string   | Override image default tag            | *See values.yaml*               |
+| `kubetail.dashboard.image.digest`                     | string   | Override image tag with digest        | null                            |
+| `kubetail.dashboard.image.pullPolicy`                 | string   | Kubernetes image pull policy          | "IfNotPresent"                  |
+| `kubetail.dashboard.container.name`                   | string   | Override chart's computed fullname    | null                            |
+| `kubetail.dashboard.container.extraEnv`               | array    | Additional env                        | []                              |
+| `kubetail.dashboard.container.extraEnvFrom`           | array    | Additional envFrom                    | []                              |
+| `kubetail.dashboard.container.securityContext`        | map      | Dashboard container security context  | *See values.yaml*               |
+| `kubetail.dashboard.container.resources`              | map      | Dashboard container resource limits   | {}                              |
+| `kubetail.dashboard.podTemplate.annotations`          | map      | Additional annotations                | {}                              |
+| `kubetail.dashboard.podTemplate.labels`               | map      | Additional labels                     | {}                              |
+| `kubetail.dashboard.podTemplate.extraContainers`      | array    | Additional containers                 | []                              |
+| `kubetail.dashboard.podTemplate.securityContext`      | map      | Dashboard pod security context        | {}                              |
+| `kubetail.dashboard.podTemplate.env`                  | map      | Kubetail container additional env     | {}                              |
+| `kubetail.dashboard.podTemplate.envFrom`              | map      | Kubetail container additional envFrom | {}                              |
+| `kubetail.dashboard.podTemplate.affinity`             | map      | Pod affinity                          | {}                              |
+| `kubetail.dashboard.podTemplate.nodeSelector`         | map      | Pod node selector                     | {}                              |
+| `kubetail.dashboard.podTemplate.tolerations`          | array    | Pod tolerations                       | []                              |
+| `kubetail.dashboard.configMap.name`                   | string   | Override chart's computed fullname    | null                            |
+| `kubetail.dashboard.configMap.annotations`            | map      | Additional annotations                | {}                              |
+| `kubetail.dashboard.configMap.labels`                 | map      | Additional labels                     | {}                              |
+| `kubetail.dashboard.deployment.name`                  | string   | Override chart's computed fullname    | null                            |
+| `kubetail.dashboard.deployment.annotations`           | map      | Additional annotations                | {}                              |
+| `kubetail.dashboard.deployment.labels`                | map      | Additional labels                     | {}                              |
+| `kubetail.dashboard.deployment.replicas`              | int      | Number of replicas                    | 1                               |
+| `kubetail.dashboard.deployment.revisionHistoryLimit`  | int      | Revision history limit                | 5                               |
+| `kubetail.dashboard.deployment.strategy`              | map      | Deployment strategy                   | *See values.yaml*               |
+| `kubetail.dashboard.ingress.enabled`                  | bool     | If true, add Ingress resource         | false                           |
+| `kubetail.dashboard.ingress.name`                     | string   | Override chart's computed fullname    | null                            |
+| `kubetail.dashboard.ingress.annotations`              | map      | Additional annotations                | {}                              |
+| `kubetail.dashboard.ingress.labels`                   | map      | Additional labels                     | {}                              |
+| `kubetail.dashboard.ingress.rules`                    | array    | Ingress rules array                   | []                              |
+| `kubetail.dashboard.ingress.tls`                      | array    | Ingress tls array                     | []                              |
+| `kubetail.dashboard.ingress.className`                | string   | Ingress class name                    | null                            |
+| `kubetail.dashboard.rbac.name`                        | string   | Override chart's computed fullname    | null                            |
+| `kubetail.dashboard.rbac.annotations`                 | map      | Additional annotations                | {}                              |
+| `kubetail.dashboard.rbac.labels`                      | map      | Additional labels                     | {}                              |
+| `kubetail.dashboard.secret.enabled`                   | bool     | If true, add Secret resource          | true                            |
+| `kubetail.dashboard.secret.name`                      | string   | Override chart's computed fullname    | null                            |
+| `kubetail.dashboard.secret.annotations`               | map      | Additional annotations                | {}                              |
+| `kubetail.dashboard.secret.labels`                    | map      | Additional labels                     | {}                              |
+| `kubetail.dashboard.service.name`                     | string   | Override chart's computed fullname    | null                            |
+| `kubetail.dashboard.service.annotations`              | map      | Additional annotations                | {}                              |
+| `kubetail.dashboard.service.labels`                   | map      | Additional labels                     | {}                              |
+| `kubetail.dashboard.service.ports.http`               | int      | Service external port number (http)   | 80                              |
+| `kubetail.dashboard.serviceAccount.name`              | string   | Override chart's computed fullname    | null                            |
+| `kubetail.dashboard.serviceAccount.annotations`       | map      | Additional annotations                | {}                              |
+| `kubetail.dashboard.serviceAccount.labels`            | map      | Additional labels                     | {}                              |
+|                                                       |          |                                       |                                 |
+| KUBETAIL CLUSTER API:                                 |          |                                       |                                 |
+| `kubetail.clusterAPI.enabled`                         | bool     | Enable/disable API                    | true                            |
+| `kubetail.clusterAPI.runtimeConfig`                   | map      | API runtime configuration             | *See values.yaml*               |
+| `kubetail.clusterAPI.image.registry`                  | string   | API image registry                    | docker.io                       |
+| `kubetail.clusterAPI.image.repository`                | string   | API image repository                  | kubetail/kubetail-cluster-api   |      
+| `kubetail.clusterAPI.image.tag`                       | string   | Override image default tag            | *See values.yaml*               |
+| `kubetail.clusterAPI.image.digest`                    | string   | Override image tag with digest        | null                            |
+| `kubetail.clusterAPI.image.pullPolicy`                | string   | Kubernetes image pull policy          | "IfNotPresent"                  |
+| `kubetail.clusterAPI.container.name`                  | string   | Override chart's computed fullname    | null                            |
+| `kubetail.clusterAPI.container.extraEnv`              | array    | Additional env                        | []                              |
+| `kubetail.clusterAPI.container.extraEnvFrom`          | array    | Additional envFrom                    | []                              |
+| `kubetail.clusterAPI.container.securityContext`       | map      | API container security context        | *See values.yaml*               |
+| `kubetail.clusterAPI.container.resources`             | map      | API container resource limits         | {}                              |
+| `kubetail.clusterAPI.podTemplate.annotations`         | map      | Additional annotations                | {}                              |
+| `kubetail.clusterAPI.podTemplate.labels`              | map      | Additional labels                     | {}                              |
+| `kubetail.clusterAPI.podTemplate.extraContainers`     | array    | Additional containers                 | []                              |
+| `kubetail.clusterAPI.podTemplate.securityContext`     | map      | API pod security context              | {}                              |
+| `kubetail.clusterAPI.podTemplate.env`                 | map      | Kubetail container additional env     | {}                              |
+| `kubetail.clusterAPI.podTemplate.envFrom`             | map      | Kubetail container additional envFrom | {}                              |
+| `kubetail.clusterAPI.podTemplate.affinity`            | map      | Pod affinity                          | {}                              |
+| `kubetail.clusterAPI.podTemplate.nodeSelector`        | map      | Pod node selector                     | {}                              |
+| `kubetail.clusterAPI.podTemplate.tolerations`         | array    | Pod tolerations                       | *See values.yaml*               |
+| `kubetail.clusterAPI.configMap.name`                  | string   | Override chart's computed fullname    | null                            |
+| `kubetail.clusterAPI.configMap.annotations`           | map      | Additional annotations                | {}                              |
+| `kubetail.clusterAPI.configMap.labels`                | map      | Additional labels                     | {}                              |
+| `kubetail.clusterAPI.deployment.name`                 | string   | Override chart's computed fullname    | null                            |
+| `kubetail.clusterAPI.deployment.annotations`          | map      | Additional annotations                | {}                              |
+| `kubetail.clusterAPI.deployment.labels`               | map      | Additional labels                     | {}                              |
+| `kubetail.clusterAPI.deployment.replicas`             | int      | Number of replicas                    | 1                               |
+| `kubetail.clusterAPI.deployment.revisionHistoryLimit` | int      | Revision history limit                | 5                               |
+| `kubetail.clusterAPI.deployment.strategy`             | map      | Deployment strategy                   | *See values.yaml*               |
+| `kubetail.clusterAPI.rbac.name`                       | string   | Override chart's computed fullname    | null                            |
+| `kubetail.clusterAPI.rbac.annotations`                | map      | Additional annotations                | {}                              |
+| `kubetail.clusterAPI.rbac.labels`                     | map      | Additional labels                     | {}                              |
+| `kubetail.clusterAPI.service.name`                    | string   | Override chart's computed fullname    | null                            |
+| `kubetail.clusterAPI.service.annotations`             | map      | Additional annotations                | {}                              |
+| `kubetail.clusterAPI.service.labels`                  | map      | Additional labels                     | {}                              |
+| `kubetail.clusterAPI.service.ports.http`              | int      | Service external port number (http)   | 80                              |
+| `kubetail.clusterAPI.serviceAccount.name`             | string   | Override chart's computed fullname    | null                            |
+| `kubetail.clusterAPI.serviceAccount.annotations`      | map      | Additional annotations                | {}                              |
+| `kubetail.clusterAPI.serviceAccount.labels`           | map      | Additional labels                     | {}                              |
+|                                                       |          |                                       |                                 |
+| KUBETAIL CLUSTER AGENT:                               |          |                                       |                                 |
+| `kubetail.clusterAgent.enabled`                       | bool     | Enable/disable agent                  | true                            |
+| `kubetail.clusterAgent.runtimeConfig`                 | map      | Agent runtime configuration           | *See values.yaml*               |
+| `kubetail.clusterAgent.image.registry`                | string   | Agent image registry                  | docker.io                       |
+| `kubetail.clusterAgent.image.repository`              | string   | Agent image repository                | kubetail/kubetail-cluster-agent |      
+| `kubetail.clusterAgent.image.tag`                     | string   | Override image default tag            | *See values.yaml*               |
+| `kubetail.clusterAgent.image.digest`                  | string   | Override image tag with digest        | null                            |
+| `kubetail.clusterAgent.image.pullPolicy`              | string   | Kubernetes image pull policy          | "IfNotPresent"                  |
+| `kubetail.clusterAgent.container.name`                | string   | Override chart's computed fullname    | null                            |
+| `kubetail.clusterAgent.container.extraEnv`            | array    | Additional env                        | []                              |
+| `kubetail.clusterAgent.container.extraEnvFrom`        | array    | Additional envFrom                    | []                              |
+| `kubetail.clusterAgent.container.securityContext`     | map      | Agent container security context      | *See values.yaml*               |
+| `kubetail.clusterAgent.container.resources`           | map      | Agent container resource limits       | {}                              |
+| `kubetail.clusterAgent.podTemplate.annotations`       | map      | Additional annotations                | {}                              |
+| `kubetail.clusterAgent.podTemplate.labels`            | map      | Additional labels                     | {}                              |
+| `kubetail.clusterAgent.podTemplate.extraContainers`   | array    | Additional containers                 | []                              |
+| `kubetail.clusterAgent.podTemplate.securityContext`   | map      | Agent pod security context            | {}                              |
+| `kubetail.clusterAgent.podTemplate.env`               | map      | Kubetail container additional env     | {}                              |
+| `kubetail.clusterAgent.podTemplate.envFrom`           | map      | Kubetail container additional envFrom | {}                              |
+| `kubetail.clusterAgent.podTemplate.affinity`          | map      | Pod affinity                          | {}                              |
+| `kubetail.clusterAgent.podTemplate.nodeSelector`      | map      | Pod node selector                     | {}                              |
+| `kubetail.clusterAgent.podTemplate.tolerations`       | array    | Pod tolerations                       | *See values.yaml*               |
+| `kubetail.clusterAgent.configMap.name`                | string   | Override chart's computed fullname    | null                            |
+| `kubetail.clusterAgent.configMap.annotations`         | map      | Additional annotations                | {}                              |
+| `kubetail.clusterAgent.configMap.labels`              | map      | Additional labels                     | {}                              |
+| `kubetail.clusterAgent.daemonset.name`                | string   | Override chart's computed fullname    | null                            |
+| `kubetail.clusterAgent.daemonset.annotations`         | map      | Additional annotations                | {}                              |
+| `kubetail.clusterAgent.daemonset.labels`              | map      | Additional labels                     | {}                              |
+| `kubetail.clusterAgent.service.name`                  | string   | Override chart's computed fullname    | null                            |
+| `kubetail.clusterAgent.service.annotations`           | map      | Additional annotations                | {}                              |
+| `kubetail.clusterAgent.service.labels`                | map      | Additional labels                     | {}                              |
+| `kubetail.clusterAgent.service.ports.grpc`            | int      | Service external port number (grpc)   | 50051                           |
+| `kubetail.clusterAgent.serviceAccount.name`           | string   | Override chart's computed fullname    | null                            |
+| `kubetail.clusterAgent.serviceAccount.annotations`    | map      | Additional annotations                | {}                              |
+| `kubetail.clusterAgent.serviceAccount.labels`         | map      | Additional labels                     | {}                              |
+|                                                       |          |                                       |                                 |
+| KUBETAIL CLI:                                         |          |                                       |                                 |
+| `kubetail.cli.enabled`                                | bool     | Enable/disable CLI resources          | true                            |
+| `kubetail.cli.rbac.name`                              | string   | Override chart's computed fullname    | null                            |
+| `kubetail.cli.rbac.annotations`                       | map      | Additional annotations                | {}                              |
+| `kubetail.cli.rbac.labels`                            | map      | Additional labels                     | {}                              |
+| `kubetail.cli.serviceAccount.name`                    | string   | Override chart's computed fullname    | null                            |
+| `kubetail.cli.serviceAccount.annotations`             | map      | Additional annotations                | {}                              |
+| `kubetail.cli.serviceAccount.labels`                  | map      | Additional labels                     | {}                              |

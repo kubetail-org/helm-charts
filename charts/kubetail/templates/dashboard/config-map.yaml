@@ -11,5 +11,5 @@ metadata:
     {{- include "kubetail.annotations" (list $ $cfgMap.annotations) | indent 4 }}
 data:
   config.yaml: |
-    {{- include "kubetail.dashboard.config" . | nindent 4 }}
+    {{- include "kubetail.dashboard.config" . | indent 4 }}
 {{- end }}
