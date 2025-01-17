@@ -3,8 +3,8 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: {{ include "kubetail.dashboard.serviceName" . }}
-  namespace: {{ include "kubetail.namespace" . }}
+  name: {{ include "kubetail.dashboard.serviceName" $ }}
+  namespace: {{ include "kubetail.namespace" $ }}
   labels:
     {{- include "kubetail.dashboard.labels" (list $ $svc.labels) | indent 4 }}
   annotations:
@@ -12,7 +12,7 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    {{- include "kubetail.dashboard.selectorLabels" . | nindent 4 }}
+    {{- include "kubetail.dashboard.selectorLabels" $ | nindent 4 }}
   ports:
   - name: http
     protocol: TCP

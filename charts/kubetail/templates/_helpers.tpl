@@ -123,7 +123,7 @@ Dashboard labels (including shared app labels)
 Dashboard selector labels
 */}}
 {{- define "kubetail.dashboard.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "kubetail.name" . | quote }}
+app.kubernetes.io/name: {{ include "kubetail.name" $ | quote }}
 app.kubernetes.io/instance: {{ .Release.Name | quote }}
 app.kubernetes.io/component: "dashboard"
 {{- end }}
@@ -139,7 +139,7 @@ allowed-namespaces:
 dashboard:
   addr: :{{ .Values.kubetail.dashboard.runtimeConfig.ports.http }}
   auth-mode: {{ .Values.kubetail.dashboard.authMode }}
-  cluster-api-endpoint: "{{ if .Values.kubetail.clusterAPI.runtimeConfig.tls.enabled }}https{{ else }}http{{ end }}://{{ include "kubetail.clusterAPI.serviceName" . }}:{{ .Values.kubetail.clusterAPI.runtimeConfig.ports.http }}"
+  cluster-api-endpoint: "{{ if .Values.kubetail.clusterAPI.runtimeConfig.tls.enabled }}https{{ else }}http{{ end }}://{{ include "kubetail.clusterAPI.serviceName" $ }}:{{ .Values.kubetail.clusterAPI.runtimeConfig.ports.http }}"
   environment: cluster
   ui:
     cluster-api-enabled: {{ .Values.kubetail.clusterAPI.enabled }}
@@ -168,56 +168,56 @@ Dashboard image
 Dashboard ClusterRole name
 */}}
 {{- define "kubetail.dashboard.clusterRoleName" -}}
-{{ if .Values.kubetail.dashboard.rbac.name }}{{ .Values.kubetail.dashboard.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-dashboard{{ end }}
+{{ if .Values.kubetail.dashboard.rbac.name }}{{ .Values.kubetail.dashboard.rbac.name }}{{ else }}{{ include "kubetail.fullname" $ }}-dashboard{{ end }}
 {{- end }}
 
 {{/*
 Dashboard ClusterRoleBinding name
 */}}
 {{- define "kubetail.dashboard.clusterRoleBindingName" -}}
-{{ if .Values.kubetail.dashboard.rbac.name }}{{ .Values.kubetail.dashboard.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-dashboard{{ end }}
+{{ if .Values.kubetail.dashboard.rbac.name }}{{ .Values.kubetail.dashboard.rbac.name }}{{ else }}{{ include "kubetail.fullname" $ }}-dashboard{{ end }}
 {{- end }}
 
 {{/*
 Dashboard ConfigMap name
 */}}
 {{- define "kubetail.dashboard.configMapName" -}}
-{{ default (include "kubetail.fullname" .) .Values.kubetail.dashboard.configMap.name }}-dashboard
+{{ default (include "kubetail.fullname" $) .Values.kubetail.dashboard.configMap.name }}-dashboard
 {{- end }}
 
 {{/*
 Dashboard Deployment name
 */}}
 {{- define "kubetail.dashboard.deploymentName" -}}
-{{ if .Values.kubetail.dashboard.deployment.name }}{{ .Values.kubetail.dashboard.deployment.name }}{{ else }}{{ include "kubetail.fullname" . }}-dashboard{{ end }}
+{{ if .Values.kubetail.dashboard.deployment.name }}{{ .Values.kubetail.dashboard.deployment.name }}{{ else }}{{ include "kubetail.fullname" $ }}-dashboard{{ end }}
 {{- end }}
 
 {{/*
 Dashboard ingress name
 */}}
 {{- define "kubetail.dashboard.ingressName" -}}
-{{ default (include "kubetail.fullname" .) .Values.kubetail.dashboard.ingress.name }}-dashboard
+{{ default (include "kubetail.fullname" $) .Values.kubetail.dashboard.ingress.name }}-dashboard
 {{- end }}
 
 {{/*
 Dashboard Role name
 */}}
 {{- define "kubetail.dashboard.roleName" -}}
-{{ if .Values.kubetail.dashboard.rbac.name }}{{ .Values.kubetail.dashboard.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-dashboard{{ end }}
+{{ if .Values.kubetail.dashboard.rbac.name }}{{ .Values.kubetail.dashboard.rbac.name }}{{ else }}{{ include "kubetail.fullname" $ }}-dashboard{{ end }}
 {{- end }}
 
 {{/*
 Dashboard RoleBinding name
 */}}
 {{- define "kubetail.dashboard.roleBindingName" -}}
-{{ if .Values.kubetail.dashboard.rbac.name }}{{ .Values.kubetail.dashboard.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-dashboard{{ end }}
+{{ if .Values.kubetail.dashboard.rbac.name }}{{ .Values.kubetail.dashboard.rbac.name }}{{ else }}{{ include "kubetail.fullname" $ }}-dashboard{{ end }}
 {{- end }}
 
 {{/*
 Dashboard Secret name
 */}}
 {{- define "kubetail.dashboard.secretName" -}}
-{{ if .Values.kubetail.dashboard.secret.name }}{{ .Values.kubetail.dashboard.secret.name }}{{ else }}{{ include "kubetail.fullname" . }}-dashboard{{ end }}
+{{ if .Values.kubetail.dashboard.secret.name }}{{ .Values.kubetail.dashboard.secret.name }}{{ else }}{{ include "kubetail.fullname" $ }}-dashboard{{ end }}
 {{- end }}
 
 {{/*
@@ -225,7 +225,7 @@ Dashboard Secret data
 */}}
 {{- define "kubetail.dashboard.secretData" -}}
 {{- $currentValsRef := dict "data" dict -}}
-{{- $currentResource := (lookup "v1" "Secret" (include "kubetail.namespace" .) (include "kubetail.dashboard.secretName" .)) -}}
+{{- $currentResource := (lookup "v1" "Secret" (include "kubetail.namespace" $) (include "kubetail.dashboard.secretName" $)) -}}
 {{- if $currentResource -}}
 {{- $_ := set $currentValsRef "data" (index $currentResource "data") -}}
 {{- end -}}
@@ -237,14 +237,14 @@ KUBETAIL_DASHBOARD_SESSION_SECRET: {{ .Values.kubetail.secrets.KUBETAIL_DASHBOAR
 Dashboard Service name
 */}}
 {{- define "kubetail.dashboard.serviceName" -}}
-{{ if .Values.kubetail.dashboard.service.name }}{{ .Values.kubetail.dashboard.service.name }}{{ else }}{{ include "kubetail.fullname" . }}-dashboard{{ end }}
+{{ if .Values.kubetail.dashboard.service.name }}{{ .Values.kubetail.dashboard.service.name }}{{ else }}{{ include "kubetail.fullname" $ }}-dashboard{{ end }}
 {{- end }}
 
 {{/*
 Dashboard ServiceAccount name
 */}}
 {{- define "kubetail.dashboard.serviceAccountName" -}}
-{{ if .Values.kubetail.dashboard.serviceAccount.name }}{{ .Values.kubetail.dashboard.serviceAccount.name }}{{ else }}{{ include "kubetail.fullname" . }}-dashboard{{ end }}
+{{ if .Values.kubetail.dashboard.serviceAccount.name }}{{ .Values.kubetail.dashboard.serviceAccount.name }}{{ else }}{{ include "kubetail.fullname" $ }}-dashboard{{ end }}
 {{- end }}
 
 {{/**************** Cluster API helpers ****************/}}
@@ -268,7 +268,7 @@ Cluster API labels (including shared app labels)
 Cluster API selector labels
 */}}
 {{- define "kubetail.clusterAPI.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "kubetail.name" . | quote }}
+app.kubernetes.io/name: {{ include "kubetail.name" $ | quote }}
 app.kubernetes.io/instance: {{ .Release.Name | quote }}
 app.kubernetes.io/component: "cluster-api"
 {{- end }}
@@ -283,7 +283,7 @@ allowed-namespaces:
 {{- end }}
 cluster-api:
   addr: :{{ .Values.kubetail.clusterAPI.runtimeConfig.ports.http }}
-  cluster-agent-dispatch-url: "kubernetes://{{ include "kubetail.clusterAgent.serviceName" . }}:{{ .Values.kubetail.clusterAgent.runtimeConfig.ports.grpc }}"
+  cluster-agent-dispatch-url: "kubernetes://{{ include "kubetail.clusterAgent.serviceName" $ }}:{{ .Values.kubetail.clusterAgent.runtimeConfig.ports.grpc }}"
   {{- $cfg := omit .Values.kubetail.clusterAPI.runtimeConfig "ports" "http"}}
   {{- $_ := set $cfg.csrf "secret" "${KUBETAIL_CLUSTER_API_CSRF_SECRET}" }}
   {{- include "kubetail.toKebabYaml" $cfg | nindent 2 }}
@@ -308,35 +308,35 @@ Cluster API image
 Cluster API ConfigMap name
 */}}
 {{- define "kubetail.clusterAPI.configMapName" -}}
-{{ default (include "kubetail.fullname" .) .Values.kubetail.clusterAPI.configMap.name }}-cluster-api
+{{ default (include "kubetail.fullname" $) .Values.kubetail.clusterAPI.configMap.name }}-cluster-api
 {{- end }}
 
 {{/*
 Cluster API Deployment name
 */}}
 {{- define "kubetail.clusterAPI.deploymentName" -}}
-{{ if .Values.kubetail.clusterAPI.deployment.name }}{{ .Values.kubetail.clusterAPI.deployment.name }}{{ else }}{{ include "kubetail.fullname" . }}-cluster-api{{ end }}
+{{ if .Values.kubetail.clusterAPI.deployment.name }}{{ .Values.kubetail.clusterAPI.deployment.name }}{{ else }}{{ include "kubetail.fullname" $ }}-cluster-api{{ end }}
 {{- end }}
 
 {{/*
 Cluster API Role name
 */}}
 {{- define "kubetail.clusterAPI.roleName" -}}
-{{ if .Values.kubetail.clusterAPI.rbac.name }}{{ .Values.kubetail.clusterAPI.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-cluster-api{{ end }}
+{{ if .Values.kubetail.clusterAPI.rbac.name }}{{ .Values.kubetail.clusterAPI.rbac.name }}{{ else }}{{ include "kubetail.fullname" $ }}-cluster-api{{ end }}
 {{- end }}
 
 {{/*
 Cluster API RoleBinding name
 */}}
 {{- define "kubetail.clusterAPI.roleBindingName" -}}
-{{ if .Values.kubetail.clusterAPI.rbac.name }}{{ .Values.kubetail.clusterAPI.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-cluster-api{{ end }}
+{{ if .Values.kubetail.clusterAPI.rbac.name }}{{ .Values.kubetail.clusterAPI.rbac.name }}{{ else }}{{ include "kubetail.fullname" $ }}-cluster-api{{ end }}
 {{- end }}
 
 {{/*
 Cluster API Secret name
 */}}
 {{- define "kubetail.clusterAPI.secretName" -}}
-{{ if .Values.kubetail.clusterAPI.secret.name }}{{ .Values.kubetail.clusterAPI.secret.name }}{{ else }}{{ include "kubetail.fullname" . }}-cluster-api{{ end }}
+{{ if .Values.kubetail.clusterAPI.secret.name }}{{ .Values.kubetail.clusterAPI.secret.name }}{{ else }}{{ include "kubetail.fullname" $ }}-cluster-api{{ end }}
 {{- end }}
 
 {{/*
@@ -344,7 +344,7 @@ Cluster API Secret data
 */}}
 {{- define "kubetail.clusterAPI.secretData" -}}
 {{- $currentValsRef := dict "data" dict -}}
-{{- $currentResource := (lookup "v1" "Secret" (include "kubetail.namespace" .) (include "kubetail.clusterAPI.secretName" .)) -}}
+{{- $currentResource := (lookup "v1" "Secret" (include "kubetail.namespace" $) (include "kubetail.clusterAPI.secretName" $)) -}}
 {{- if $currentResource -}}
 {{- $_ := set $currentValsRef "data" (index $currentResource "data") -}}
 {{- end -}}
@@ -355,14 +355,14 @@ KUBETAIL_CLUSTER_API_CSRF_SECRET: {{ .Values.kubetail.secrets.KUBETAIL_CLUSTER_A
 Cluster API Service name
 */}}
 {{- define "kubetail.clusterAPI.serviceName" -}}
-{{ if .Values.kubetail.clusterAPI.service.name }}{{ .Values.kubetail.clusterAPI.service.name }}{{ else }}{{ include "kubetail.fullname" . }}-cluster-api{{ end }}
+{{ if .Values.kubetail.clusterAPI.service.name }}{{ .Values.kubetail.clusterAPI.service.name }}{{ else }}{{ include "kubetail.fullname" $ }}-cluster-api{{ end }}
 {{- end }}
 
 {{/*
 Cluster API ServiceAccount name
 */}}
 {{- define "kubetail.clusterAPI.serviceAccountName" -}}
-{{ if .Values.kubetail.clusterAPI.serviceAccount.name }}{{ .Values.kubetail.clusterAPI.serviceAccount.name }}{{ else }}{{ include "kubetail.fullname" . }}-cluster-api{{ end }}
+{{ if .Values.kubetail.clusterAPI.serviceAccount.name }}{{ .Values.kubetail.clusterAPI.serviceAccount.name }}{{ else }}{{ include "kubetail.fullname" $ }}-cluster-api{{ end }}
 {{- end }}
 
 {{/**************** Cluster Agent helpers ****************/}}
@@ -386,7 +386,7 @@ Cluster Agent labels (including shared app labels)
 Cluster Agent selector labels
 */}}
 {{- define "kubetail.clusterAgent.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "kubetail.name" . | quote }}
+app.kubernetes.io/name: {{ include "kubetail.name" $ | quote }}
 app.kubernetes.io/instance: {{ .Release.Name | quote }}
 app.kubernetes.io/component: "cluster-agent"
 {{- end }}
@@ -424,63 +424,63 @@ Cluster Agent image
 Cluster Agent ClusterRole name
 */}}
 {{- define "kubetail.clusterAgent.clusterRoleName" -}}
-{{ if .Values.kubetail.clusterAgent.rbac.name }}{{ .Values.kubetail.clusterAgent.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-cluster-agent{{ end }}
+{{ if .Values.kubetail.clusterAgent.rbac.name }}{{ .Values.kubetail.clusterAgent.rbac.name }}{{ else }}{{ include "kubetail.fullname" $ }}-cluster-agent{{ end }}
 {{- end }}
 
 {{/*
 Cluster Agent ClusterRoleBinding name
 */}}
 {{- define "kubetail.clusterAgent.clusterRoleBindingName" -}}
-{{ if .Values.kubetail.clusterAgent.rbac.name }}{{ .Values.kubetail.clusterAgent.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-cluster-agent{{ end }}
+{{ if .Values.kubetail.clusterAgent.rbac.name }}{{ .Values.kubetail.clusterAgent.rbac.name }}{{ else }}{{ include "kubetail.fullname" $ }}-cluster-agent{{ end }}
 {{- end }}
 
 {{/*
 Cluster Agent ConfigMap name
 */}}
 {{- define "kubetail.clusterAgent.configMapName" -}}
-{{ default (include "kubetail.fullname" .) .Values.kubetail.clusterAgent.configMap.name }}-cluster-agent
+{{ default (include "kubetail.fullname" $) .Values.kubetail.clusterAgent.configMap.name }}-cluster-agent
 {{- end }}
 
 {{/*
 Cluster Agent DaemonSet name
 */}}
 {{- define "kubetail.clusterAgent.daemonSetName" -}}
-{{ if .Values.kubetail.clusterAgent.daemonSet.name }}{{ .Values.kubetail.clusterAgent.daemonSet.name }}{{ else }}{{ include "kubetail.fullname" . }}-cluster-agent{{ end }}
+{{ if .Values.kubetail.clusterAgent.daemonSet.name }}{{ .Values.kubetail.clusterAgent.daemonSet.name }}{{ else }}{{ include "kubetail.fullname" $ }}-cluster-agent{{ end }}
 {{- end }}
 
 {{/*
 Cluster Agent NetworkPolicy name
 */}}
 {{- define "kubetail.clusterAgent.networkPolicyName" -}}
-{{ if .Values.kubetail.clusterAgent.networkPolicy.name }}{{ .Values.kubetail.clusterAgent.networkPolicy.name }}{{ else }}{{ include "kubetail.fullname" . }}-cluster-agent{{ end }}
+{{ if .Values.kubetail.clusterAgent.networkPolicy.name }}{{ .Values.kubetail.clusterAgent.networkPolicy.name }}{{ else }}{{ include "kubetail.fullname" $ }}-cluster-agent{{ end }}
 {{- end }}
 
 {{/*
 Cluster Agent Role name
 */}}
 {{- define "kubetail.clusterAgent.roleName" -}}
-{{ if .Values.kubetail.clusterAgent.rbac.name }}{{ .Values.kubetail.clusterAgent.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-cluster-agent{{ end }}
+{{ if .Values.kubetail.clusterAgent.rbac.name }}{{ .Values.kubetail.clusterAgent.rbac.name }}{{ else }}{{ include "kubetail.fullname" $ }}-cluster-agent{{ end }}
 {{- end }}
 
 {{/*
 Cluster Agent RoleBinding name
 */}}
 {{- define "kubetail.clusterAgent.roleBindingName" -}}
-{{ if .Values.kubetail.clusterAgent.rbac.name }}{{ .Values.kubetail.clusterAgent.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-cluster-agent{{ end }}
+{{ if .Values.kubetail.clusterAgent.rbac.name }}{{ .Values.kubetail.clusterAgent.rbac.name }}{{ else }}{{ include "kubetail.fullname" $ }}-cluster-agent{{ end }}
 {{- end }}
 
 {{/*
 Cluster Agent Service name
 */}}
 {{- define "kubetail.clusterAgent.serviceName" -}}
-{{ if .Values.kubetail.clusterAgent.service.name }}{{ .Values.kubetail.clusterAgent.service.name }}{{ else }}{{ include "kubetail.fullname" . }}-cluster-agent{{ end }}
+{{ if .Values.kubetail.clusterAgent.service.name }}{{ .Values.kubetail.clusterAgent.service.name }}{{ else }}{{ include "kubetail.fullname" $ }}-cluster-agent{{ end }}
 {{- end }}
 
 {{/*
 Cluster Agent ServiceAccount name
 */}}
 {{- define "kubetail.clusterAgent.serviceAccountName" -}}
-{{ if .Values.kubetail.clusterAgent.serviceAccount.name }}{{ .Values.kubetail.clusterAgent.serviceAccount.name }}{{ else }}{{ include "kubetail.fullname" . }}-cluster-agent{{ end }}
+{{ if .Values.kubetail.clusterAgent.serviceAccount.name }}{{ .Values.kubetail.clusterAgent.serviceAccount.name }}{{ else }}{{ include "kubetail.fullname" $ }}-cluster-agent{{ end }}
 {{- end }}
 
 {{/**************** CLI helpers ****************/}}
@@ -504,14 +504,14 @@ CLI labels (including shared app labels)
 CLI Role name
 */}}
 {{- define "kubetail.cli.roleName" -}}
-{{ if .Values.kubetail.cli.rbac.name }}{{ .Values.kubetail.cli.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-cli{{ end }}
+{{ if .Values.kubetail.cli.rbac.name }}{{ .Values.kubetail.cli.rbac.name }}{{ else }}{{ include "kubetail.fullname" $ }}-cli{{ end }}
 {{- end }}
 
 {{/*
 CLI RoleBinding name
 */}}
 {{- define "kubetail.cli.roleBindingName" -}}
-{{ if .Values.kubetail.cli.rbac.name }}{{ .Values.kubetail.cli.rbac.name }}{{ else }}{{ include "kubetail.fullname" . }}-cli{{ end }}
+{{ if .Values.kubetail.cli.rbac.name }}{{ .Values.kubetail.cli.rbac.name }}{{ else }}{{ include "kubetail.fullname" $ }}-cli{{ end }}
 {{- end }}
 
 
@@ -519,5 +519,5 @@ CLI RoleBinding name
 CLI ServiceAccount name
 */}}
 {{- define "kubetail.cli.serviceAccountName" -}}
-{{ if .Values.kubetail.cli.serviceAccount.name }}{{ .Values.kubetail.cli.serviceAccount.name }}{{ else }}{{ include "kubetail.fullname" . }}-cli{{ end }}
+{{ if .Values.kubetail.cli.serviceAccount.name }}{{ .Values.kubetail.cli.serviceAccount.name }}{{ else }}{{ include "kubetail.fullname" $ }}-cli{{ end }}
 {{- end }}

@@ -3,8 +3,8 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: {{ include "kubetail.clusterAgent.serviceName" . }}
-  namespace: {{ include "kubetail.namespace" . }}
+  name: {{ include "kubetail.clusterAgent.serviceName" $ }}
+  namespace: {{ include "kubetail.namespace" $ }}
   labels:
     {{- include "kubetail.clusterAgent.labels" (list $ $svc.labels) | indent 4 }}
   annotations:
@@ -12,5 +12,5 @@ metadata:
 spec:
   clusterIP: None
   selector:
-    {{- include "kubetail.clusterAgent.selectorLabels" . | nindent 4 }}
+    {{- include "kubetail.clusterAgent.selectorLabels" $ | nindent 4 }}
 {{- end }}

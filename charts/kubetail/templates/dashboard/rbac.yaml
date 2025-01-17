@@ -3,7 +3,7 @@
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ include "kubetail.dashboard.clusterRoleName" . }}
+  name: {{ include "kubetail.dashboard.clusterRoleName" $ }}
   labels:
     {{- include "kubetail.dashboard.labels" (list $ $rbac.labels) | indent 4 }}
   annotations:
@@ -27,7 +27,7 @@ rules:
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ include "kubetail.dashboard.clusterRoleBindingName" . }}
+  name: {{ include "kubetail.dashboard.clusterRoleBindingName" $ }}
   labels:
     {{- include "kubetail.dashboard.labels" (list $ $rbac.labels) | indent 4 }}
   annotations:
@@ -35,11 +35,11 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ include "kubetail.dashboard.clusterRoleName" . }}
+  name: {{ include "kubetail.dashboard.clusterRoleName" $ }}
 subjects:
 - kind: ServiceAccount
-  name: {{ include "kubetail.dashboard.serviceAccountName" . }}
-  namespace: {{ include "kubetail.namespace" . }}
+  name: {{ include "kubetail.dashboard.serviceAccountName" $ }}
+  namespace: {{ include "kubetail.namespace" $ }}
 {{- if .Values.kubetail.allowedNamespaces }}
 {{- range .Values.kubetail.allowedNamespaces }}
 ---
@@ -56,7 +56,7 @@ rules:
 - apiGroups: ["", apps, batch]
   resources: [cronjobs, daemonsets, deployments, jobs, pods, pods/log, replicasets, statefulsets]
   verbs: [get, list, watch]
-{{- if eq . (include "kubetail.namespace" .) }}
+{{- if eq . (include "kubetail.namespace" $) }}
 - apiGroups: [discovery.k8s.io]
   resources: [endpointslices]
   verbs: [list, watch]
@@ -85,7 +85,7 @@ subjects:
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  namespace: {{ include "kubetail.namespace" . }}
+  namespace: {{ include "kubetail.namespace" $ }}
   name: {{ include "kubetail.dashboard.roleName" $ }}
   labels:
     {{- include "kubetail.dashboard.labels" (list $ $rbac.labels) | indent 4 }}
@@ -99,7 +99,7 @@ rules:
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  namespace: {{ include "kubetail.namespace" . }}
+  namespace: {{ include "kubetail.namespace" $ }}
   name: {{ include "kubetail.dashboard.roleBindingName" $ }}
   labels:
     {{- include "kubetail.dashboard.labels" (list $ $rbac.labels) | indent 4 }}

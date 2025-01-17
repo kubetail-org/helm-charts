@@ -5,8 +5,8 @@
 kind: DaemonSet
 apiVersion: apps/v1
 metadata:
-  name: {{ include "kubetail.clusterAgent.daemonSetName" . }}
-  namespace: {{ include "kubetail.namespace" . }}
+  name: {{ include "kubetail.clusterAgent.daemonSetName" $ }}
+  namespace: {{ include "kubetail.namespace" $ }}
   labels:
     {{- include "kubetail.clusterAgent.labels" (list $ $ds.labels) | indent 4 }}
   annotations:
@@ -14,24 +14,24 @@ metadata:
 spec:
   selector:
     matchLabels:
-      {{- include "kubetail.clusterAgent.selectorLabels" . | nindent 6 }}
+      {{- include "kubetail.clusterAgent.selectorLabels" $ | nindent 6 }}
   template:
     metadata:
       labels:
         {{- include "kubetail.clusterAgent.labels" (list $ $podTmpl.labels) | indent 8 }}
       annotations:
         {{- include "kubetail.annotations" (list $ $podTmpl.annotations) | indent 8 }}
-        checksum/config: {{ include "kubetail.clusterAgent.config" . | sha256sum | quote }}
+        checksum/config: {{ include "kubetail.clusterAgent.config" $ | sha256sum | quote }}
     spec:
       automountServiceAccountToken: true
-      serviceAccountName: {{ include "kubetail.clusterAgent.serviceAccountName" . }}
+      serviceAccountName: {{ include "kubetail.clusterAgent.serviceAccountName" $ }}
       securityContext:
         {{- with $podTmpl.securityContext -}}
         {{- toYaml . | nindent 8 }}
         {{- end }}
       containers:
       - name: {{ $container.name }}
-        image: {{ include "kubetail.clusterAgent.image" . }}
+        image: {{ include "kubetail.clusterAgent.image" $ }}
         securityContext:
           {{- with $container.securityContext -}}
           {{ toYaml . | nindent 10 }}
@@ -82,7 +82,7 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: {{ include "kubetail.clusterAgent.configMapName" . }}
+          name: {{ include "kubetail.clusterAgent.configMapName" $ }}
       - name: varlog
         hostPath:
           path: /var/log

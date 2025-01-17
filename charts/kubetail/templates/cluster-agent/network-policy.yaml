@@ -4,8 +4,8 @@
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: {{ include "kubetail.clusterAgent.networkPolicyName" . }}
-  namespace: {{ include "kubetail.namespace" . }}
+  name: {{ include "kubetail.clusterAgent.networkPolicyName" $ }}
+  namespace: {{ include "kubetail.namespace" $ }}
   labels:
     {{- include "kubetail.clusterAgent.labels" (list $ $np.labels) | indent 4 }}
   annotations:
@@ -13,11 +13,11 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      {{- include "kubetail.clusterAgent.selectorLabels" . | nindent 6 }}
+      {{- include "kubetail.clusterAgent.selectorLabels" $ | nindent 6 }}
   ingress:
   - from:
     - podSelector:
         matchLabels:
-          {{- include "kubetail.clusterAPI.selectorLabels" . | nindent 10 }}
+          {{- include "kubetail.clusterAPI.selectorLabels" $ | nindent 10 }}
 {{- end }}
 {{- end }}

@@ -6,8 +6,8 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: {{ include "kubetail.clusterAPI.deploymentName" . }}
-  namespace: {{ include "kubetail.namespace" . }}
+  name: {{ include "kubetail.clusterAPI.deploymentName" $ }}
+  namespace: {{ include "kubetail.namespace" $ }}
   labels:
     {{- include "kubetail.clusterAPI.labels" (list $ $dep.labels) | indent 4 }}
   annotations:
@@ -17,7 +17,7 @@ spec:
   revisionHistoryLimit: {{ $dep.revisionHistoryLimit }}
   selector:
     matchLabels:
-      {{- include "kubetail.clusterAPI.selectorLabels" . | nindent 6 }}
+      {{- include "kubetail.clusterAPI.selectorLabels" $ | nindent 6 }}
   strategy:
     {{- toYaml $dep.strategy | nindent 4 }}
   template:
@@ -26,20 +26,20 @@ spec:
         {{- include "kubetail.clusterAPI.labels" (list $ $podTmpl.labels) | indent 8 }}
       annotations:
         {{- include "kubetail.annotations" (list $ $podTmpl.annotations) | indent 8 }}
-        checksum/config: {{ include "kubetail.clusterAPI.config" . | sha256sum | quote }}
+        checksum/config: {{ include "kubetail.clusterAPI.config" $ | sha256sum | quote }}
         {{- if $secret.enabled }}
-        checksum/secret: {{ include "kubetail.clusterAPI.secretData" . | sha256sum | quote }}
+        checksum/secret: {{ include "kubetail.clusterAPI.secretData" $ | sha256sum | quote }}
         {{- end }}
     spec:
       automountServiceAccountToken: true
-      serviceAccountName: {{ include "kubetail.clusterAPI.serviceAccountName" . }}
+      serviceAccountName: {{ include "kubetail.clusterAPI.serviceAccountName" $ }}
       securityContext:
         {{- with $podTmpl.securityContext -}}
         {{- toYaml . | nindent 8 }}
         {{- end }}
       containers:
       - name: {{ $container.name }}
-        image: {{ include "kubetail.clusterAPI.image" . }}
+        image: {{ include "kubetail.clusterAPI.image" $ }}
         securityContext:
           {{- with $container.securityContext -}}
           {{ toYaml . | nindent 10 }}
@@ -52,7 +52,7 @@ spec:
         envFrom:
         {{- if .Values.kubetail.clusterAPI.secret.enabled }}
         - secretRef:
-            name: {{ include "kubetail.clusterAPI.secretName" . }}
+            name: {{ include "kubetail.clusterAPI.secretName" $ }}
         {{- end }}
         {{- with $container.extraEnvFrom }}
         {{- toYaml . | nindent 8 }}
@@ -95,7 +95,7 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: {{ include "kubetail.clusterAPI.configMapName" . }}
+          name: {{ include "kubetail.clusterAPI.configMapName" $ }}
       nodeSelector:
         {{- with $podTmpl.nodeSelector }}
         {{- toYaml . | nindent 8 }}

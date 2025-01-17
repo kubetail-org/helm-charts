@@ -6,8 +6,8 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: {{ include "kubetail.dashboard.deploymentName" . }}
-  namespace: {{ include "kubetail.namespace" . }}
+  name: {{ include "kubetail.dashboard.deploymentName" $ }}
+  namespace: {{ include "kubetail.namespace" $ }}
   labels:
     {{- include "kubetail.dashboard.labels" (list $ $dep.labels) | indent 4 }}
   annotations:
@@ -17,7 +17,7 @@ spec:
   revisionHistoryLimit: {{ $dep.revisionHistoryLimit }}
   selector:
     matchLabels:
-      {{- include "kubetail.dashboard.selectorLabels" . | nindent 6 }}
+      {{- include "kubetail.dashboard.selectorLabels" $ | nindent 6 }}
   strategy:
     {{- toYaml $dep.strategy | nindent 4 }}
   template:
@@ -26,20 +26,20 @@ spec:
         {{- include "kubetail.dashboard.labels" (list $ $podTmpl.labels) | indent 8 }}
       annotations:
         {{- include "kubetail.annotations" (list $ $podTmpl.annotations) | indent 8 }}
-        checksum/config: {{ include "kubetail.dashboard.config" . | sha256sum | quote }}
+        checksum/config: {{ include "kubetail.dashboard.config" $ | sha256sum | quote }}
         {{- if $secret.enabled }}
-        checksum/secret: {{ include "kubetail.dashboard.secretData" . | sha256sum | quote }}
+        checksum/secret: {{ include "kubetail.dashboard.secretData" $ | sha256sum | quote }}
         {{- end }}
     spec:
       automountServiceAccountToken: true
-      serviceAccountName: {{ include "kubetail.dashboard.serviceAccountName" . }}
+      serviceAccountName: {{ include "kubetail.dashboard.serviceAccountName" $ }}
       securityContext:
         {{- with $podTmpl.securityContext -}}
         {{- toYaml . | nindent 8 }}
         {{- end }}
       containers:
       - name: {{ $container.name }}
-        image: {{ include "kubetail.dashboard.image" . }}
+        image: {{ include "kubetail.dashboard.image" $ }}
         securityContext:
           {{- with $container.securityContext -}}
           {{ toYaml . | nindent 10 }}
@@ -52,7 +52,7 @@ spec:
         envFrom:
         {{- if .Values.kubetail.dashboard.secret.enabled }}
         - secretRef:
-            name: {{ include "kubetail.dashboard.secretName" . }}
+            name: {{ include "kubetail.dashboard.secretName" $ }}
         {{- end }}
         {{- with $container.extraEnvFrom }}
         {{- toYaml . | nindent 8 }}
@@ -95,7 +95,7 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: {{ include "kubetail.dashboard.configMapName" . }}
+          name: {{ include "kubetail.dashboard.configMapName" $ }}
       nodeSelector:
         {{- with $podTmpl.nodeSelector }}
         {{- toYaml . | nindent 8 }}

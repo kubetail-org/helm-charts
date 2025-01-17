@@ -4,8 +4,8 @@
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: {{ include "kubetail.dashboard.ingressName" . }}
-  namespace: {{ include "kubetail.namespace" . }}
+  name: {{ include "kubetail.dashboard.ingressName" $ }}
+  namespace: {{ include "kubetail.namespace" $ }}
   labels:
     {{- include "kubetail.dashboard.labels" (list $ $ing.labels) | indent 4 }}
   annotations:
