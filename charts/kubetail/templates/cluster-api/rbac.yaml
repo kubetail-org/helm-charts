@@ -1,0 +1,34 @@
+{{- if .Values.kubetail.clusterAPI.enabled }}
+{{- $rbac := index .Values "kubetail" "clusterAPI" "rbac" -}}
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: {{ include "kubetail.namespace" $ }}
+  name: {{ include "kubetail.clusterAPI.roleName" $ }}
+  labels:
+    {{- include "kubetail.clusterAPI.labels" (list $ $rbac.labels) | indent 4 }}
+  annotations:
+    {{- include "kubetail.annotations" (list $ $rbac.annotations) | indent 4 }}
+rules:
+- apiGroups: [discovery.k8s.io]
+  resources: [endpointslices]
+  verbs: [list, watch]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: {{ include "kubetail.namespace" $ }}
+  name: {{ include "kubetail.clusterAPI.roleBindingName" $ }}
+  labels:
+    {{- include "kubetail.clusterAPI.labels" (list $ $rbac.labels) | indent 4 }}
+  annotations:
+    {{- include "kubetail.annotations" (list $ $rbac.annotations) | indent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "kubetail.clusterAPI.roleName" $ }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "kubetail.clusterAPI.serviceAccountName" $ }}
+  namespace: {{ include "kubetail.namespace" $ }}
+{{- end }}

@@ -1,8 +1,7 @@
 namespaceOverride: kubetail-system
 
 kubetail:
-  authMode: cluster
-
   secrets:
-    KUBETAIL_SERVER_CSRF_SECRET: "cmVwbGFjZW1l"
-    KUBETAIL_SERVER_SESSION_SECRET: "cmVwbGFjZW1l"
+    KUBETAIL_DASHBOARD_CSRF_SECRET: "cmVwbGFjZW1l"
+    KUBETAIL_DASHBOARD_SESSION_SECRET: "cmVwbGFjZW1l"
+    KUBETAIL_CLUSTER_API_CSRF_SECRET: "cmVwbGFjZW1l"
