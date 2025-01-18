@@ -139,7 +139,9 @@ allowed-namespaces:
 dashboard:
   addr: :{{ .Values.kubetail.dashboard.runtimeConfig.ports.http }}
   auth-mode: {{ .Values.kubetail.dashboard.authMode }}
+  {{- if .Values.kubetail.clusterAPI.enabled }}
   cluster-api-endpoint: "{{ if .Values.kubetail.clusterAPI.runtimeConfig.tls.enabled }}https{{ else }}http{{ end }}://{{ include "kubetail.clusterAPI.serviceName" $ }}:{{ .Values.kubetail.clusterAPI.runtimeConfig.ports.http }}"
+  {{- end }}
   environment: cluster
   ui:
     cluster-api-enabled: {{ .Values.kubetail.clusterAPI.enabled }}
