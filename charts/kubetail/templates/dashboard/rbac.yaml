@@ -41,6 +41,7 @@ subjects:
   name: {{ include "kubetail.dashboard.serviceAccountName" $ }}
   namespace: {{ include "kubetail.namespace" $ }}
 {{- if or (eq .Values.kubetail.dashboard.authMode "token") (not .Values.kubetail.allowedNamespaces) }}
+{{- if .Values.kubetail.clusterAPI.enabled }}
 ---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
@@ -74,8 +75,10 @@ subjects:
   name: {{ include "kubetail.dashboard.serviceAccountName" $ }}
   namespace: {{ include "kubetail.namespace" $ }}
 {{- end }}
+{{- end }}
 {{- if and (ne .Values.kubetail.dashboard.authMode "token") (.Values.kubetail.allowedNamespaces) }}
 {{- if not (has (include "kubetail.namespace" $) .Values.kubetail.allowedNamespaces) }}
+{{- if .Values.kubetail.clusterAPI.enabled }}
 ---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
@@ -108,6 +111,7 @@ subjects:
 - kind: ServiceAccount
   name: {{ include "kubetail.dashboard.serviceAccountName" $ }}
   namespace: {{ include "kubetail.namespace" $ }}
+{{- end }}
 {{- end }}
 {{- range .Values.kubetail.allowedNamespaces }}
 ---
