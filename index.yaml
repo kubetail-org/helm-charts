@@ -2,6 +2,28 @@ apiVersion: v1
 entries:
   kubetail:
   - apiVersion: v2
+    appVersion: 0.9.4
+    created: "2025-02-12T22:02:31.531057809Z"
+    description: Real-time logging dashboard for Kubernetes
+    digest: 1c538b973aa031ac0492d58e7041869a020e1891bce5f9fcd28c3e54f51e5547
+    home: https://github.com/kubetail-org/kubetail
+    icon: https://assets.kubetail.com/helm/icon-40dad90a08.svg
+    keywords:
+    - kubetail
+    - kubernetes
+    - logging
+    - private
+    - realtime
+    maintainers:
+    - email: andres@kubetail.com
+      name: Andres Morey
+      url: https://github.com/kubetail-org
+    name: kubetail
+    type: application
+    urls:
+    - https://github.com/kubetail-org/helm-charts/releases/download/kubetail-0.9.6/kubetail-0.9.6.tgz
+    version: 0.9.6
+  - apiVersion: v2
     appVersion: 0.9.3
     created: "2025-02-10T12:10:39.554809726Z"
     description: Real-time logging dashboard for Kubernetes
@@ -1528,4 +1550,4 @@ entries:
     urls:
     - https://github.com/kubetail-org/helm-charts/releases/download/kubetail-0.1.0/kubetail-0.1.0.tgz
     version: 0.1.0
-generated: "2025-02-10T12:10:39.555315277Z"
+generated: "2025-02-12T22:02:31.531493876Z"
