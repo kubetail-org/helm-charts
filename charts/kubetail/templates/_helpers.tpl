@@ -321,6 +321,20 @@ Cluster API Deployment name
 {{- end }}
 
 {{/*
+Cluster API ClusterRole name
+*/}}
+{{- define "kubetail.clusterAPI.clusterRoleName" -}}
+{{ if .Values.kubetail.clusterAPI.rbac.name }}{{ .Values.kubetail.clusterAPI.rbac.name }}{{ else }}{{ include "kubetail.fullname" $ }}-cluster-api{{ end }}
+{{- end }}
+
+{{/*
+Cluster API ClusterRoleBinding name
+*/}}
+{{- define "kubetail.clusterAPI.clusterRoleBindingName" -}}
+{{ if .Values.kubetail.clusterAPI.rbac.name }}{{ .Values.kubetail.clusterAPI.rbac.name }}{{ else }}{{ include "kubetail.fullname" $ }}-cluster-api{{ end }}
+{{- end }}
+
+{{/*
 Cluster API Role name
 */}}
 {{- define "kubetail.clusterAPI.roleName" -}}
