@@ -1,6 +1,5 @@
 {{- if .Values.kubetail.clusterAPI.enabled }}
 {{- $rbac := index .Values "kubetail" "clusterAPI" "rbac" -}}
-
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -15,7 +14,7 @@ rules:
   verbs: [get, list, watch]
 {{- if not .Values.kubetail.allowedNamespaces }}
 - apiGroups: ["", apps, batch]
-  resources: [cronjobs, daemonsets, deployments, jobs, pods, pods/log, replicasets, statefulsets]
+  resources: [cronjobs, daemonsets, deployments, jobs, pods, replicasets, statefulsets]
   verbs: [get, list, watch]
 {{- end }}
 ---
@@ -55,7 +54,7 @@ rules:
 {{- end }}
 {{- if has $namespace $root.Values.kubetail.allowedNamespaces }}
 - apiGroups: ["", apps, batch]
-  resources: [cronjobs, daemonsets, deployments, jobs, pods, pods/log, replicasets, statefulsets]
+  resources: [cronjobs, daemonsets, deployments, jobs, pods, replicasets, statefulsets]
   verbs: [get, list, watch]
 {{- end }}
 ---
