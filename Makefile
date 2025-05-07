@@ -12,7 +12,7 @@ lint:
 	helm lint charts/kubetail \
 		--set kubetail.global.labels.key1=val1 \
 		--set kubetail.global.labels.key2=val2
-	
+
 	# Disable dashboard
 	helm lint charts/kubetail \
 		--set kubetail.dashboard.enable=false
