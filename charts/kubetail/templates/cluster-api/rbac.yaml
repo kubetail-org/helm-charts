@@ -34,9 +34,9 @@ subjects:
 - kind: ServiceAccount
   name: {{ include "kubetail.clusterAPI.serviceAccountName" $ }}
   namespace: {{ include "kubetail.namespace" $ }}
----
 {{- $root := . -}}
 {{- range $namespace := uniq (append .Values.kubetail.allowedNamespaces (include "kubetail.namespace" $)) -}}
+---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -75,6 +75,5 @@ subjects:
 - kind: ServiceAccount
   name: {{ include "kubetail.clusterAPI.serviceAccountName" $ }}
   namespace: {{ include "kubetail.namespace" $ }}
----
 {{- end }}
 {{- end }}
