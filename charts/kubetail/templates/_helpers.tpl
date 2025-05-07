@@ -61,7 +61,9 @@ Add global labels to input dict
 {{- $_ := set $inputDict "app.kubernetes.io/version" $ctx.Chart.AppVersion -}}
 {{- $_ := set $inputDict "app.kubernetes.io/instance" $ctx.Release.Name -}}
 {{- $_ := set $inputDict "app.kubernetes.io/managed-by" $ctx.Release.Service -}}
-{{- $inputDict = merge $ctx.Values.kubetail.global.labels $inputDict -}}
+{{- range $k, $v := $ctx.Values.kubetail.global.labels -}}
+{{-   $_ := set $inputDict $k $v -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
