@@ -1,7 +1,7 @@
 {{- if .Values.kubetail.clusterAPI.enabled }}
 {{- $rbac := index .Values "kubetail" "clusterAPI" "rbac" -}}
 {{- $root := . -}}
-{{- range $namespace := uniq (append .Values.kubetail.allowedNamespaces (include "kubetail.namespace" $)) -}}
+{{- range $namespace := uniq (append .Values.kubetail.allowedNamespaces (include "kubetail.namespace" $)) }}
 ---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
