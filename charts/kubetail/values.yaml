@@ -124,7 +124,7 @@ kubetail:
       # -- Image repository
       repository: "kubetail/kubetail-dashboard"
       # -- Image tag
-      tag: "0.5.0"
+      tag: "0.6.0"
       # -- Overrides the image tag with an image digest
       digest: null
       # -- Docker image pull policy
@@ -318,7 +318,7 @@ kubetail:
       # -- Image repository
       repository: "kubetail/kubetail-cluster-api"
       # -- Image tag
-      tag: "0.3.0"
+      tag: "0.4.0"
       # -- Overrides the image tag with an image digest
       digest: null
       # -- Docker image pull policy
@@ -463,7 +463,7 @@ kubetail:
       # -- Image repository
       repository: "kubetail/kubetail-cluster-agent"
       # -- Image tag
-      tag: "0.3.0"
+      tag: "0.4.0"
       # -- Overrides the image tag with an image digest
       digest: null
       # -- Docker image pull policy
