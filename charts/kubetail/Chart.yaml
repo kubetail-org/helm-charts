@@ -1,6 +1,6 @@
 apiVersion: v2
 name: kubetail
-description: Real-time logging dashboard for Kubernetes
+description: General-purpose logging dashboard for Kubernetes
 keywords:
 - kubetail
 - kubernetes
@@ -8,7 +8,7 @@ keywords:
 - private
 - realtime
 type: application
-version: 0.13.3-rc1
+version: 0.13.3-rc2
 appVersion: "0.13.3-rc1"
 home: https://github.com/kubetail-org/kubetail
 maintainers:
