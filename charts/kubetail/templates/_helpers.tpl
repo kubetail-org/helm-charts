@@ -281,15 +281,17 @@ app.kubernetes.io/component: "cluster-api"
 Cluster API config
 */}}
 {{- define "kubetail.clusterAPI.config" -}}
+{{- $dispatchUrlPort := int .Values.kubetail.clusterAgent.runtimeConfig.ports.grpc }}
+{{- $dispatchUrl := printf "kubernetes://%s:%d" (include "kubetail.clusterAgent.serviceName" $) $dispatchUrlPort }}
 {{- with .Values.kubetail.allowedNamespaces }}
 allowed-namespaces: 
 {{- toYaml . | nindent 0 }}
 {{- end }}
 cluster-api:
   addr: :{{ .Values.kubetail.clusterAPI.runtimeConfig.ports.http }}
-  cluster-agent-dispatch-url: "kubernetes://{{ include "kubetail.clusterAgent.serviceName" $ }}:{{ .Values.kubetail.clusterAgent.runtimeConfig.ports.grpc }}"
   {{- $cfg := omit .Values.kubetail.clusterAPI.runtimeConfig "ports" "http"}}
   {{- $_ := set $cfg.csrf "secret" "${KUBETAIL_CLUSTER_API_CSRF_SECRET}" }}
+  {{- $_ := set $cfg "clusterAgent" ( dict "dispatchUrl" $dispatchUrl )}}
   {{- include "kubetail.toKebabYaml" $cfg | nindent 2 }}
 {{- end }}
 
