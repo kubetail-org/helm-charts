@@ -148,7 +148,6 @@ dashboard:
   ui:
     cluster-api-enabled: {{ .Values.kubetail.clusterAPI.enabled }}
   {{- $cfg := omit .Values.kubetail.dashboard.runtimeConfig "ports" "http" }}
-  {{- $_ := set $cfg.csrf "secret" "${KUBETAIL_DASHBOARD_CSRF_SECRET}" }}
   {{- $_ := set $cfg.session "secret" "${KUBETAIL_DASHBOARD_SESSION_SECRET}" }}
   {{- include "kubetail.toKebabYaml" $cfg | nindent 2 }}
 {{- end }}
@@ -233,7 +232,6 @@ Dashboard Secret data
 {{- if $currentResource -}}
 {{- $_ := set $currentValsRef "data" (index $currentResource "data") -}}
 {{- end -}}
-KUBETAIL_DASHBOARD_CSRF_SECRET: {{ .Values.kubetail.secrets.KUBETAIL_DASHBOARD_CSRF_SECRET | default $currentValsRef.data.KUBETAIL_DASHBOARD_CSRF_SECRET | default ((randAlphaNum 32) | b64enc | quote) }}
 KUBETAIL_DASHBOARD_SESSION_SECRET: {{ .Values.kubetail.secrets.KUBETAIL_DASHBOARD_SESSION_SECRET | default $currentValsRef.data.KUBETAIL_DASHBOARD_SESSION_SECRET | default ((randAlphaNum 32) | b64enc | quote) }}
 {{- end }}
 
@@ -290,7 +288,6 @@ allowed-namespaces:
 cluster-api:
   addr: :{{ .Values.kubetail.clusterAPI.runtimeConfig.ports.http }}
   {{- $cfg := omit .Values.kubetail.clusterAPI.runtimeConfig "ports" "http"}}
-  {{- $_ := set $cfg.csrf "secret" "${KUBETAIL_CLUSTER_API_CSRF_SECRET}" }}
   {{- $_ := set $cfg "clusterAgent" ( dict "dispatchUrl" $dispatchUrl )}}
   {{- include "kubetail.toKebabYaml" $cfg | nindent 2 }}
 {{- end }}
@@ -368,7 +365,6 @@ Cluster API Secret data
 {{- if $currentResource -}}
 {{- $_ := set $currentValsRef "data" (index $currentResource "data") -}}
 {{- end -}}
-KUBETAIL_CLUSTER_API_CSRF_SECRET: {{ .Values.kubetail.secrets.KUBETAIL_CLUSTER_API_CSRF_SECRET | default $currentValsRef.data.KUBETAIL_CLUSTER_API_CSRF_SECRET | default ((randAlphaNum 32) | b64enc | quote) }}
 {{- end }}
 
 {{/*
