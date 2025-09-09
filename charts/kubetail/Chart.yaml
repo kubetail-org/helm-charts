@@ -8,8 +8,8 @@ keywords:
 - private
 - realtime
 type: application
-version: 0.14.0-rc3
-appVersion: "0.14.0-rc3"
+version: 0.14.0-rc4
+appVersion: "0.14.0-rc4"
 home: https://github.com/kubetail-org/kubetail
 maintainers:
 - email: andres@kubetail.com
