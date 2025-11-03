@@ -102,7 +102,7 @@ kubetail:
       # -- Image repository
       repository: "kubetail/kubetail-dashboard"
       # -- Image tag
-      tag: "0.7.4"
+      tag: "0.8.0"
       # -- Overrides the image tag with an image digest
       digest: null
       # -- Docker image pull policy
