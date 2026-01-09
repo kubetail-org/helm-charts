@@ -138,18 +138,17 @@ Dashboard config
 allowed-namespaces: 
 {{- toYaml . | nindent 0 }}
 {{- end }}
-dashboard:
-  addr: :{{ .Values.kubetail.dashboard.runtimeConfig.ports.http }}
-  auth-mode: {{ .Values.kubetail.dashboard.authMode }}
-  {{- if .Values.kubetail.clusterAPI.enabled }}
-  cluster-api-endpoint: "{{ if .Values.kubetail.clusterAPI.runtimeConfig.tls.enabled }}https{{ else }}http{{ end }}://{{ include "kubetail.clusterAPI.serviceName" $ }}:{{ .Values.kubetail.clusterAPI.runtimeConfig.ports.http }}"
-  {{- end }}
-  environment: cluster
-  ui:
-    cluster-api-enabled: {{ .Values.kubetail.clusterAPI.enabled }}
-  {{- $cfg := omit .Values.kubetail.dashboard.runtimeConfig "ports" "http" }}
-  {{- $_ := set $cfg.session "secret" "${KUBETAIL_DASHBOARD_SESSION_SECRET}" }}
-  {{- include "kubetail.toKebabYaml" $cfg | nindent 2 }}
+addr: :{{ .Values.kubetail.dashboard.runtimeConfig.ports.http }}
+auth-mode: {{ .Values.kubetail.dashboard.authMode }}
+{{- if .Values.kubetail.clusterAPI.enabled }}
+cluster-api-endpoint: "{{ if .Values.kubetail.clusterAPI.runtimeConfig.tls.enabled }}https{{ else }}http{{ end }}://{{ include "kubetail.clusterAPI.serviceName" $ }}:{{ .Values.kubetail.clusterAPI.runtimeConfig.ports.http }}"
+{{- end }}
+environment: cluster
+ui:
+  cluster-api-enabled: {{ .Values.kubetail.clusterAPI.enabled }}
+{{- $cfg := omit .Values.kubetail.dashboard.runtimeConfig "ports" "http" }}
+{{- $_ := set $cfg.session "secret" "${KUBETAIL_DASHBOARD_SESSION_SECRET}" }}
+{{- include "kubetail.toKebabYaml" $cfg | nindent 0 }}
 {{- end }}
 
 {{/*
@@ -285,11 +284,10 @@ Cluster API config
 allowed-namespaces: 
 {{- toYaml . | nindent 0 }}
 {{- end }}
-cluster-api:
-  addr: :{{ .Values.kubetail.clusterAPI.runtimeConfig.ports.http }}
-  {{- $cfg := omit .Values.kubetail.clusterAPI.runtimeConfig "ports" "http"}}
-  {{- $_ := set $cfg "clusterAgent" ( dict "dispatchUrl" $dispatchUrl )}}
-  {{- include "kubetail.toKebabYaml" $cfg | nindent 2 }}
+addr: :{{ .Values.kubetail.clusterAPI.runtimeConfig.ports.http }}
+{{- $cfg := omit .Values.kubetail.clusterAPI.runtimeConfig "ports" "http"}}
+{{- $_ := set $cfg "clusterAgent" ( dict "dispatchUrl" $dispatchUrl )}}
+{{- include "kubetail.toKebabYaml" $cfg | nindent 0 }}
 {{- end }}
 
 {{/*
@@ -415,10 +413,9 @@ Cluster Agent config
 allowed-namespaces: 
 {{- toYaml . | nindent 0 }}
 {{- end }}
-cluster-agent:
-  addr: :{{ .Values.kubetail.clusterAgent.runtimeConfig.ports.grpc }}
-  {{- $cfg := omit .Values.kubetail.clusterAgent.runtimeConfig "ports" "grpc" }}
-  {{- include "kubetail.toKebabYaml" $cfg | nindent 2 }}
+addr: :{{ .Values.kubetail.clusterAgent.runtimeConfig.ports.grpc }}
+{{- $cfg := omit .Values.kubetail.clusterAgent.runtimeConfig "ports" "grpc" }}
+{{- include "kubetail.toKebabYaml" $cfg | nindent 0 }}
 {{- end }}
 
 {{/*
