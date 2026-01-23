@@ -98,9 +98,9 @@ kubetail:
     # -- Docker image settings
     image:
       # -- Image registry
-      registry: "docker.io"
+      registry: "ghcr.io"
       # -- Image repository
-      repository: "kubetail/kubetail-dashboard"
+      repository: "kubetail-org/kubetail-dashboard"
       # -- Image tag
       tag: "0.9.0"
       # -- Overrides the image tag with an image digest
@@ -274,9 +274,9 @@ kubetail:
     # -- Docker image settings
     image:
       # -- Image registry
-      registry: "docker.io"
+      registry: "ghcr.io"
       # -- Image repository
-      repository: "kubetail/kubetail-cluster-api"
+      repository: "kubetail-org/kubetail-cluster-api"
       # -- Image tag
       tag: "0.5.0"
       # -- Overrides the image tag with an image digest
@@ -419,9 +419,9 @@ kubetail:
     # -- Docker image settings
     image:
       # -- Image registry
-      registry: "docker.io"
+      registry: "ghcr.io"
       # -- Image repository
-      repository: "kubetail/kubetail-cluster-agent"
+      repository: "kubetail-org/kubetail-cluster-agent"
       # -- Image tag
       tag: "0.6.0"
       # -- Overrides the image tag with an image digest
