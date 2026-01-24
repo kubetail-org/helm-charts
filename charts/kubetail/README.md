@@ -68,7 +68,7 @@ These are the configurable parameters for the kubetail chart and their default v
 | `kubetail.dashboard.enabled`                          | bool     | Enable/disable dashboard              | true                            |
 | `kubetail.dashboard.authMode`                         | string   | Auth mode (auto, token)               | "auto"                          |
 | `kubetail.dashboard.runtimeConfig`                    | map      | Dashboard runtime configuration       | *See values.yaml*               |
-| `kubetail.dashboard.image.registry`                   | string   | Dashboard image registry              | docker.io                       |
+| `kubetail.dashboard.image.registry`                   | string   | Dashboard image registry              | ghcr.io                         |
 | `kubetail.dashboard.image.repository`                 | string   | Dashboard image repository            | kubetail/kubetail-dashboard     |      
 | `kubetail.dashboard.image.tag`                        | string   | Override image default tag            | *See values.yaml*               |
 | `kubetail.dashboard.image.digest`                     | string   | Override image tag with digest        | null                            |
@@ -121,7 +121,7 @@ These are the configurable parameters for the kubetail chart and their default v
 | KUBETAIL CLUSTER API:                                 |          |                                       |                                 |
 | `kubetail.clusterAPI.enabled`                         | bool     | Enable/disable API                    | true                            |
 | `kubetail.clusterAPI.runtimeConfig`                   | map      | API runtime configuration             | *See values.yaml*               |
-| `kubetail.clusterAPI.image.registry`                  | string   | API image registry                    | docker.io                       |
+| `kubetail.clusterAPI.image.registry`                  | string   | API image registry                    | ghcr.io                         |
 | `kubetail.clusterAPI.image.repository`                | string   | API image repository                  | kubetail/kubetail-cluster-api   |      
 | `kubetail.clusterAPI.image.tag`                       | string   | Override image default tag            | *See values.yaml*               |
 | `kubetail.clusterAPI.image.digest`                    | string   | Override image tag with digest        | null                            |
@@ -163,7 +163,7 @@ These are the configurable parameters for the kubetail chart and their default v
 | KUBETAIL CLUSTER AGENT:                               |          |                                       |                                 |
 | `kubetail.clusterAgent.enabled`                       | bool     | Enable/disable agent                  | true                            |
 | `kubetail.clusterAgent.runtimeConfig`                 | map      | Agent runtime configuration           | *See values.yaml*               |
-| `kubetail.clusterAgent.image.registry`                | string   | Agent image registry                  | docker.io                       |
+| `kubetail.clusterAgent.image.registry`                | string   | Agent image registry                  | ghcr.io                         |
 | `kubetail.clusterAgent.image.repository`              | string   | Agent image repository                | kubetail/kubetail-cluster-agent |      
 | `kubetail.clusterAgent.image.tag`                     | string   | Override image default tag            | *See values.yaml*               |
 | `kubetail.clusterAgent.image.digest`                  | string   | Override image tag with digest        | null                            |
