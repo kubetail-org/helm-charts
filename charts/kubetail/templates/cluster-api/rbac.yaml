@@ -20,7 +20,7 @@ rules:
 {{- end }}
 {{- if has $namespace $root.Values.kubetail.allowedNamespaces }}
 - apiGroups: ["", apps, batch]
-  resources: [cronjobs, daemonsets, deployments, jobs, pods, replicasets, statefulsets]
+  resources: [cronjobs, daemonsets, deployments, jobs, pods, pods/log, replicasets, statefulsets]
   verbs: [get, list, watch]
 {{- end }}
 ---
@@ -57,7 +57,7 @@ rules:
   verbs: [get, list, watch]
 {{- if not .Values.kubetail.allowedNamespaces }}
 - apiGroups: ["", apps, batch]
-  resources: [cronjobs, daemonsets, deployments, jobs, pods, replicasets, statefulsets]
+  resources: [cronjobs, daemonsets, deployments, jobs, pods, pods/log, replicasets, statefulsets]
   verbs: [get, list, watch]
 {{- end }}
 ---
