@@ -17,11 +17,8 @@ rules:
   resources: [nodes]
   verbs: [get, list, watch]
 - apiGroups: ["", apps, batch]
-  resources: [cronjobs, daemonsets, deployments, jobs, pods, replicasets, statefulsets]
+  resources: [cronjobs, daemonsets, deployments, jobs, pods, pods/log, replicasets, statefulsets]
   verbs: [get, list, watch]
-- apiGroups: [""]
-  resources: [pods/log]
-  verbs: [list, watch]
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -55,11 +52,8 @@ rules:
   resources: [nodes]
   verbs: [get, list, watch]
 - apiGroups: ["", apps, batch]
-  resources: [cronjobs, daemonsets, deployments, jobs, pods, replicasets, statefulsets]
+  resources: [cronjobs, daemonsets, deployments, jobs, pods, pods/log, replicasets, statefulsets]
   verbs: [get, list, watch]
-- apiGroups: [""]
-  resources: [pods/log]
-  verbs: [list, watch]
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
