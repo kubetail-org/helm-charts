@@ -46,6 +46,8 @@ spec:
           {{- end }}
         imagePullPolicy: {{ .Values.kubetail.dashboard.image.pullPolicy }}
         env:
+        - name: KUBETAIL_CHART_VERSION
+          value: {{ .Chart.Version | quote }}
         {{- with $container.extraEnv }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
