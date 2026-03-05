@@ -9,19 +9,22 @@ metadata:
   annotations:
     {{- include "kubetail.annotations" (list $ $rbac.annotations) | indent 4 }}
 rules:
+- apiGroups: [""]
+  resources: [namespaces, nodes]
+  verbs: [get, list, watch]
+{{- if not .Values.kubetail.allowedNamespaces }}
+- apiGroups: ["", apps, batch]
+  resources: [cronjobs, daemonsets, deployments, jobs, pods, replicasets, statefulsets]
+  verbs: [get, list, watch]
+{{- end }}
 {{- if eq .Values.kubetail.dashboard.authMode "token" }}
 - apiGroups: [authentication.k8s.io]
   resources: [tokenreviews]
   verbs: [create]
 {{- else }}
 - apiGroups: [""]
-  resources: [namespaces, nodes]
-  verbs: [get, list, watch]
-{{- if not .Values.kubetail.allowedNamespaces }}
-- apiGroups: ["", apps, batch]
-  resources: [cronjobs, daemonsets, deployments, jobs, pods, pods/log, replicasets, statefulsets]
-  verbs: [get, list, watch]
-{{- end }}
+  resources: [pods/log]
+  verbs: [get]
 {{- end }}
 ---
 kind: ClusterRoleBinding
