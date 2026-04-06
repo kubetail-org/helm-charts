@@ -17,6 +17,10 @@
 # Ignore save files from helm diff plugin
 **/diff_output
 
+# Claude
+.claude/*
+!.claude/skills
+
 # General files to ignore
 *.log
 *.tmp
