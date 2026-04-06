@@ -1,26 +1,26 @@
-<!-- 
-Put one of these emojis in your title to indicate the type of PR:
+<!-- PR title emoji:
 - 🎣 Bug fix
 - 🐋 New feature
 - 📜 Documentation
+- ✨ General improvement
 -->
 
-Fixes # 
+<!-- Related issues:
+Closes #
+Ref #
+-->
 
 ## Summary
 
-<-- Explain the goal of your PR  -->
+<!-- Explain the goal of this PR (WHY) -->
 
-## Changes
+## Key Changes
 
-<-- Explain the changes in your PR -->
+<!-- List the key changes in this PR (WHAT) -->
 
-## Submitter checklist
+## Checklist
 
 - [ ] Add the correct emoji to the PR title
-- [ ] Link the issue number to *Fixes #*
-- [ ] Add summary and explain changes in the PR description
-- [ ] Rebase branch to HEAD
-- [ ] Squash changes into one signed, single commit [^1]
-
-[^1]: See suggested [commit format](https://github.com/kubetail-org/.github/blob/main/pull-request-commit-format.md)
+- [ ] Related issue linked above, if any
+- [ ] Commit messages use [conventional commit](https://www.conventionalcommits.org) format
+- [ ] Changes are minimal and focused
