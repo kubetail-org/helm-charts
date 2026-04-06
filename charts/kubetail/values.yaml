@@ -136,6 +136,8 @@ kubetail:
       labels: {}
       # -- Additional containers
       extraContainers: []
+      # -- Image pull secrets
+      imagePullSecrets: []
       # -- Pod security context
       securityContext: {}
       # -- Affinity settings
@@ -312,6 +314,8 @@ kubetail:
       labels: {}
       # -- Additional containers
       extraContainers: []
+      # -- Image pull secrets
+      imagePullSecrets: []
       # -- Pod security context
       securityContext: {}
       # -- Affinity settings
@@ -459,6 +463,8 @@ kubetail:
       labels: {}
       # -- Additional containers
       extraContainers: []
+      # -- Image pull secrets
+      imagePullSecrets: []
       # -- Pod security context
       securityContext:
         fsGroup: 0

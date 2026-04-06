@@ -33,6 +33,10 @@ spec:
     spec:
       automountServiceAccountToken: true
       serviceAccountName: {{ include "kubetail.dashboard.serviceAccountName" $ }}
+      {{- with $podTmpl.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       securityContext:
         {{- with $podTmpl.securityContext -}}
         {{- toYaml . | nindent 8 }}
