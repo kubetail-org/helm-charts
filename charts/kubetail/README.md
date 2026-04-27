@@ -20,7 +20,7 @@ After you've installed the repo you can create a new release from the `kubetail/
 helm install kubetail kubetail/kubetail --namespace kubetail --create-namespace
 ```
 
-By default, the chart will autogenerate the required secrets (`KUBETAIL_DASHBOARD_CSRF_SECRET`, `KUBETAIL_DASHBOARD_SESSION_SECRET`) and
+By default, the chart will autogenerate the required secrets (`KUBETAIL_DASHBOARD_SESSION_SIGNING_KEY1`, `KUBETAIL_DASHBOARD_SESSION_ENCRYPTION_KEY1`) and
 store them in a Kubernetes Secret to be re-used on subsequent upgrades.
 
 ## Upgrade
@@ -60,9 +60,8 @@ These are the configurable parameters for the kubetail chart and their default v
 | `kubetail.allowedNamespaces`                          | array    | Restricted namespaces                 | []                              |
 | `kubetail.global.annotations`                         | map      | Annotations for all resources         | {}                              |
 | `kubetail.global.labels`                              | map      | Labels for all resources              | {}                              |
-| `kubetail.secrets.KUBETAIL_DASHBOARD_CSRF_SECRET`     | string   | B64-encoded value (autogen if null)   | null                            |
-| `kubetail.secrets.KUBETAIL_DASHBOARD_SESSION_SECRET`  | string   | B64-encoded value (autogen if null)   | null                            |
-| `kubetail.secrets.KUBETAIL_CLUSTER_API_CSRF_SECRET`   | string   | B64-encoded value (autogen if null)   | null                            |
+| `kubetail.secrets.KUBETAIL_DASHBOARD_SESSION_SIGNING_KEY1`    | string   | B64-encoded value (autogen if null)   | null                            |
+| `kubetail.secrets.KUBETAIL_DASHBOARD_SESSION_ENCRYPTION_KEY1` | string   | B64-encoded value (autogen if null)   | null                            |
 |                                                       |          |                                       |                                 |
 | KUBETAIL DASHBOARD:                                   |          |                                       |                                 |
 | `kubetail.dashboard.enabled`                          | bool     | Enable/disable dashboard              | true                            |

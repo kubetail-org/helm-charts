@@ -147,7 +147,16 @@ environment: cluster
 ui:
   cluster-api-enabled: {{ .Values.kubetail.clusterAPI.enabled }}
 {{- $cfg := omit .Values.kubetail.dashboard.runtimeConfig "ports" "http" }}
-{{- $_ := set $cfg.session "secret" "${KUBETAIL_DASHBOARD_SESSION_SECRET}" }}
+{{- $secrets := .Values.kubetail.secrets | default dict }}
+{{- $keyPairs := list (dict "signingKey" "${KUBETAIL_DASHBOARD_SESSION_SIGNING_KEY1}" "encryptionKey" "${KUBETAIL_DASHBOARD_SESSION_ENCRYPTION_KEY1}") }}
+{{- if hasKey $secrets "KUBETAIL_DASHBOARD_SESSION_SIGNING_KEY2" }}
+  {{- $pair := dict "signingKey" "${KUBETAIL_DASHBOARD_SESSION_SIGNING_KEY2}" }}
+  {{- if index $secrets "KUBETAIL_DASHBOARD_SESSION_ENCRYPTION_KEY2" }}
+    {{- $_ := set $pair "encryptionKey" "${KUBETAIL_DASHBOARD_SESSION_ENCRYPTION_KEY2}" }}
+  {{- end }}
+  {{- $keyPairs = append $keyPairs $pair }}
+{{- end }}
+{{- $_ := set $cfg.session "keyPairs" $keyPairs }}
 {{- include "kubetail.toKebabYaml" $cfg | nindent 0 }}
 {{- end }}
 
@@ -226,12 +235,20 @@ Dashboard Secret name
 Dashboard Secret data
 */}}
 {{- define "kubetail.dashboard.secretData" -}}
-{{- $currentValsRef := dict "data" dict -}}
+{{- $currentData := dict -}}
 {{- $currentResource := (lookup "v1" "Secret" (include "kubetail.namespace" $) (include "kubetail.dashboard.secretName" $)) -}}
 {{- if $currentResource -}}
-{{- $_ := set $currentValsRef "data" (index $currentResource "data") -}}
+{{- $currentData = index $currentResource "data" -}}
 {{- end -}}
-KUBETAIL_DASHBOARD_SESSION_SECRET: {{ .Values.kubetail.secrets.KUBETAIL_DASHBOARD_SESSION_SECRET | default $currentValsRef.data.KUBETAIL_DASHBOARD_SESSION_SECRET | default ((randAlphaNum 32) | b64enc | quote) }}
+{{- $secrets := .Values.kubetail.secrets | default dict -}}
+KUBETAIL_DASHBOARD_SESSION_SIGNING_KEY1: {{ $secrets.KUBETAIL_DASHBOARD_SESSION_SIGNING_KEY1 | default $currentData.KUBETAIL_DASHBOARD_SESSION_SIGNING_KEY1 | default ((sha256sum (randAlphaNum 32)) | b64enc | quote) }}
+KUBETAIL_DASHBOARD_SESSION_ENCRYPTION_KEY1: {{ $secrets.KUBETAIL_DASHBOARD_SESSION_ENCRYPTION_KEY1 | default $currentData.KUBETAIL_DASHBOARD_SESSION_ENCRYPTION_KEY1 | default ((sha256sum (randAlphaNum 32)) | b64enc | quote) }}
+{{- if hasKey $secrets "KUBETAIL_DASHBOARD_SESSION_SIGNING_KEY2" }}
+KUBETAIL_DASHBOARD_SESSION_SIGNING_KEY2: {{ $secrets.KUBETAIL_DASHBOARD_SESSION_SIGNING_KEY2 | default $currentData.KUBETAIL_DASHBOARD_SESSION_SIGNING_KEY2 | required "KUBETAIL_DASHBOARD_SESSION_SIGNING_KEY2 must be set when slot 2 is used" }}
+{{- with ($secrets.KUBETAIL_DASHBOARD_SESSION_ENCRYPTION_KEY2 | default $currentData.KUBETAIL_DASHBOARD_SESSION_ENCRYPTION_KEY2) }}
+KUBETAIL_DASHBOARD_SESSION_ENCRYPTION_KEY2: {{ . }}
+{{- end }}
+{{- end }}
 {{- end }}
 
 {{/*
