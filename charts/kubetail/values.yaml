@@ -55,6 +55,8 @@ kubetail:
         http: 8080
       # -- Sets the url path prefix (useful for deploying on a sub-path behind a reverse proxy)
       basePath: /
+      # -- List of allowed origin URLs for use in same-origin checks with WebSocket connections behind proxies
+      allowedOrigins: []
       # -- Sets the mode for the Gin framework
       ginMode: "release"
       # -- Logging options
@@ -105,7 +107,7 @@ kubetail:
       # -- Image repository
       repository: "kubetail-org/kubetail-dashboard"
       # -- Image tag
-      tag: "0.14.0-rc2"
+      tag: "0.14.0-rc3"
       # -- Overrides the image tag with an image digest
       digest: null
       # -- Docker image pull policy
@@ -279,7 +281,7 @@ kubetail:
       # -- Image repository
       repository: "kubetail-org/kubetail-cluster-api"
       # -- Image tag
-      tag: "0.6.1-rc1"
+      tag: "0.6.1-rc2"
       # -- Overrides the image tag with an image digest
       digest: null
       # -- Docker image pull policy
