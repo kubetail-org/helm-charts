@@ -22,6 +22,7 @@ spec:
       annotations:
         {{- include "kubetail.annotations" (list $ $podTmpl.annotations) | indent 8 }}
         checksum/config: {{ include "kubetail.clusterAgent.config" $ | sha256sum | quote }}
+        checksum/tls: {{ include "kubetail.tlsBundle" $ | sha256sum | quote }}
     spec:
       automountServiceAccountToken: true
       serviceAccountName: {{ include "kubetail.clusterAgent.serviceAccountName" $ }}
@@ -55,16 +56,17 @@ spec:
         - name: grpc
           protocol: TCP
           containerPort: {{ .Values.kubetail.clusterAgent.runtimeConfig.ports.grpc }}
+        # gRPC probes can't speak mTLS, so we fall back to a tcpSocket probe (port-open check).
         livenessProbe:
-          grpc:
-            port: {{ .Values.kubetail.clusterAgent.runtimeConfig.ports.grpc }}
+          tcpSocket:
+            port: grpc
           initialDelaySeconds: 5
           timeoutSeconds: 30
           periodSeconds: 3
           failureThreshold: 3
         readinessProbe:
-          grpc:
-            port: {{ .Values.kubetail.clusterAgent.runtimeConfig.ports.grpc }}
+          tcpSocket:
+            port: grpc
           initialDelaySeconds: 5
           timeoutSeconds: 30
           periodSeconds: 3
@@ -76,6 +78,9 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /etc/kubetail
+          readOnly: true
+        - name: tls
+          mountPath: /etc/kubetail-tls
           readOnly: true
         - name: varlog
           mountPath: /var/log
@@ -90,6 +95,9 @@ spec:
       - name: config
         configMap:
           name: {{ include "kubetail.clusterAgent.configMapName" $ }}
+      - name: tls
+        secret:
+          secretName: {{ include "kubetail.clusterAgent.tlsSecretName" $ }}
       - name: varlog
         hostPath:
           path: /var/log

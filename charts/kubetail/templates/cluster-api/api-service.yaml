@@ -1,0 +1,27 @@
+{{- if .Values.kubetail.clusterAPI.enabled }}
+{{- $bundle := include "kubetail.tlsBundle" $ | fromYaml }}
+# Register cluster-api with the kube-apiserver aggregation layer so that
+# requests to /apis/api.kubetail.com/v1/* are proxied to the cluster-api
+# Service. The dashboard relies on this both for its calls to cluster-api
+# and to surface cluster-api health via the APIService's Available condition.
+kind: APIService
+apiVersion: apiregistration.k8s.io/v1
+metadata:
+  name: v1.api.kubetail.com
+  labels:
+    {{- include "kubetail.clusterAPI.labels" (list $ dict) | indent 4 }}
+  annotations:
+    {{- include "kubetail.annotations" (list $ dict) | indent 4 }}
+spec:
+  group: api.kubetail.com
+  version: v1
+  groupPriorityMinimum: 100
+  versionPriority: 20
+  service:
+    name: {{ include "kubetail.clusterAPI.serviceName" $ }}
+    namespace: {{ include "kubetail.namespace" $ }}
+    port: {{ .Values.kubetail.clusterAPI.service.ports.http }}
+  # Embed the chart-generated CA so the kube-apiserver can verify the
+  # cluster-api server cert presented by the aggregation target.
+  caBundle: {{ $bundle.caCert | b64enc }}
+{{- end }}

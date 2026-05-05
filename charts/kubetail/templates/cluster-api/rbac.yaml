@@ -43,6 +43,47 @@ subjects:
   namespace: {{ include "kubetail.namespace" $ }}
 {{- end }}
 ---
+# Lets the cluster-api SA call TokenReview / SubjectAccessReview against the
+# kube-apiserver — required for k8s-style delegated auth (the other half of
+# the auth-reader binding below).
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "kubetail.clusterAPI.clusterRoleBindingName" $ }}-auth-delegator
+  labels:
+    {{- include "kubetail.clusterAPI.labels" (list $ $rbac.labels) | indent 4 }}
+  annotations:
+    {{- include "kubetail.annotations" (list $ $rbac.annotations) | indent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:auth-delegator
+subjects:
+- kind: ServiceAccount
+  name: {{ include "kubetail.clusterAPI.serviceAccountName" $ }}
+  namespace: {{ include "kubetail.namespace" $ }}
+---
+# Bind to the system-managed Role in kube-system so cluster-api can read the
+# `extension-apiserver-authentication` ConfigMap (required for k8s-style
+# delegated authentication: requestheader CA bundle, client CA, etc.).
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: kube-system
+  name: {{ include "kubetail.clusterAPI.roleBindingName" $ }}-auth-reader
+  labels:
+    {{- include "kubetail.clusterAPI.labels" (list $ $rbac.labels) | indent 4 }}
+  annotations:
+    {{- include "kubetail.annotations" (list $ $rbac.annotations) | indent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: extension-apiserver-authentication-reader
+subjects:
+- kind: ServiceAccount
+  name: {{ include "kubetail.clusterAPI.serviceAccountName" $ }}
+  namespace: {{ include "kubetail.namespace" $ }}
+---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -60,6 +101,16 @@ rules:
   resources: [cronjobs, daemonsets, deployments, jobs, pods, pods/log, replicasets, statefulsets]
   verbs: [get, list, watch]
 {{- end }}
+# Lets cluster-api impersonate the calling user / SA when forwarding requests
+# downstream (e.g. dispatching to the cluster-agent). The aggregation layer
+# delivers the original caller's identity in headers; cluster-api then
+# performs the downstream call on their behalf.
+- apiGroups: [""]
+  resources: [users, groups, serviceaccounts]
+  verbs: [impersonate]
+- apiGroups: [authentication.k8s.io]
+  resources: ["*"]
+  verbs: [impersonate]
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1

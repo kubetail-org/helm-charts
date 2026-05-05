@@ -40,6 +40,116 @@ Print the namespace
 {{/**************** Shared helpers ****************/}}
 
 {{/*
+TLS bundle for cluster-api ↔ cluster-agent mTLS.
+
+Generates a self-signed CA plus three leaf certs (cluster-api server cert,
+cluster-api client cert, cluster-agent server cert). Persists across upgrades
+by recovering values from the existing TLS secrets via `lookup`.
+
+Renewal logic, by component:
+  - CA: long-lived (10y); reused as long as both ca.crt and ca.key are
+    present in the cluster-api secret. If the CA is missing (fresh install
+    or secret deleted), the entire bundle is regenerated so we never end up
+    with orphan leaves signed by a vanished CA.
+  - Leaves (api/client/agent): regenerated under the existing CA when any
+    leaf piece is missing, when the recorded `not-after` is absent (e.g.
+    pre-renewal-tracking installs), or when the recorded expiry is within
+    the renewal window. Otherwise the cached leaves are reused verbatim so
+    repeat renders produce stable output.
+
+Cached on `.Values` so multiple includes within a single render return the
+same bundle (otherwise each Secret template would generate its own CA).
+
+Returns a dict (as YAML) with: caCert, caKey, apiCert, apiKey, clientCert,
+clientKey, agentCert, agentKey, notAfter (Unix epoch seconds, as string).
+*/}}
+{{- define "kubetail.tlsBundle" -}}
+{{- $cached := index .Values "_kubetailTlsBundle" -}}
+{{- if not $cached -}}
+  {{- $ns := include "kubetail.namespace" . -}}
+  {{- $apiSvc := include "kubetail.clusterAPI.serviceName" . -}}
+  {{- $agentSvc := include "kubetail.clusterAgent.serviceName" . -}}
+  {{- $apiSecretName := include "kubetail.clusterAPI.tlsSecretName" . -}}
+  {{- $agentSecretName := include "kubetail.clusterAgent.tlsSecretName" . -}}
+
+  {{- $apiExisting := (lookup "v1" "Secret" $ns $apiSecretName) -}}
+  {{- $agentExisting := (lookup "v1" "Secret" $ns $agentSecretName) -}}
+  {{- $apiData := dict -}}
+  {{- $agentData := dict -}}
+  {{- if $apiExisting -}}{{- $apiData = ($apiExisting.data | default dict) -}}{{- end -}}
+  {{- if $agentExisting -}}{{- $agentData = ($agentExisting.data | default dict) -}}{{- end -}}
+
+  {{- $caCertB64 := index $apiData "ca.crt" -}}
+  {{- $caKeyB64 := index $apiData "ca.key" -}}
+  {{- $apiCertB64 := index $apiData "tls.crt" -}}
+  {{- $apiKeyB64 := index $apiData "tls.key" -}}
+  {{- $clientCertB64 := index $apiData "client.crt" -}}
+  {{- $clientKeyB64 := index $apiData "client.key" -}}
+  {{- $notAfterB64 := index $apiData "not-after" -}}
+  {{- $agentCertB64 := index $agentData "tls.crt" -}}
+  {{- $agentKeyB64 := index $agentData "tls.key" -}}
+
+  {{- $leafDays := 3650 -}}
+  {{- $renewBeforeSec := mul 365 86400 -}}
+  {{- $nowUnix := now.Unix | int -}}
+
+  {{- $hasCA := and $caCertB64 $caKeyB64 -}}
+  {{- $hasLeaves := and (and $apiCertB64 $apiKeyB64) (and (and $clientCertB64 $clientKeyB64) (and $agentCertB64 $agentKeyB64)) -}}
+
+  {{- $leavesValid := false -}}
+  {{- if and $hasLeaves $notAfterB64 -}}
+    {{- $notAfterUnix := b64dec $notAfterB64 | atoi -}}
+    {{- if gt (sub $notAfterUnix $nowUnix) $renewBeforeSec -}}
+      {{- $leavesValid = true -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- $bundle := dict -}}
+  {{- if and $hasCA $leavesValid -}}
+    {{- $bundle = dict
+      "caCert" (b64dec $caCertB64)
+      "caKey" (b64dec $caKeyB64)
+      "apiCert" (b64dec $apiCertB64)
+      "apiKey" (b64dec $apiKeyB64)
+      "clientCert" (b64dec $clientCertB64)
+      "clientKey" (b64dec $clientKeyB64)
+      "agentCert" (b64dec $agentCertB64)
+      "agentKey" (b64dec $agentKeyB64)
+      "notAfter" (b64dec $notAfterB64)
+    -}}
+  {{- else -}}
+    {{- $ca := dict -}}
+    {{- if $hasCA -}}
+      {{- $ca = dict "Cert" (b64dec $caCertB64) "Key" (b64dec $caKeyB64) -}}
+    {{- else -}}
+      {{- $ca = genCA "kubetail-ca" 3650 -}}
+    {{- end -}}
+    {{- $apiSANs := list $apiSvc (printf "%s.%s" $apiSvc $ns) (printf "%s.%s.svc" $apiSvc $ns) (printf "%s.%s.svc.cluster.local" $apiSvc $ns) -}}
+    {{- $apiLeaf := genSignedCert $apiSvc nil $apiSANs $leafDays $ca -}}
+    {{- $clientLeaf := genSignedCert "kubetail-cluster-api" nil (list "kubetail-cluster-api") $leafDays $ca -}}
+    {{- $agentSANs := list $agentSvc (printf "%s.%s" $agentSvc $ns) (printf "%s.%s.svc" $agentSvc $ns) (printf "%s.%s.svc.cluster.local" $agentSvc $ns) (printf "*.%s.%s.svc.cluster.local" $agentSvc $ns) -}}
+    {{- $agentLeaf := genSignedCert $agentSvc nil $agentSANs $leafDays $ca -}}
+    {{- $notAfter := add $nowUnix (mul $leafDays 86400) -}}
+    {{- $bundle = dict
+      "caCert" $ca.Cert
+      "caKey" $ca.Key
+      "apiCert" $apiLeaf.Cert
+      "apiKey" $apiLeaf.Key
+      "clientCert" $clientLeaf.Cert
+      "clientKey" $clientLeaf.Key
+      "agentCert" $agentLeaf.Cert
+      "agentKey" $agentLeaf.Key
+      "notAfter" (printf "%d" $notAfter)
+    -}}
+  {{- end -}}
+  {{- $_ := set .Values "_kubetailTlsBundle" $bundle -}}
+  {{- $cached = $bundle -}}
+{{- end -}}
+{{- $cached | toYaml -}}
+{{- end -}}
+
+
+{{/*
 Print key/value quoted pairs
 */}}
 {{- define "kubetail.printDict" -}}
@@ -140,12 +250,8 @@ allowed-namespaces:
 {{- end }}
 addr: :{{ .Values.kubetail.dashboard.runtimeConfig.ports.http }}
 auth-mode: {{ .Values.kubetail.dashboard.authMode }}
-{{- if .Values.kubetail.clusterAPI.enabled }}
-cluster-api-endpoint: "{{ if .Values.kubetail.clusterAPI.runtimeConfig.tls.enabled }}https{{ else }}http{{ end }}://{{ include "kubetail.clusterAPI.serviceName" $ }}:{{ .Values.kubetail.clusterAPI.runtimeConfig.ports.http }}"
-{{- end }}
+cluster-api-enabled: {{ .Values.kubetail.clusterAPI.enabled }}
 environment: cluster
-ui:
-  cluster-api-enabled: {{ .Values.kubetail.clusterAPI.enabled }}
 {{- $cfg := omit .Values.kubetail.dashboard.runtimeConfig "ports" "http" }}
 {{- $secrets := .Values.kubetail.secrets | default dict }}
 {{- $keyPairs := list (dict "signingKey" "${KUBETAIL_DASHBOARD_SESSION_SIGNING_KEY1}" "encryptionKey" "${KUBETAIL_DASHBOARD_SESSION_ENCRYPTION_KEY1}") }}
@@ -295,15 +401,21 @@ app.kubernetes.io/component: "cluster-api"
 Cluster API config
 */}}
 {{- define "kubetail.clusterAPI.config" -}}
+{{- $agentSvc := include "kubetail.clusterAgent.serviceName" $ }}
 {{- $dispatchUrlPort := int .Values.kubetail.clusterAgent.runtimeConfig.ports.grpc }}
-{{- $dispatchUrl := printf "kubernetes://%s:%d" (include "kubetail.clusterAgent.serviceName" $) $dispatchUrlPort }}
+{{- $dispatchUrl := printf "kubernetes://%s:%d" $agentSvc $dispatchUrlPort }}
 {{- with .Values.kubetail.allowedNamespaces }}
-allowed-namespaces: 
+allowed-namespaces:
 {{- toYaml . | nindent 0 }}
 {{- end }}
 addr: :{{ .Values.kubetail.clusterAPI.runtimeConfig.ports.http }}
 {{- $cfg := omit .Values.kubetail.clusterAPI.runtimeConfig "ports" "http"}}
-{{- $_ := set $cfg "clusterAgent" ( dict "dispatchUrl" $dispatchUrl )}}
+{{- $clusterAgentCfg := deepCopy (default dict $cfg.clusterAgent) }}
+{{- $_ := set $clusterAgentCfg "dispatchUrl" $dispatchUrl }}
+{{- $tlsCfg := deepCopy (default dict $clusterAgentCfg.tls) }}
+{{- $_ := set $tlsCfg "serverName" (default $agentSvc $tlsCfg.serverName) }}
+{{- $_ := set $clusterAgentCfg "tls" $tlsCfg }}
+{{- $_ := set $cfg "clusterAgent" $clusterAgentCfg }}
 {{- include "kubetail.toKebabYaml" $cfg | nindent 0 }}
 {{- end }}
 
@@ -380,6 +492,13 @@ Cluster API Secret data
 {{- if $currentResource -}}
 {{- $_ := set $currentValsRef "data" (index $currentResource "data") -}}
 {{- end -}}
+{{- end }}
+
+{{/*
+Cluster API TLS Secret name
+*/}}
+{{- define "kubetail.clusterAPI.tlsSecretName" -}}
+{{ include "kubetail.fullname" $ }}-cluster-api-tls
 {{- end }}
 
 {{/*
@@ -497,6 +616,13 @@ Cluster Agent RoleBinding name
 */}}
 {{- define "kubetail.clusterAgent.roleBindingName" -}}
 {{ if .Values.kubetail.clusterAgent.rbac.name }}{{ .Values.kubetail.clusterAgent.rbac.name }}{{ else }}{{ include "kubetail.fullname" $ }}-cluster-agent{{ end }}
+{{- end }}
+
+{{/*
+Cluster Agent TLS Secret name
+*/}}
+{{- define "kubetail.clusterAgent.tlsSecretName" -}}
+{{ include "kubetail.fullname" $ }}-cluster-agent-tls
 {{- end }}
 
 {{/*

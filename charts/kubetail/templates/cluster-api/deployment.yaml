@@ -27,6 +27,7 @@ spec:
       annotations:
         {{- include "kubetail.annotations" (list $ $podTmpl.annotations) | indent 8 }}
         checksum/config: {{ include "kubetail.clusterAPI.config" $ | sha256sum | quote }}
+        checksum/tls: {{ include "kubetail.tlsBundle" $ | sha256sum | quote }}
         {{- if $secret.enabled }}
         checksum/secret: {{ include "kubetail.clusterAPI.secretData" $ | sha256sum | quote }}
         {{- end }}
@@ -69,7 +70,7 @@ spec:
           containerPort: {{ .Values.kubetail.clusterAPI.runtimeConfig.ports.http }}
         livenessProbe:
           httpGet:
-            scheme: HTTP
+            scheme: HTTPS
             path: /healthz
             port: http
           initialDelaySeconds: 30
@@ -78,7 +79,7 @@ spec:
           failureThreshold: 3
         readinessProbe:
           httpGet:
-            scheme: HTTP
+            scheme: HTTPS
             path: /healthz
             port: http
           initialDelaySeconds: 30
@@ -93,6 +94,9 @@ spec:
         - name: config
           mountPath: /etc/kubetail
           readOnly: true
+        - name: tls
+          mountPath: /etc/kubetail-tls
+          readOnly: true
       {{- with $podTmpl.extraContainers  }}
       {{- toYaml . | nindent 6 }}
       {{- end }}
@@ -100,6 +104,20 @@ spec:
       - name: config
         configMap:
           name: {{ include "kubetail.clusterAPI.configMapName" $ }}
+      - name: tls
+        secret:
+          secretName: {{ include "kubetail.clusterAPI.tlsSecretName" $ }}
+          items:
+          - key: ca.crt
+            path: ca.crt
+          - key: tls.crt
+            path: tls.crt
+          - key: tls.key
+            path: tls.key
+          - key: client.crt
+            path: client.crt
+          - key: client.key
+            path: client.key
       nodeSelector:
         {{- with $podTmpl.nodeSelector }}
         {{- toYaml . | nindent 8 }}

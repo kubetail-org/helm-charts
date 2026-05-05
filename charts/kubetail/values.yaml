@@ -107,7 +107,7 @@ kubetail:
       # -- Image repository
       repository: "kubetail-org/kubetail-dashboard"
       # -- Image tag
-      tag: "0.14.0"
+      tag: "0.15.0-rc2"
       # -- Overrides the image tag with an image digest
       digest: null
       # -- Docker image pull policy
@@ -265,14 +265,27 @@ kubetail:
           enabled: true
           # -- Hides health checks from access log
           hideHealthChecks: true
-      # -- TLS options
+      # -- Server-side TLS options (TLS is mandatory).
+      # The chart provisions cert/key automatically; the paths below are where
+      # they are mounted inside the container.
       tls:
-        # -- Enables/disables TLS termination
-        enabled: false
         # -- Path to TLS certificate file
-        certFile: null
+        certFile: /etc/kubetail-tls/tls.crt
         # -- Path to TLS key file
-        keyFile: null
+        keyFile: /etc/kubetail-tls/tls.key
+      # -- Outbound mTLS settings used when dispatching to the Cluster Agent.
+      clusterAgent:
+        tls:
+          # -- Path to client certificate
+          certFile: /etc/kubetail-tls/client.crt
+          # -- Path to client key
+          keyFile: /etc/kubetail-tls/client.key
+          # -- Path to CA bundle used to verify the agent's server cert
+          caFile: /etc/kubetail-tls/ca.crt
+          # -- Expected SNI / SAN of the agent's server cert.
+          # When null (default), derived from the cluster-agent service name so
+          # it matches the cert SANs the chart generates.
+          serverName: null
 
     # -- Docker image settings
     image:
@@ -281,7 +294,7 @@ kubetail:
       # -- Image repository
       repository: "kubetail-org/kubetail-cluster-api"
       # -- Image tag
-      tag: "0.7.0"
+      tag: "0.8.0-rc2"
       # -- Overrides the image tag with an image digest
       digest: null
       # -- Docker image pull policy
@@ -412,14 +425,19 @@ kubetail:
         level: "info"
         # -- Sets the logging format (json, pretty)
         format: "json"
-      # -- TLS options
+      # -- TLS options (TLS is mandatory; mTLS is enforced).
+      # The chart provisions cert/key/ca automatically; paths below are where
+      # they are mounted inside the container.
       tls:
-        # -- Enables/disables TLS termination
-        enabled: false
         # -- Path to TLS certificate file
-        certFile: null
+        certFile: /etc/kubetail-tls/tls.crt
         # -- Path to TLS key file
-        keyFile: null
+        keyFile: /etc/kubetail-tls/tls.key
+        # -- Path to CA bundle used to verify incoming client certs
+        caFile: /etc/kubetail-tls/ca.crt
+        # -- Allow-list of client cert CN/SAN values; only these may dial the agent
+        allowedNames:
+        - kubetail-cluster-api
 
     # -- Docker image settings
     image:
@@ -428,7 +446,7 @@ kubetail:
       # -- Image repository
       repository: "kubetail-org/kubetail-cluster-agent"
       # -- Image tag
-      tag: "0.6.2"
+      tag: "0.7.0-rc1"
       # -- Overrides the image tag with an image digest
       digest: null
       # -- Docker image pull policy
@@ -505,6 +523,15 @@ kubetail:
       # -- Enable resource
       enabled: true
       # -- Overrides the NetworkPolicy resource name whose default is based on the chart's computed fullname
+      name: null
+      # -- Additional annotations
+      annotations: {}
+      # -- Additional labels
+      labels: {}
+
+    # -- RBAC resource settings
+    rbac:
+      # -- Overrides RBAC resource names whose defaults are based on the chart's computed fullname
       name: null
       # -- Additional annotations
       annotations: {}
