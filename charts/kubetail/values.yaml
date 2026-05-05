@@ -282,8 +282,10 @@ kubetail:
           keyFile: /etc/kubetail-tls/client.key
           # -- Path to CA bundle used to verify the agent's server cert
           caFile: /etc/kubetail-tls/ca.crt
-          # -- Expected SNI / SAN of the agent's server cert
-          serverName: kubetail-cluster-agent
+          # -- Expected SNI / SAN of the agent's server cert.
+          # When null (default), derived from the cluster-agent service name so
+          # it matches the cert SANs the chart generates.
+          serverName: null
 
     # -- Docker image settings
     image:
