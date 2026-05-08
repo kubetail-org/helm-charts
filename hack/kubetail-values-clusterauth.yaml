@@ -1,4 +1,4 @@
-namespaceOverride: kubetail-system
+namespaceOverride: kubetail
 
 kubetail:
   secrets:
