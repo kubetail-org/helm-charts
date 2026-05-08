@@ -22,14 +22,14 @@ Next install/upgrade/uninstall:
 helm install kubetail kubetail/kubetail
 
 # install into a new namespace
-helm install kubetail kubetail/kubetail --namespace kubetail-system --create-namespace
+helm install kubetail kubetail/kubetail --namespace kubetail --create-namespace
 
 # install using custom values
-helm install kubetail kubetail/kubetail --namespace kubetail-system --create-namespace --values ~/path/to/values.yaml
+helm install kubetail kubetail/kubetail --namespace kubetail --create-namespace --values ~/path/to/values.yaml
 
 # upgrade an existing installation
-helm upgrade kubetail kubetail/kubetail --namespace kubetail-system
+helm upgrade kubetail kubetail/kubetail --namespace kubetail
 
 # uninstall
-helm uninstall kubetail --namespace kubetail-system
+helm uninstall kubetail --namespace kubetail
 ```
