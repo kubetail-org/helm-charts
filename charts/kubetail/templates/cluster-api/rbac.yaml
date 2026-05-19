@@ -1,33 +1,24 @@
 {{- if .Values.kubetail.clusterAPI.enabled }}
 {{- $rbac := index .Values "kubetail" "clusterAPI" "rbac" -}}
-{{- $root := . -}}
-{{- range $namespace := uniq (append .Values.kubetail.allowedNamespaces (include "kubetail.namespace" $)) }}
 ---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  namespace: {{ $namespace }}
+  namespace: {{ include "kubetail.namespace" $ }}
   name: {{ include "kubetail.clusterAPI.roleName" $ }}
   labels:
     {{- include "kubetail.clusterAPI.labels" (list $ $rbac.labels) | indent 4 }}
   annotations:
     {{- include "kubetail.annotations" (list $ $rbac.annotations) | indent 4 }}
 rules:
-{{- if eq $namespace (include "kubetail.namespace" $) }}
 - apiGroups: [discovery.k8s.io]
   resources: [endpointslices]
   verbs: [list, watch]
-{{- end }}
-{{- if has $namespace $root.Values.kubetail.allowedNamespaces }}
-- apiGroups: ["", apps, batch]
-  resources: [cronjobs, daemonsets, deployments, jobs, pods, pods/log, replicasets, statefulsets]
-  verbs: [get, list, watch]
-{{- end }}
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  namespace: {{ $namespace }}
+  namespace: {{ include "kubetail.namespace" $ }}
   name: {{ include "kubetail.clusterAPI.roleBindingName" $ }}
   labels:
     {{- include "kubetail.clusterAPI.labels" (list $ $rbac.labels) | indent 4 }}
@@ -41,7 +32,6 @@ subjects:
 - kind: ServiceAccount
   name: {{ include "kubetail.clusterAPI.serviceAccountName" $ }}
   namespace: {{ include "kubetail.namespace" $ }}
-{{- end }}
 ---
 # Lets the cluster-api SA call TokenReview / SubjectAccessReview against the
 # kube-apiserver — required for k8s-style delegated auth (the other half of
@@ -96,11 +86,13 @@ rules:
 - apiGroups: [""]
   resources: [nodes]
   verbs: [get, list, watch]
-{{- if not .Values.kubetail.allowedNamespaces }}
+# Workload + pod informers in modules/shared/logs (sourceWatcher) — used to
+# resolve log sources to pods. Cluster-wide so the API can serve logs across
+# all namespaces. Note: no pods/log; pod logs are streamed from the
+# cluster-agent over gRPC, not read via the Kubernetes API.
 - apiGroups: ["", apps, batch]
-  resources: [cronjobs, daemonsets, deployments, jobs, pods, pods/log, replicasets, statefulsets]
+  resources: [cronjobs, daemonsets, deployments, jobs, pods, replicasets, statefulsets]
   verbs: [get, list, watch]
-{{- end }}
 # Lets cluster-api impersonate the calling user / SA when forwarding requests
 # downstream (e.g. dispatching to the cluster-agent). The aggregation layer
 # delivers the original caller's identity in headers; cluster-api then
