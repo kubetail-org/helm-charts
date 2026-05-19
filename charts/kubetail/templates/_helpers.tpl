@@ -404,10 +404,6 @@ Cluster API config
 {{- $agentSvc := include "kubetail.clusterAgent.serviceName" $ }}
 {{- $dispatchUrlPort := int .Values.kubetail.clusterAgent.runtimeConfig.ports.grpc }}
 {{- $dispatchUrl := printf "kubernetes://%s:%d" $agentSvc $dispatchUrlPort }}
-{{- with .Values.kubetail.allowedNamespaces }}
-allowed-namespaces:
-{{- toYaml . | nindent 0 }}
-{{- end }}
 addr: :{{ .Values.kubetail.clusterAPI.runtimeConfig.ports.http }}
 {{- $cfg := omit .Values.kubetail.clusterAPI.runtimeConfig "ports" "http"}}
 {{- $clusterAgentCfg := deepCopy (default dict $cfg.clusterAgent) }}
@@ -544,11 +540,7 @@ app.kubernetes.io/component: "cluster-agent"
 {{/*
 Cluster Agent config
 */}}
-{{- define "kubetail.clusterAgent.config" -}}
-{{- with .Values.kubetail.allowedNamespaces }}
-allowed-namespaces: 
-{{- toYaml . | nindent 0 }}
-{{- end }}
+{{- define "kubetail.clusterAgent.config" }}
 addr: :{{ .Values.kubetail.clusterAgent.runtimeConfig.ports.grpc }}
 {{- $cfg := omit .Values.kubetail.clusterAgent.runtimeConfig "ports" "grpc" }}
 {{- include "kubetail.toKebabYaml" $cfg | nindent 0 }}
