@@ -1,12 +1,27 @@
 {{- if .Values.kubetail.clusterAgent.enabled }}
 {{- $rbac := index .Values "kubetail" "clusterAgent" "rbac" -}}
-# Lets the cluster-agent SA call SubjectAccessReview / TokenReview against the
-# kube-apiserver — the cluster-agent authenticates incoming gRPC clients via
-# mTLS and then delegates per-request authz to the kube-apiserver.
+# The cluster-agent authenticates incoming gRPC clients via mTLS (identity
+# forwarded from cluster-api) and then delegates per-request authz to the
+# kube-apiserver by asking whether the forwarded user can `get pods/log` in
+# the requested namespace. SubjectAccessReview is the only API access it needs
+# — logs are read directly from the node's container-logs directory on disk.
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "kubetail.clusterAgent.clusterRoleName" $ }}
+  labels:
+    {{- include "kubetail.clusterAgent.labels" (list $ $rbac.labels) | indent 4 }}
+  annotations:
+    {{- include "kubetail.annotations" (list $ $rbac.annotations) | indent 4 }}
+rules:
+- apiGroups: [authorization.k8s.io]
+  resources: [subjectaccessreviews]
+  verbs: [create]
+---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ include "kubetail.clusterAgent.clusterRoleBindingName" $ }}-auth-delegator
+  name: {{ include "kubetail.clusterAgent.clusterRoleBindingName" $ }}
   labels:
     {{- include "kubetail.clusterAgent.labels" (list $ $rbac.labels) | indent 4 }}
   annotations:
@@ -14,7 +29,7 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: system:auth-delegator
+  name: {{ include "kubetail.clusterAgent.clusterRoleName" $ }}
 subjects:
 - kind: ServiceAccount
   name: {{ include "kubetail.clusterAgent.serviceAccountName" $ }}
