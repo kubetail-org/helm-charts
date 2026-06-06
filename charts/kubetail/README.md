@@ -57,7 +57,7 @@ These are the configurable parameters for the kubetail chart and their default v
 | `namespaceOverride`                                   | string   | Override release's namespace          | null                            |
 |                                                       |          |                                       |                                 |
 | KUBETAIL GENERAL:                                     |          |                                       |                                 |
-| `kubetail.allowedNamespaces`                          | array    | Restricted namespaces                 | []                              |
+| `kubetail.allowedNamespaces`                          | array    | Restricted namespaces (DEPRECATED)    | []                              |
 | `kubetail.global.annotations`                         | map      | Annotations for all resources         | {}                              |
 | `kubetail.global.labels`                              | map      | Labels for all resources              | {}                              |
 | `kubetail.secrets.KUBETAIL_DASHBOARD_SESSION_SIGNING_KEY1`    | string   | B64-encoded value (autogen if null)   | null                            |
@@ -65,6 +65,7 @@ These are the configurable parameters for the kubetail chart and their default v
 |                                                       |          |                                       |                                 |
 | KUBETAIL DASHBOARD:                                   |          |                                       |                                 |
 | `kubetail.dashboard.enabled`                          | bool     | Enable/disable dashboard              | true                            |
+| `kubetail.dashboard.allowedNamespace`                 | string   | Restrict Kubetail to a single namespace | null                          |
 | `kubetail.dashboard.authMode`                         | string   | Auth mode (auto, token)               | "auto"                          |
 | `kubetail.dashboard.runtimeConfig`                    | map      | Dashboard runtime configuration       | *See values.yaml*               |
 | `kubetail.dashboard.image.registry`                   | string   | Dashboard image registry              | ghcr.io                         |

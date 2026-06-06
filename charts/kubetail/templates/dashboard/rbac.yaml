@@ -1,5 +1,6 @@
 {{- if .Values.kubetail.dashboard.enabled }}
 {{- $rbac := index .Values "kubetail" "dashboard" "rbac" -}}
+{{- $allowedNamespaces := include "kubetail.allowedNamespaces" $ | fromYamlArray -}}
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -12,7 +13,7 @@ rules:
 - apiGroups: [""]
   resources: [namespaces, nodes]
   verbs: [get, list, watch]
-{{- if not .Values.kubetail.allowedNamespaces }}
+{{- if not $allowedNamespaces }}
 - apiGroups: ["", apps, batch]
   resources: [cronjobs, daemonsets, deployments, jobs, pods, replicasets, statefulsets]
   verbs: [get, list, watch]
@@ -21,7 +22,7 @@ rules:
 - apiGroups: [authentication.k8s.io]
   resources: [tokenreviews]
   verbs: [create]
-{{- else if not .Values.kubetail.allowedNamespaces }}
+{{- else if not $allowedNamespaces }}
 - apiGroups: [""]
   resources: [pods/log]
   verbs: [get]
@@ -62,8 +63,8 @@ subjects:
 - kind: ServiceAccount
   name: {{ include "kubetail.dashboard.serviceAccountName" $ }}
   namespace: {{ include "kubetail.namespace" $ }}
-{{- if and (ne .Values.kubetail.dashboard.authMode "token") (.Values.kubetail.allowedNamespaces) }}
-{{- range .Values.kubetail.allowedNamespaces }}
+{{- if and (ne .Values.kubetail.dashboard.authMode "token") ($allowedNamespaces) }}
+{{- range $allowedNamespaces }}
 ---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
