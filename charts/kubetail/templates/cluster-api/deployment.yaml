@@ -34,6 +34,9 @@ spec:
     spec:
       automountServiceAccountToken: true
       serviceAccountName: {{ include "kubetail.clusterAPI.serviceAccountName" $ }}
+      {{- with $podTmpl.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
       {{- with $podTmpl.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
