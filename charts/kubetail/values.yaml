@@ -148,6 +148,8 @@ kubetail:
       imagePullSecrets: []
       # -- Pod security context
       securityContext: {}
+      # -- Priority class name
+      priorityClassName: ""
       # -- Affinity settings
       affinity: {}
       # -- Node selector settings
@@ -335,6 +337,8 @@ kubetail:
       imagePullSecrets: []
       # -- Pod security context
       securityContext: {}
+      # -- Priority class name
+      priorityClassName: ""
       # -- Affinity settings
       affinity: {}
       # -- Node selector settings
@@ -490,6 +494,8 @@ kubetail:
       # -- Pod security context
       securityContext:
         fsGroup: 0
+      # -- Priority class name
+      priorityClassName: ""
       # -- Affinity settings
       affinity: {}
       # -- Node selector settings
