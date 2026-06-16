@@ -241,11 +241,24 @@ app.kubernetes.io/component: "dashboard"
 {{- end }}
 
 {{/*
+Resolve the effective list of allowed namespaces.
+Merges the deprecated `kubetail.allowedNamespaces` list with the new
+single-value `kubetail.dashboard.allowedNamespace` option.
+*/}}
+{{- define "kubetail.allowedNamespaces" -}}
+{{- $namespaces := .Values.kubetail.allowedNamespaces | default list -}}
+{{- with .Values.kubetail.dashboard.allowedNamespace -}}
+{{- $namespaces = concat $namespaces (list .) -}}
+{{- end -}}
+{{- $namespaces | uniq | toYaml -}}
+{{- end -}}
+
+{{/*
 Dashboard config
 */}}
 {{- define "kubetail.dashboard.config" -}}
-{{- with .Values.kubetail.allowedNamespaces }}
-allowed-namespaces: 
+{{- with (include "kubetail.allowedNamespaces" $ | fromYamlArray) }}
+allowed-namespaces:
 {{- toYaml . | nindent 0 }}
 {{- end }}
 addr: :{{ .Values.kubetail.dashboard.runtimeConfig.ports.http }}
@@ -404,7 +417,7 @@ Cluster API config
 {{- $agentSvc := include "kubetail.clusterAgent.serviceName" $ }}
 {{- $dispatchUrlPort := int .Values.kubetail.clusterAgent.runtimeConfig.ports.grpc }}
 {{- $dispatchUrl := printf "kubernetes://%s:%d" $agentSvc $dispatchUrlPort }}
-{{- with .Values.kubetail.allowedNamespaces }}
+{{- with (include "kubetail.allowedNamespaces" $ | fromYamlArray) }}
 allowed-namespaces:
 {{- toYaml . | nindent 0 }}
 {{- end }}
@@ -545,8 +558,8 @@ app.kubernetes.io/component: "cluster-agent"
 Cluster Agent config
 */}}
 {{- define "kubetail.clusterAgent.config" -}}
-{{- with .Values.kubetail.allowedNamespaces }}
-allowed-namespaces: 
+{{- with (include "kubetail.allowedNamespaces" $ | fromYamlArray) }}
+allowed-namespaces:
 {{- toYaml . | nindent 0 }}
 {{- end }}
 addr: :{{ .Values.kubetail.clusterAgent.runtimeConfig.ports.grpc }}

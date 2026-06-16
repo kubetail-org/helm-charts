@@ -1,0 +1,4 @@
+{{- if .Values.kubetail.allowedNamespaces }}
+WARNING: `kubetail.allowedNamespaces` is deprecated and will be removed in the
+next version. Use `kubetail.dashboard.allowedNamespace` instead.
+{{- end }}

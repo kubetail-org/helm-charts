@@ -18,7 +18,8 @@ namespaceOverride: null
 # ###########################################################################################
 
 kubetail:
-  # --- Restrict namespaces
+  # -- DEPRECATED: use `kubetail.dashboard.allowedNamespace` instead.
+  # This option will be removed in the next version.
   allowedNamespaces: []
 
   # -- Define secrets
@@ -44,6 +45,8 @@ kubetail:
   dashboard:
     # -- Enable/disable dashboard
     enabled: true
+    # -- Restrict Kubetail to a single namespace
+    allowedNamespace: null
     # -- Sets the auth mode
     authMode: auto
 
@@ -107,7 +110,7 @@ kubetail:
       # -- Image repository
       repository: "kubetail-org/kubetail-dashboard"
       # -- Image tag
-      tag: "0.16.1"
+      tag: "0.17.0-rc2"
       # -- Overrides the image tag with an image digest
       digest: null
       # -- Docker image pull policy
